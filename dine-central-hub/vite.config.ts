@@ -6,4 +6,7 @@
 // You can pass additional config via defineConfig({ vite: { ... } }) if needed.
 import { defineConfig } from "@lovable.dev/vite-tanstack-config";
 
-export default defineConfig();
+// Deploy target: Vercel (Nitro vercel preset → .vercel/output). The Lovable
+// wrapper only hard-forces cloudflare inside its sandbox; locally an explicit
+// preset is honored.
+export default defineConfig({ nitro: { preset: "vercel" } });
