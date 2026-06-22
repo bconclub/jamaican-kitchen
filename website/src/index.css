@@ -1,0 +1,150 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Jamaican Kitchen CT - Bold & Vibrant Design System
+   Colors derived from the logo: Yellow, Green, Black
+   All colors MUST be HSL.
+*/
+
+@layer base {
+  :root {
+    --background: 60 10% 98%;
+    --foreground: 0 0% 10%;
+
+    --card: 0 0% 100%;
+    --card-foreground: 0 0% 10%;
+
+    --popover: 0 0% 100%;
+    --popover-foreground: 0 0% 10%;
+
+    /* Primary: Jamaican Yellow */
+    --primary: 48 100% 50%;
+    --primary-foreground: 0 0% 10%;
+
+    /* Secondary: Jamaican Green */
+    --secondary: 145 100% 30%;
+    --secondary-foreground: 0 0% 100%;
+
+    --muted: 60 10% 94%;
+    --muted-foreground: 0 0% 40%;
+
+    /* Accent: Warm Orange */
+    --accent: 25 95% 53%;
+    --accent-foreground: 0 0% 100%;
+
+    --destructive: 0 84% 60%;
+    --destructive-foreground: 0 0% 100%;
+
+    --border: 60 10% 88%;
+    --input: 60 10% 88%;
+    --ring: 48 100% 50%;
+
+    --radius: 0.75rem;
+
+    /* Spice levels */
+    --spice-mild: 145 70% 45%;
+    --spice-medium: 48 100% 50%;
+    --spice-hot: 0 80% 50%;
+
+    --sidebar-background: 0 0% 98%;
+    --sidebar-foreground: 0 0% 20%;
+    --sidebar-primary: 145 100% 30%;
+    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-accent: 60 10% 94%;
+    --sidebar-accent-foreground: 0 0% 20%;
+    --sidebar-border: 60 10% 88%;
+    --sidebar-ring: 48 100% 50%;
+  }
+
+  .dark {
+    --background: 0 0% 8%;
+    --foreground: 60 10% 95%;
+
+    --card: 0 0% 12%;
+    --card-foreground: 60 10% 95%;
+
+    --popover: 0 0% 12%;
+    --popover-foreground: 60 10% 95%;
+
+    --primary: 48 100% 50%;
+    --primary-foreground: 0 0% 10%;
+
+    --secondary: 145 100% 35%;
+    --secondary-foreground: 0 0% 100%;
+
+    --muted: 0 0% 18%;
+    --muted-foreground: 60 10% 65%;
+
+    --accent: 25 95% 53%;
+    --accent-foreground: 0 0% 100%;
+
+    --destructive: 0 62% 30%;
+    --destructive-foreground: 60 10% 95%;
+
+    --border: 0 0% 20%;
+    --input: 0 0% 20%;
+    --ring: 48 100% 50%;
+
+    --sidebar-background: 0 0% 10%;
+    --sidebar-foreground: 60 10% 95%;
+    --sidebar-primary: 145 100% 35%;
+    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-accent: 0 0% 15%;
+    --sidebar-accent-foreground: 60 10% 95%;
+    --sidebar-border: 0 0% 20%;
+    --sidebar-ring: 48 100% 50%;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply bg-background text-foreground antialiased;
+  }
+}
+
+/* Custom animations */
+@layer utilities {
+  .animate-fade-in {
+    animation: fadeIn 0.5s ease-out forwards;
+  }
+
+  .animate-slide-up {
+    animation: slideUp 0.6s ease-out forwards;
+  }
+
+  .animate-scale-in {
+    animation: scaleIn 0.4s ease-out forwards;
+  }
+
+  @keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+  }
+
+  @keyframes slideUp {
+    from { 
+      opacity: 0;
+      transform: translateY(20px);
+    }
+    to { 
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  @keyframes scaleIn {
+    from { 
+      opacity: 0;
+      transform: scale(0.95);
+    }
+    to { 
+      opacity: 1;
+      transform: scale(1);
+    }
+  }
+}
