@@ -1,8 +1,10 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { PageHeader } from "@/components/PageHeader";
-import { MENU, CATEGORIES, CHANNEL_META } from "@/lib/mock-data";
-import type { Channel } from "@/lib/types";
+import { CHANNEL_META } from "@/lib/mock-data";
+import { useLiveMenu } from "@/lib/live-data";
+import { supabase } from "@/integrations/supabase/client";
+import type { Channel, MenuItem } from "@/lib/types";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
@@ -22,23 +24,24 @@ const CHANNELS: Channel[] = ["web", "app"];
 type ChannelStock = Record<string, Record<Channel, { stock: number; available: boolean }>>;
 
 function InventoryPage() {
-  const [items, setItems] = useState(() => MENU.map((m) => ({ ...m })));
-  const [channelStock, setChannelStock] = useState<ChannelStock>(() => {
+  const { items: liveItems, categories: CATEGORIES } = useLiveMenu();
+  const [items, setItems] = useState<MenuItem[]>([]);
+  const [channelStock, setChannelStock] = useState<ChannelStock>({});
+  const [q, setQ] = useState("");
+  const [tab, setTab] = useState<"all" | Channel>("all");
+
+  useEffect(() => {
+    setItems(liveItems.map((m) => ({ ...m })));
     const map: ChannelStock = {};
-    for (const m of MENU) {
+    for (const m of liveItems) {
       map[m.id] = {} as Record<Channel, { stock: number; available: boolean }>;
       for (const ch of CHANNELS) {
         const ov = m.channelOverrides?.[ch];
-        map[m.id][ch] = {
-          stock: m.stock,
-          available: ov ? ov.available : m.available,
-        };
+        map[m.id][ch] = { stock: m.stock, available: ov ? ov.available : m.available };
       }
     }
-    return map;
-  });
-  const [q, setQ] = useState("");
-  const [tab, setTab] = useState<"all" | Channel>("all");
+    setChannelStock(map);
+  }, [liveItems]);
 
   const filtered = useMemo(
     () => items.filter((i) => i.name.toLowerCase().includes(q.toLowerCase())),
@@ -49,10 +52,17 @@ function InventoryPage() {
   const outOfStock = items.filter((i) => i.stock === 0);
   const totalUnits = items.reduce((s, i) => s + i.stock, 0);
 
-  const adjust = (id: string, delta: number) =>
+  const adjust = (id: string, delta: number) => {
+    let next = 0;
     setItems((prev) =>
-      prev.map((i) => (i.id === id ? { ...i, stock: Math.max(0, i.stock + delta) } : i)),
+      prev.map((i) => {
+        if (i.id !== id) return i;
+        next = Math.max(0, i.stock + delta);
+        return { ...i, stock: next };
+      }),
     );
+    void supabase.from("menu_items").update({ stock: next }).eq("id", id);
+  };
 
   const adjustChannel = (id: string, ch: Channel, delta: number) =>
     setChannelStock((prev) => ({

@@ -1,5 +1,16 @@
 # Changelog
 
+## 2026-06-22 15:13 IST · Wire remaining admin pages live + Messages inbox + website fixes
+
+- **Dashboard** now computes KPIs (revenue, orders, AOV, customers), revenue trend, fulfillment mix, and by-location chart from live orders within the selected date range (was mock).
+- **Inventory** reads live menu items/stock; all-channel stock adjustments persist to `menu_items.stock`.
+- **Catering** reads real `catering_requests` (website submissions); status advances persist; "New catering order" dialog inserts to DB.
+- **Analytics** revenue/channel-mix/top-items/item-report derived from live orders.
+- **TopBar search** queries live orders/customers/menu (was mock).
+- **New Messages page** (`/messages`, Operate group) — catering requests + contact form inbox; gracefully shows "table not set up" until `contact_messages` is applied.
+- New hooks: `useLiveCateringRequests`, `useLiveContactMessages`, `updateCateringStatus`, `updateContactStatus`; `contact_messages` added to admin Supabase types.
+- **Website:** checkout now defaults to the pickup location selected on the Order page (shared via CartContext); hero typo "Sprit"→"Spirit".
+
 ## 2026-06-22 14:45 IST · Admin: React Flow system map
 
 - New **System Flow** page (`/system`) using @xyflow/react — interactive end-to-end diagram of the whole system: website order → place_order RPC → orders/items/events → Supabase Realtime → admin live feed, plus catering, contact, menu, and auth/RLS paths. Colour-coded by layer; pending pieces (contact_messages) shown greyed.

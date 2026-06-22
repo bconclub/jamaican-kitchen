@@ -10,8 +10,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
-import { ORDERS, CUSTOMERS, MENU } from "@/lib/mock-data";
-import { useLiveLocations } from "@/lib/live-data";
+import { useLiveLocations, useLiveOrders, useLiveCustomers, useLiveMenu } from "@/lib/live-data";
 import { useCurrentLocation, setCurrentLocation } from "@/lib/store";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { useNavigate } from "@tanstack/react-router";
@@ -19,6 +18,9 @@ import { useNavigate } from "@tanstack/react-router";
 export function TopBar() {
   const loc = useCurrentLocation();
   const LOCATIONS = useLiveLocations();
+  const { orders: ORDERS } = useLiveOrders();
+  const { customers: CUSTOMERS } = useLiveCustomers();
+  const { items: MENU } = useLiveMenu();
   const navigate = useNavigate();
   const [q, setQ] = useState("");
   const [open, setOpen] = useState(false);
@@ -49,7 +51,7 @@ export function TopBar() {
     ).slice(0, 5);
     const items = MENU.filter((m) => m.name.toLowerCase().includes(term)).slice(0, 5);
     return { orders, customers, items };
-  }, [q]);
+  }, [q, ORDERS, CUSTOMERS, MENU]);
 
   const total = results.orders.length + results.customers.length + results.items.length;
 

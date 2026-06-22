@@ -17,12 +17,15 @@ interface CartContextType {
   clearCart: () => void;
   totalItems: number;
   totalPrice: number;
+  pickupLocation: string;
+  setPickupLocation: (slug: string) => void;
 }
 
 const CartContext = createContext<CartContextType | undefined>(undefined);
 
 export const CartProvider = ({ children }: { children: ReactNode }) => {
   const [items, setItems] = useState<CartItem[]>([]);
+  const [pickupLocation, setPickupLocation] = useState<string>("vernon");
 
   const addItem = (newItem: Omit<CartItem, "quantity">) => {
     setItems((prev) => {
@@ -70,6 +73,8 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
         clearCart,
         totalItems,
         totalPrice,
+        pickupLocation,
+        setPickupLocation,
       }}
     >
       {children}

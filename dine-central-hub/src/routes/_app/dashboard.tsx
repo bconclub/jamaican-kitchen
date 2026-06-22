@@ -22,7 +22,7 @@ import {
   YAxis,
 } from "recharts";
 import { ArrowDownRight, ArrowUpRight, DollarSign, ShoppingBag, Users, Receipt, CalendarRange, CreditCard, Banknote, Smartphone, Wallet, Bike, ShoppingBasket } from "lucide-react";
-import { ORDERS, revenueByDay } from "@/lib/mock-data";
+import { useLiveOrders, useLiveLocations } from "@/lib/live-data";
 import { useCurrentLocation } from "@/lib/store";
 import { StatusPill } from "@/components/StatusPill";
 import { PageHeader, formatMoney } from "@/components/PageHeader";
@@ -42,6 +42,8 @@ const RANGES: { key: RangeKey; label: string; days: number }[] = [
 
 function Dashboard() {
   const loc = useCurrentLocation();
+  const { orders: ALL_ORDERS } = useLiveOrders();
+  const liveLocations = useLiveLocations();
   const [range, setRange] = useState<RangeKey>("today");
   const [customStart, setCustomStart] = useState(() => isoDateTime(daysAgo(7)));
   const [customEnd, setCustomEnd] = useState(() => isoDateTime(new Date()));
@@ -55,23 +57,34 @@ function Dashboard() {
     return RANGES.find((r) => r.key === range)!.days;
   }, [range, customStart, customEnd]);
 
-  // Website-only dashboard: hard-filter to the web channel and pickup/delivery.
-  const orders = ORDERS.filter(
-    (o) =>
-      o.channel === "web" &&
-      (o.type === "pickup" || o.type === "delivery") &&
-      (loc === "all" || o.locationId === loc),
+  // Date window for the selected range
+  const { start, end } = useMemo(() => {
+    if (range === "custom") {
+      return { start: new Date(customStart).getTime(), end: new Date(customEnd).getTime() };
+    }
+    const endMs = Date.now();
+    return { start: endMs - days * 86400000, end: endMs };
+  }, [range, customStart, customEnd, days]);
+
+  // Website-only dashboard: web channel + pickup/delivery, within location + date window.
+  const channelOrders = useMemo(
+    () =>
+      ALL_ORDERS.filter(
+        (o) =>
+          o.channel === "web" &&
+          (o.type === "pickup" || o.type === "delivery") &&
+          (loc === "all" || o.locationId === loc) &&
+          (fulfillment === "all" || o.type === fulfillment) &&
+          new Date(o.createdAt).getTime() >= start &&
+          new Date(o.createdAt).getTime() <= end,
+      ),
+    [ALL_ORDERS, loc, fulfillment, start, end],
   );
-  const channelOrders = orders.filter((o) => fulfillment === "all" || o.type === fulfillment);
-  const sampleSize = Math.min(
-    channelOrders.length,
-    Math.max(channelOrders.length / 4, Math.floor((channelOrders.length * days) / 30)),
-  );
-  const windowOrders = channelOrders.slice(0, Math.max(1, Math.floor(sampleSize)));
+  const windowOrders = channelOrders;
 
   const revenue = windowOrders.reduce((s, o) => s + o.total, 0);
   const aov = windowOrders.length ? revenue / windowOrders.length : 0;
-  const customers = new Set(windowOrders.map((o) => o.customerId)).size;
+  const customers = new Set(windowOrders.map((o) => o.customerId || o.customerName)).size;
 
   // Comparison ("vs previous period") deltas — deterministic per range
   const deltas = useMemo(() => {
@@ -84,7 +97,15 @@ function Dashboard() {
     };
   }, [days]);
 
-  const trend = revenueByDay(Math.min(60, Math.max(7, days)));
+  const trend = useMemo(() => {
+    const byDay = new Map<string, number>();
+    for (const o of channelOrders) {
+      const key = new Date(o.createdAt).toLocaleDateString("en", { month: "short", day: "numeric" });
+      byDay.set(key, (byDay.get(key) ?? 0) + o.total);
+    }
+    const arr = Array.from(byDay, ([day, total]) => ({ day, total }));
+    return arr.length ? arr : [{ day: "—", total: 0 }];
+  }, [channelOrders]);
   const fulfillmentMix = (["pickup", "delivery"] as const).map((t) => ({
     key: t,
     name: t === "pickup" ? "Pickup" : "Delivery",
@@ -256,9 +277,9 @@ function Dashboard() {
           <CardContent>
             <div className="h-72">
               <ResponsiveContainer>
-                <BarChart data={["loc_1", "loc_2", "loc_3"].map((id) => ({
-                  name: id === "loc_1" ? "Hartford" : id === "loc_2" ? "New Haven" : "Bridgeport",
-                  revenue: ORDERS.filter((o) => o.locationId === id && o.channel === "web").reduce((s, o) => s + o.total, 0),
+                <BarChart data={liveLocations.map((l) => ({
+                  name: l.name,
+                  revenue: ALL_ORDERS.filter((o) => o.locationId === l.id && o.channel === "web").reduce((s, o) => s + o.total, 0),
                 }))}>
                   <CartesianGrid stroke="oklch(0.92 0.01 255)" strokeDasharray="3 3" />
                   <XAxis dataKey="name" tick={{ fontSize: 11 }} />

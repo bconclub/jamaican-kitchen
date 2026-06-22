@@ -11,7 +11,10 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Textarea } from "@/components/ui/textarea";
 import { Switch } from "@/components/ui/switch";
 import { ChannelBadge } from "@/components/ChannelBadge";
-import { CATERING_ORDERS, LOCATIONS, STATUS_META } from "@/lib/mock-data";
+import { STATUS_META } from "@/lib/mock-data";
+import { useLiveCateringRequests, updateCateringStatus, useLiveLocations } from "@/lib/live-data";
+import { supabase } from "@/integrations/supabase/client";
+import { useEffect } from "react";
 import { useCurrentLocation } from "@/lib/store";
 import type { Order, OrderStatus } from "@/lib/types";
 import { CalendarDays, Users, Phone, MapPin, Plus, Search, ChevronRight, Truck, Navigation, CheckCircle2, ChefHat, PackageCheck } from "lucide-react";
@@ -70,9 +73,14 @@ function etaMinutes(o: Order) {
 
 function CateringPage() {
   const loc = useCurrentLocation();
-  const [orders, setOrders] = useState<Order[]>(CATERING_ORDERS);
+  const { orders: liveCatering, reload } = useLiveCateringRequests();
+  const [orders, setOrders] = useState<Order[]>([]);
   const [q, setQ] = useState("");
   const [open, setOpen] = useState(false);
+
+  useEffect(() => {
+    setOrders(liveCatering);
+  }, [liveCatering]);
 
   const visible = useMemo(
     () =>
@@ -106,6 +114,7 @@ function CateringPage() {
         const idx = flow.indexOf(o.status);
         const next = flow[Math.min(flow.length - 1, idx + 1)];
         toast.success(`${o.shortId} → ${STATUS_META[next].label}`);
+        void updateCateringStatus(o.id, next);
         return { ...o, status: next };
       }),
     );
@@ -128,10 +137,10 @@ function CateringPage() {
               <Button><Plus className="h-4 w-4 mr-1" /> New catering order</Button>
             </DialogTrigger>
             <NewCateringDialog
-              onCreate={(o) => {
-                setOrders((p) => [o, ...p]);
+              onCreated={() => {
+                reload();
                 setOpen(false);
-                toast.success(`Created ${o.shortId}`);
+                toast.success("Catering request created");
               }}
             />
           </Dialog>
@@ -233,7 +242,6 @@ function TrackingCard({
   const stageIdx = TRACK_STAGES.indexOf(stage);
   const progress = ((stageIdx + 1) / TRACK_STAGES.length) * 100;
   const eta = etaMinutes(order);
-  const loc = LOCATIONS.find((l) => l.id === order.locationId);
   const isEnRoute = order.status === "out_for_delivery";
 
   return (
@@ -291,10 +299,6 @@ function TrackingCard({
         <div className="rounded-md border p-2">
           <div className="text-[10px] uppercase text-muted-foreground">From → To</div>
           <div className="flex items-center gap-1 truncate">
-            <MapPin className="h-3 w-3 shrink-0 text-muted-foreground" />
-            <span className="truncate">{loc?.name.replace("Jamaican Kitchen — ", "")}</span>
-          </div>
-          <div className="flex items-center gap-1 truncate">
             <Navigation className="h-3 w-3 shrink-0 text-muted-foreground" />
             <span className="truncate">{order.catering?.guests} guests · venue</span>
           </div>
@@ -324,7 +328,6 @@ function CateringCard({ order, onAdvance }: { order: Order; onAdvance: () => voi
   const eventDate = new Date(cat.eventDate);
   const hoursAway = differenceInHours(eventDate, new Date());
   const urgent = hoursAway >= 0 && hoursAway < 48 && order.status !== "completed";
-  const loc = LOCATIONS.find((l) => l.id === order.locationId);
 
   return (
     <Card className={urgent ? "ring-1 ring-warning/40" : ""}>
@@ -345,10 +348,6 @@ function CateringCard({ order, onAdvance }: { order: Order; onAdvance: () => voi
           </span>
         </div>
 
-        <div className="flex items-center gap-1 text-xs text-muted-foreground">
-          <MapPin className="h-3 w-3 shrink-0" />
-          <span className="truncate">{loc?.name.replace("Jamaican Kitchen — ", "")}</span>
-        </div>
         <div className="flex items-center gap-1 text-xs text-muted-foreground">
           <Phone className="h-3 w-3 shrink-0" />
           <span>{cat.contactPhone}</span>
@@ -399,10 +398,11 @@ function Stat({
   );
 }
 
-function NewCateringDialog({ onCreate }: { onCreate: (o: Order) => void }) {
+function NewCateringDialog({ onCreated }: { onCreated: () => void }) {
+  const locations = useLiveLocations();
   const [client, setClient] = useState("");
   const [channel, setChannel] = useState<"web" | "app">("web");
-  const [locationId, setLocationId] = useState(LOCATIONS[0].id);
+  const [locationId, setLocationId] = useState("");
   const [guests, setGuests] = useState(20);
   const [date, setDate] = useState(() => {
     const d = new Date();
@@ -414,38 +414,23 @@ function NewCateringDialog({ onCreate }: { onCreate: (o: Order) => void }) {
   const [setup, setSetup] = useState(false);
   const [notes, setNotes] = useState("");
 
-  const submit = () => {
+  const submit = async () => {
     if (!client.trim()) return toast.error("Client name required");
-    const subtotal = guests * 28;
-    const tax = +(subtotal * 0.0875).toFixed(2);
-    const fees = setup ? 75 : 0;
-    const total = +(subtotal + tax + fees).toFixed(2);
-    const order: Order = {
-      id: `cat_${Date.now()}`,
-      shortId: `#C-${Math.floor(2100 + Math.random() * 900)}`,
-      channel,
-      locationId,
-      customerId: "cust_new",
-      customerName: client,
-      items: [{ id: "i1", name: "Catering package", qty: guests, price: 28 }],
-      subtotal,
-      tax,
-      fees,
-      tip: 0,
-      total,
+    const locationName = locations.find((l) => l.id === locationId)?.name ?? null;
+    const { error } = await supabase.from("catering_requests").insert({
+      name: client,
+      phone: phone || null,
+      guest_count: guests,
+      event_date: new Date(date).toISOString().slice(0, 10),
+      location: locationName,
+      message: notes || (setup ? "On-site setup required" : null),
       status: "new",
-      type: channel === "app" ? "pickup" : "delivery",
-      createdAt: new Date().toISOString(),
-      etaMinutes: 0,
-      notes: notes || undefined,
-      catering: {
-        eventDate: new Date(date).toISOString(),
-        guests,
-        contactPhone: phone || "—",
-        setupRequired: setup,
-      },
-    };
-    onCreate(order);
+    });
+    if (error) {
+      toast.error("Could not create catering request");
+      return;
+    }
+    onCreated();
   };
 
   return (
@@ -467,10 +452,10 @@ function NewCateringDialog({ onCreate }: { onCreate: (o: Order) => void }) {
           </Field>
           <Field label="Location">
             <Select value={locationId} onValueChange={setLocationId}>
-              <SelectTrigger><SelectValue /></SelectTrigger>
+              <SelectTrigger><SelectValue placeholder="Select location" /></SelectTrigger>
               <SelectContent>
-                {LOCATIONS.map((l) => (
-                  <SelectItem key={l.id} value={l.id}>{l.name.replace("Jamaican Kitchen — ", "")}</SelectItem>
+                {locations.map((l) => (
+                  <SelectItem key={l.id} value={l.id}>{l.name}</SelectItem>
                 ))}
               </SelectContent>
             </Select>

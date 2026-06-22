@@ -6,13 +6,14 @@ import { CartSidebar } from "@/components/CartSidebar";
 import { LocationSelector } from "@/components/LocationSelector";
 import { SpiceLevelBadge } from "@/components/SpiceLevelBadge";
 import { useMenu } from "@/hooks/useMenu";
+import { useCart } from "@/contexts/CartContext";
 import { Button } from "@/components/ui/button";
 import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
 import { Download, Share2 } from "lucide-react";
 import { toast } from "sonner";
 const Order = () => {
   const { data: menuCategories } = useMenu();
-  const [selectedLocation, setSelectedLocation] = useState("vernon");
+  const { pickupLocation: selectedLocation, setPickupLocation: setSelectedLocation } = useCart();
   const [activeCategory, setActiveCategory] = useState(menuCategories[0].id);
   const scrollToCategory = (categoryId: string) => {
     setActiveCategory(categoryId);

@@ -16,6 +16,7 @@ import {
   CreditCard,
   FileText,
   Workflow,
+  Inbox,
 } from "lucide-react";
 import logo from "@/assets/jamaican-kitchen-logo.jpeg";
 import {
@@ -34,6 +35,7 @@ const operate = [
   { title: "Overview", url: "/dashboard", icon: LayoutDashboard },
   { title: "Live Orders", url: "/orders", icon: ShoppingBag },
   { title: "Catering", url: "/catering", icon: PartyPopper },
+  { title: "Messages", url: "/messages", icon: Inbox },
   { title: "Delivery", url: "/delivery", icon: Truck },
 ];
 const manage = [

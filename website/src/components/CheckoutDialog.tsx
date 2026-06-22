@@ -27,7 +27,7 @@ import { toast } from "sonner";
 const TAX_RATE = 0.0635; // CT sales tax
 
 export const CheckoutDialog = ({ trigger }: { trigger: React.ReactNode }) => {
-  const { items, totalPrice, clearCart } = useCart();
+  const { items, totalPrice, clearCart, pickupLocation } = useCart();
   const { data: locations } = useLocations();
 
   const [open, setOpen] = useState(false);
@@ -43,7 +43,7 @@ export const CheckoutDialog = ({ trigger }: { trigger: React.ReactNode }) => {
   const tax = totalPrice * TAX_RATE;
   const total = totalPrice + tax;
 
-  const effectiveLocation = locationSlug || locations?.[0]?.id || "vernon";
+  const effectiveLocation = locationSlug || pickupLocation || locations?.[0]?.id || "vernon";
 
   const reset = () => {
     setPlaced(null);

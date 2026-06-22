@@ -1,7 +1,8 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { PageHeader, formatMoney } from "@/components/PageHeader";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { ORDERS, revenueByDay, CHANNEL_META } from "@/lib/mock-data";
+import { CHANNEL_META } from "@/lib/mock-data";
+import { useLiveOrders } from "@/lib/live-data";
 import { useCurrentLocation } from "@/lib/store";
 import { useMemo, useState } from "react";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -31,18 +32,37 @@ export const Route = createFileRoute("/_app/analytics")({
 
 function AnalyticsPage() {
   const loc = useCurrentLocation();
+  const { orders: ALL_ORDERS } = useLiveOrders();
   const [range, setRange] = useState<"7" | "14" | "30">("14");
   const days = parseInt(range, 10);
-  const revenue = useMemo(() => revenueByDay(days), [days]);
 
   const orders = useMemo(
-    () => ORDERS.filter((o) => loc === "all" || o.locationId === loc),
-    [loc],
+    () =>
+      ALL_ORDERS.filter(
+        (o) =>
+          (loc === "all" || o.locationId === loc) &&
+          new Date(o.createdAt).getTime() >= Date.now() - days * 86400000,
+      ),
+    [ALL_ORDERS, loc, days],
   );
+
+  const revenue = useMemo(() => {
+    const byDay = new Map<string, { day: string; web: number; app: number; total: number }>();
+    for (const o of orders) {
+      const day = new Date(o.createdAt).toLocaleDateString("en", { month: "short", day: "numeric" });
+      const e = byDay.get(day) ?? { day, web: 0, app: 0, total: 0 };
+      if (o.channel === "app") e.app += o.total;
+      else e.web += o.total;
+      e.total += o.total;
+      byDay.set(day, e);
+    }
+    const arr = Array.from(byDay.values());
+    return arr.length ? arr : [{ day: "—", web: 0, app: 0, total: 0 }];
+  }, [orders]);
 
   const totalRevenue = revenue.reduce((s, d) => s + d.total, 0);
   const totalOrders = orders.length;
-  const aov = totalOrders ? totalRevenue / (totalOrders * 3) : 0;
+  const aov = totalOrders ? totalRevenue / totalOrders : 0;
 
   const channels: Channel[] = ["web", "app"];
   const channelMix = channels.map((c) => ({
@@ -137,7 +157,7 @@ function AnalyticsPage() {
       <div className="grid gap-4 md:grid-cols-3 mb-6">
         <Kpi label="Total revenue" value={formatMoney(totalRevenue)} />
         <Kpi label="Orders" value={totalOrders.toString()} />
-        <Kpi label="Avg order value" value={formatMoney(aov || 42.5)} />
+        <Kpi label="Avg order value" value={formatMoney(aov)} />
       </div>
 
       <div className="grid gap-4 lg:grid-cols-3">

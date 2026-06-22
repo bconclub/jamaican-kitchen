@@ -18,6 +18,7 @@ import { Route as AppSettingsRouteImport } from './routes/_app/settings'
 import { Route as AppReportsRouteImport } from './routes/_app/reports'
 import { Route as AppPaymentsRouteImport } from './routes/_app/payments'
 import { Route as AppOrdersRouteImport } from './routes/_app/orders'
+import { Route as AppMessagesRouteImport } from './routes/_app/messages'
 import { Route as AppMenuRouteImport } from './routes/_app/menu'
 import { Route as AppLocationsRouteImport } from './routes/_app/locations'
 import { Route as AppInventoryRouteImport } from './routes/_app/inventory'
@@ -73,6 +74,11 @@ const AppPaymentsRoute = AppPaymentsRouteImport.update({
 const AppOrdersRoute = AppOrdersRouteImport.update({
   id: '/orders',
   path: '/orders',
+  getParentRoute: () => AppRoute,
+} as any)
+const AppMessagesRoute = AppMessagesRouteImport.update({
+  id: '/messages',
+  path: '/messages',
   getParentRoute: () => AppRoute,
 } as any)
 const AppMenuRoute = AppMenuRouteImport.update({
@@ -150,6 +156,7 @@ export interface FileRoutesByFullPath {
   '/inventory': typeof AppInventoryRoute
   '/locations': typeof AppLocationsRoute
   '/menu': typeof AppMenuRoute
+  '/messages': typeof AppMessagesRoute
   '/orders': typeof AppOrdersRouteWithChildren
   '/payments': typeof AppPaymentsRoute
   '/reports': typeof AppReportsRoute
@@ -172,6 +179,7 @@ export interface FileRoutesByTo {
   '/inventory': typeof AppInventoryRoute
   '/locations': typeof AppLocationsRoute
   '/menu': typeof AppMenuRoute
+  '/messages': typeof AppMessagesRoute
   '/orders': typeof AppOrdersRouteWithChildren
   '/payments': typeof AppPaymentsRoute
   '/reports': typeof AppReportsRoute
@@ -196,6 +204,7 @@ export interface FileRoutesById {
   '/_app/inventory': typeof AppInventoryRoute
   '/_app/locations': typeof AppLocationsRoute
   '/_app/menu': typeof AppMenuRoute
+  '/_app/messages': typeof AppMessagesRoute
   '/_app/orders': typeof AppOrdersRouteWithChildren
   '/_app/payments': typeof AppPaymentsRoute
   '/_app/reports': typeof AppReportsRoute
@@ -220,6 +229,7 @@ export interface FileRouteTypes {
     | '/inventory'
     | '/locations'
     | '/menu'
+    | '/messages'
     | '/orders'
     | '/payments'
     | '/reports'
@@ -242,6 +252,7 @@ export interface FileRouteTypes {
     | '/inventory'
     | '/locations'
     | '/menu'
+    | '/messages'
     | '/orders'
     | '/payments'
     | '/reports'
@@ -265,6 +276,7 @@ export interface FileRouteTypes {
     | '/_app/inventory'
     | '/_app/locations'
     | '/_app/menu'
+    | '/_app/messages'
     | '/_app/orders'
     | '/_app/payments'
     | '/_app/reports'
@@ -345,6 +357,13 @@ declare module '@tanstack/react-router' {
       path: '/orders'
       fullPath: '/orders'
       preLoaderRoute: typeof AppOrdersRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/_app/messages': {
+      id: '/_app/messages'
+      path: '/messages'
+      fullPath: '/messages'
+      preLoaderRoute: typeof AppMessagesRouteImport
       parentRoute: typeof AppRoute
     }
     '/_app/menu': {
@@ -457,6 +476,7 @@ interface AppRouteChildren {
   AppInventoryRoute: typeof AppInventoryRoute
   AppLocationsRoute: typeof AppLocationsRoute
   AppMenuRoute: typeof AppMenuRoute
+  AppMessagesRoute: typeof AppMessagesRoute
   AppOrdersRoute: typeof AppOrdersRouteWithChildren
   AppPaymentsRoute: typeof AppPaymentsRoute
   AppReportsRoute: typeof AppReportsRoute
@@ -476,6 +496,7 @@ const AppRouteChildren: AppRouteChildren = {
   AppInventoryRoute: AppInventoryRoute,
   AppLocationsRoute: AppLocationsRoute,
   AppMenuRoute: AppMenuRoute,
+  AppMessagesRoute: AppMessagesRoute,
   AppOrdersRoute: AppOrdersRouteWithChildren,
   AppPaymentsRoute: AppPaymentsRoute,
   AppReportsRoute: AppReportsRoute,

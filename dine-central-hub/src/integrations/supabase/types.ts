@@ -176,6 +176,21 @@ export type Database = {
         Update: Partial<Database["public"]["Tables"]["catering_requests"]["Row"]>
         Relationships: []
       }
+      contact_messages: {
+        Row: {
+          id: string
+          name: string
+          email: string | null
+          phone: string | null
+          subject: string | null
+          message: string
+          status: string
+          created_at: string
+        }
+        Insert: { name: string; message: string } & Partial<Database["public"]["Tables"]["contact_messages"]["Row"]>
+        Update: Partial<Database["public"]["Tables"]["contact_messages"]["Row"]>
+        Relationships: []
+      }
       profiles: {
         Row: { id: string; email: string | null; full_name: string | null; created_at: string }
         Insert: { id: string } & Partial<{ email: string | null; full_name: string | null; created_at: string }>

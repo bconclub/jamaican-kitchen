@@ -130,6 +130,110 @@ export function useLiveLocations() {
   return locations;
 }
 
+// ---------- Catering requests (live) ----------
+interface DbCateringRequest {
+  id: string;
+  name: string;
+  email: string | null;
+  phone: string | null;
+  event_type: string | null;
+  event_date: string | null;
+  guest_count: number | null;
+  location: string | null;
+  message: string | null;
+  status: string;
+  created_at: string;
+}
+
+function mapCatering(r: DbCateringRequest): Order {
+  const eventDate = r.event_date ? new Date(r.event_date).toISOString() : r.created_at;
+  const status = (
+    ["new", "accepted", "preparing", "ready", "out_for_delivery", "completed", "cancelled"].includes(r.status)
+      ? r.status
+      : "new"
+  ) as OrderStatus;
+  return {
+    id: r.id,
+    shortId: "CR-" + r.id.slice(0, 4).toUpperCase(),
+    channel: "web",
+    locationId: "",
+    customerId: "",
+    customerName: r.name,
+    items: [],
+    subtotal: 0,
+    tax: 0,
+    fees: 0,
+    tip: 0,
+    total: 0,
+    status,
+    type: "delivery",
+    createdAt: r.created_at,
+    etaMinutes: 0,
+    notes: r.message ?? undefined,
+    catering: {
+      eventDate,
+      guests: r.guest_count ?? 0,
+      contactPhone: r.phone ?? "—",
+      setupRequired: false,
+    },
+  };
+}
+
+export function useLiveCateringRequests() {
+  const [orders, setOrders] = useState<Order[]>([]);
+  const reload = useCallback(async () => {
+    const { data } = await supabase
+      .from("catering_requests")
+      .select("*")
+      .order("created_at", { ascending: false });
+    if (data) setOrders((data as unknown as DbCateringRequest[]).map(mapCatering));
+  }, []);
+  useEffect(() => {
+    reload();
+  }, [reload]);
+  return { orders, reload };
+}
+
+export async function updateCateringStatus(id: string, status: OrderStatus) {
+  await supabase.from("catering_requests").update({ status }).eq("id", id);
+}
+
+// ---------- Contact messages (live) ----------
+export interface ContactMessage {
+  id: string;
+  name: string;
+  email: string | null;
+  phone: string | null;
+  subject: string | null;
+  message: string;
+  status: string;
+  created_at: string;
+}
+
+export function useLiveContactMessages() {
+  const [messages, setMessages] = useState<ContactMessage[]>([]);
+  const [tableMissing, setTableMissing] = useState(false);
+  const reload = useCallback(async () => {
+    const { data, error } = await supabase
+      .from("contact_messages")
+      .select("*")
+      .order("created_at", { ascending: false });
+    if (error) {
+      setTableMissing(true);
+      return;
+    }
+    setMessages((data ?? []) as unknown as ContactMessage[]);
+  }, []);
+  useEffect(() => {
+    reload();
+  }, [reload]);
+  return { messages, tableMissing, reload };
+}
+
+export async function updateContactStatus(id: string, status: string) {
+  await supabase.from("contact_messages").update({ status }).eq("id", id);
+}
+
 // ---------- Customers (live, with order aggregates) ----------
 export function useLiveCustomers() {
   const [customers, setCustomers] = useState<Customer[]>([]);
