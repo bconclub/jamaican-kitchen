@@ -2,7 +2,6 @@ import { useState } from "react";
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
 import { MenuItemCard } from "@/components/MenuItemCard";
-import { CartSidebar } from "@/components/CartSidebar";
 import { LocationSelector } from "@/components/LocationSelector";
 import { SpiceLevelBadge } from "@/components/SpiceLevelBadge";
 import { useMenu } from "@/hooks/useMenu";
@@ -69,7 +68,6 @@ const Order = () => {
                   <Share2 className="h-4 w-4 mr-2" />
                   Share Menu
                 </Button>
-                <CartSidebar />
               </div>
             </div>
           </div>

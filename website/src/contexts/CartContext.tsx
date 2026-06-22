@@ -19,6 +19,9 @@ interface CartContextType {
   totalPrice: number;
   pickupLocation: string;
   setPickupLocation: (slug: string) => void;
+  isCartOpen: boolean;
+  setCartOpen: (open: boolean) => void;
+  openCart: () => void;
 }
 
 const CartContext = createContext<CartContextType | undefined>(undefined);
@@ -26,6 +29,8 @@ const CartContext = createContext<CartContextType | undefined>(undefined);
 export const CartProvider = ({ children }: { children: ReactNode }) => {
   const [items, setItems] = useState<CartItem[]>([]);
   const [pickupLocation, setPickupLocation] = useState<string>("vernon");
+  const [isCartOpen, setCartOpen] = useState(false);
+  const openCart = () => setCartOpen(true);
 
   const addItem = (newItem: Omit<CartItem, "quantity">) => {
     setItems((prev) => {
@@ -75,6 +80,9 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
         totalPrice,
         pickupLocation,
         setPickupLocation,
+        isCartOpen,
+        setCartOpen,
+        openCart,
       }}
     >
       {children}

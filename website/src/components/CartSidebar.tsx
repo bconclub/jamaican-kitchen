@@ -1,29 +1,19 @@
 import { Minus, Plus, Trash2, ShoppingBag, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger, SheetClose } from "@/components/ui/sheet";
+import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetClose } from "@/components/ui/sheet";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Separator } from "@/components/ui/separator";
 import { useCart } from "@/contexts/CartContext";
 import { SpiceLevelBadge } from "./SpiceLevelBadge";
 import { CheckoutDialog } from "./CheckoutDialog";
 
+// Global cart drawer — opened from the header cart icon, mounted once in App.
 export const CartSidebar = () => {
-  const { items, totalItems, totalPrice, updateQuantity, removeItem, clearCart } = useCart();
+  const { items, totalItems, totalPrice, updateQuantity, removeItem, clearCart, isCartOpen, setCartOpen } = useCart();
 
   return (
-    <Sheet>
-      <SheetTrigger asChild>
-        <Button variant="outline" className="relative gap-2 border-2 border-secondary text-secondary hover:bg-secondary hover:text-secondary-foreground">
-          <ShoppingBag className="h-5 w-5" />
-          <span className="font-semibold">Cart</span>
-          {totalItems > 0 && (
-            <span className="absolute -top-2 -right-2 h-6 w-6 bg-accent text-accent-foreground text-sm rounded-full flex items-center justify-center font-bold">
-              {totalItems}
-            </span>
-          )}
-        </Button>
-      </SheetTrigger>
-      <SheetContent side="right" className="w-full sm:w-[400px] p-0 flex flex-col">
+    <Sheet open={isCartOpen} onOpenChange={setCartOpen}>
+      <SheetContent side="right" className="w-full sm:w-[420px] p-0 flex flex-col">
         <SheetHeader className="p-4 border-b border-border">
           <div className="flex items-center justify-between">
             <SheetTitle className="flex items-center gap-2">

@@ -2,7 +2,6 @@ import { useState } from "react";
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
 import { CateringMenuCard } from "@/components/CateringMenuCard";
-import { CartSidebar } from "@/components/CartSidebar";
 import { EventBookingForm } from "@/components/EventBookingForm";
 import { SpiceLevelBadge } from "@/components/SpiceLevelBadge";
 import { cateringCategories } from "@/data/cateringData";
@@ -104,9 +103,9 @@ const Catering = () => {
 
         {/* Main Content */}
         <div className="container mx-auto px-4 py-8">
-          <div className="grid lg:grid-cols-3 gap-8">
+          <div className="max-w-5xl mx-auto">
             {/* Menu Items */}
-            <div className="lg:col-span-2 space-y-12">
+            <div className="space-y-12">
               {cateringCategories.map((category) => (
                 <section key={category.id} id={`catering-${category.id}`}>
                   <div className="mb-6">
@@ -120,13 +119,6 @@ const Catering = () => {
                   </div>
                 </section>
               ))}
-            </div>
-
-            {/* Cart Sidebar */}
-            <div className="lg:col-span-1 order-first lg:order-last">
-              <div className="lg:sticky lg:top-36">
-                <CartSidebar />
-              </div>
             </div>
           </div>
         </div>
