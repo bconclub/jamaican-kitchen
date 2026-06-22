@@ -18,7 +18,7 @@ import {
   Workflow,
   Inbox,
 } from "lucide-react";
-import logo from "@/assets/jamaican-kitchen-logo.jpeg";
+import logo from "@/assets/jamaican-kitchen-logo.png";
 import {
   Sidebar,
   SidebarContent,
