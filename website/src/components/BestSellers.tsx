@@ -91,7 +91,7 @@ export const BestSellers = () => {
         {/* Section Header */}
         <div className="text-center mb-12 animate-fade-in">
           <span className="inline-block px-4 py-2 bg-primary/20 text-primary rounded-full text-sm font-semibold mb-4">
-            ⭐ Customer Favorites
+            Customer Favorites
           </span>
           <h2 className="text-3xl md:text-4xl font-bold mb-4">Best Sellers</h2>
           <p className="text-muted-foreground max-w-2xl mx-auto">

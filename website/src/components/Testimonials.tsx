@@ -68,7 +68,7 @@ export const Testimonials = () => {
         {/* Section Header */}
         <div className="text-center mb-12 animate-fade-in">
           <span className="inline-block px-4 py-2 bg-secondary/20 text-secondary rounded-full text-sm font-semibold mb-4">
-            💬 Customer Reviews
+            Customer Reviews
           </span>
           <h2 className="text-3xl md:text-4xl font-bold mb-4">
             What Our Guests Are Saying

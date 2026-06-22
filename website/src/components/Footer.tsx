@@ -9,7 +9,7 @@ export const Footer = () => {
         <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
           {/* Brand */}
           <div>
-            <img src={logo} alt="Jamaican Kitchen" className="h-14 mb-4 brightness-0 invert" />
+            <img src={logo} alt="Jamaican Kitchen" className="h-14 mb-4" />
             <p className="text-background/70 mb-4">
               Bringing authentic Jamaican flavors to Connecticut since the beginning. Just like Nana made it.
             </p>
