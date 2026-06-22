@@ -49,7 +49,7 @@ export const HeroSection = () => {
           {/* Left Content */}
           <div className="text-background animate-slide-up">
             <span className="inline-block px-4 py-2 bg-primary text-primary-foreground rounded-full text-sm font-semibold mb-6">Bring Island Spirit to Your Food</span>
-            <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold mb-6 leading-tight">
+            <h1 className="font-display text-5xl md:text-6xl lg:text-7xl font-semibold mb-6 leading-[1.05]">
               Welcome to
               <span className="block text-primary">Jamaican Kitchen</span>
             </h1>

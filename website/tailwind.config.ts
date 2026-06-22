@@ -69,8 +69,11 @@ export default {
         sm: "calc(var(--radius) - 4px)",
       },
       fontFamily: {
-        heading: ["'Poppins'", "sans-serif"],
-        body: ["'Inter'", "sans-serif"],
+        sans: ["'Nunito Sans'", "system-ui", "sans-serif"],
+        body: ["'Nunito Sans'", "system-ui", "sans-serif"],
+        heading: ["'Poppins'", "system-ui", "sans-serif"],
+        display: ["'Fredoka'", "'Poppins'", "sans-serif"],
+        ui: ["-apple-system", "BlinkMacSystemFont", "'Segoe UI'", "system-ui", "sans-serif"],
       },
       keyframes: {
         "accordion-down": {
