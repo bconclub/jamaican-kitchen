@@ -16,16 +16,7 @@ const Order = () => {
   const [activeCategory, setActiveCategory] = useState(menuCategories[0].id);
   const scrollToCategory = (categoryId: string) => {
     setActiveCategory(categoryId);
-    const element = document.getElementById(`category-${categoryId}`);
-    if (element) {
-      const headerOffset = 250;
-      const elementPosition = element.getBoundingClientRect().top;
-      const offsetPosition = elementPosition + window.pageYOffset - headerOffset;
-      window.scrollTo({
-        top: offsetPosition,
-        behavior: "smooth"
-      });
-    }
+    document.getElementById(`category-${categoryId}`)?.scrollIntoView({ behavior: "smooth", block: "start" });
   };
   return <div className="min-h-screen bg-background">
       <Header />
@@ -113,12 +104,12 @@ const Order = () => {
 
             {/* Menu Items */}
             <div className="lg:col-span-3 space-y-12">
-              {menuCategories.map(category => <section key={category.id} id={`category-${category.id}`}>
+              {menuCategories.map(category => <section key={category.id} id={`category-${category.id}`} className="scroll-mt-32 md:scroll-mt-36">
                   <div className="mb-6">
                     <h2 className="text-2xl font-bold mb-1">{category.name}</h2>
                     <p className="text-muted-foreground">{category.description}</p>
                   </div>
-                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
                     {category.items.map(item => <MenuItemCard key={item.id} item={item} />)}
                   </div>
                 </section>)}

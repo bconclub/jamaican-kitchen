@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
-import { Menu, X, ShoppingCart, ChevronDown, ChevronUp, UtensilsCrossed } from "lucide-react";
+import { Menu, ShoppingCart, ChevronDown, ChevronUp, UtensilsCrossed } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetTrigger, SheetClose } from "@/components/ui/sheet";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
@@ -42,13 +42,8 @@ export const Header = () => {
               </SheetTrigger>
               <SheetContent side="left" className="w-[300px] bg-background p-0">
                 <div className="flex flex-col h-full">
-                  <div className="flex items-center justify-between p-4 border-b border-border">
+                  <div className="flex items-center p-4 border-b border-border">
                     <img src={logo} alt="Jamaican Kitchen" className="h-9" />
-                    <SheetClose asChild>
-                      <Button variant="ghost" size="icon">
-                        <X className="h-5 w-5" />
-                      </Button>
-                    </SheetClose>
                   </div>
                   <nav className="flex-1 py-2 overflow-y-auto">
                     {navItems.map((item) => (

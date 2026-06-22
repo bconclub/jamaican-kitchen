@@ -1,6 +1,6 @@
-import { Minus, Plus, Trash2, ShoppingBag, X } from "lucide-react";
+import { Minus, Plus, Trash2, ShoppingBag } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetClose } from "@/components/ui/sheet";
+import { Sheet, SheetContent, SheetHeader, SheetTitle } from "@/components/ui/sheet";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Separator } from "@/components/ui/separator";
 import { useCart } from "@/contexts/CartContext";
@@ -15,17 +15,10 @@ export const CartSidebar = () => {
     <Sheet open={isCartOpen} onOpenChange={setCartOpen}>
       <SheetContent side="right" className="w-full sm:w-[420px] p-0 flex flex-col">
         <SheetHeader className="p-4 border-b border-border">
-          <div className="flex items-center justify-between">
-            <SheetTitle className="flex items-center gap-2">
-              <ShoppingBag className="h-5 w-5" />
-              Your Cart ({totalItems})
-            </SheetTitle>
-            <SheetClose asChild>
-              <Button variant="ghost" size="icon">
-                <X className="h-5 w-5" />
-              </Button>
-            </SheetClose>
-          </div>
+          <SheetTitle className="flex items-center gap-2">
+            <ShoppingBag className="h-5 w-5" />
+            Your Cart ({totalItems})
+          </SheetTitle>
         </SheetHeader>
 
         {items.length === 0 ? (

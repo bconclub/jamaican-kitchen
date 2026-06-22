@@ -14,13 +14,7 @@ const Catering = () => {
 
   const scrollToCategory = (categoryId: string) => {
     setActiveCategory(categoryId);
-    const element = document.getElementById(`catering-${categoryId}`);
-    if (element) {
-      const headerOffset = 250;
-      const elementPosition = element.getBoundingClientRect().top;
-      const offsetPosition = elementPosition + window.pageYOffset - headerOffset;
-      window.scrollTo({ top: offsetPosition, behavior: "smooth" });
-    }
+    document.getElementById(`catering-${categoryId}`)?.scrollIntoView({ behavior: "smooth", block: "start" });
   };
 
   return (
@@ -107,7 +101,7 @@ const Catering = () => {
             {/* Menu Items */}
             <div className="space-y-12">
               {cateringCategories.map((category) => (
-                <section key={category.id} id={`catering-${category.id}`}>
+                <section key={category.id} id={`catering-${category.id}`} className="scroll-mt-32 md:scroll-mt-36">
                   <div className="mb-6">
                     <h2 className="text-2xl font-bold mb-1">{category.name}</h2>
                     <p className="text-muted-foreground">{category.description}</p>

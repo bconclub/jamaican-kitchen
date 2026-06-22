@@ -123,7 +123,7 @@ export const CheckoutDialog = ({ trigger }: { trigger: React.ReactNode }) => {
                 <Label htmlFor="co-name">Name *</Label>
                 <Input id="co-name" value={name} onChange={(e) => setName(e.target.value)} placeholder="Your name" />
               </div>
-              <div className="grid grid-cols-2 gap-3">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                 <div className="space-y-2">
                   <Label htmlFor="co-phone">Phone *</Label>
                   <Input id="co-phone" value={phone} onChange={(e) => setPhone(e.target.value)} placeholder="(860) 555-0123" />

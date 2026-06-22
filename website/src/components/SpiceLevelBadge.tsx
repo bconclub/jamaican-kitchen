@@ -20,7 +20,7 @@ export const SpiceLevelBadge = ({ level, size = "md" }: SpiceLevelBadgeProps) =>
   const padding = size === "sm" ? "px-1.5 py-0.5" : "px-2 py-0.5";
 
   return (
-    <div className={`flex items-center gap-1 rounded-full ${color} text-white ${textSize} font-medium ${padding}`}>
+    <div className={`inline-flex items-center gap-1 rounded-full ${color} text-white ${textSize} font-medium ${padding}`}>
       {Array.from({ length: flames }).map((_, i) => (
         <Flame key={i} className={iconSize} fill="currentColor" />
       ))}

@@ -1,5 +1,17 @@
 # Changelog
 
+## 2026-06-22 17:12 IST · Responsive/design pass across all pages
+
+- **Duplicate X fixed**: the Sheet primitive already renders a close button; removed the extra custom X in the mobile nav drawer and the cart drawer (was showing two crosses).
+- **Spice pills**: `SpiceLevelBadge` was `flex` (block) so it stretched full-width in the cart; now `inline-flex` (sizes to content) everywhere.
+- **Hero Quick Links overlap (mobile)**: the floating panel is now desktop-only (`hidden lg:block`); on mobile/tablet the quick links render inline as a 2-col grid below the CTAs — no more overlap with the heading.
+- **Chatbot**: fixed `w-[360px] h-[500px]` → `w-[calc(100vw-2rem)] sm:w-[360px]`, `h-[min(70vh,500px)]`; launcher lowered to z-40 so it sits under the cart drawer.
+- **DeliveryPartners**: DoorDash was showing the Uber Eats logo (copy-paste bug) → now a styled DoorDash wordmark; tile min-width made responsive (no 360px overflow).
+- **Category scroll**: replaced hardcoded `headerOffset=250` (mis-scrolled on mobile) with `scroll-margin-top` + `scrollIntoView` on Order + Catering.
+- **Grids/padding**: Order menu grid `1→sm:2→lg:3`; Locations `md:pt-28`→`md:pt-24`; CheckoutDialog phone/email stack on mobile.
+- Audited all pages/components (general-purpose agent) for overflow, overlap, header-offset, stacking, image distortion — no horizontal-overflow bugs remain.
+
+
 ## 2026-06-22 16:37 IST · Add button, live notification bell, desktop order panel
 
 - **BestSellers** card button: "Add to Cart" → "+ Add" (Plus icon) and now actually adds to cart (was a dead button).

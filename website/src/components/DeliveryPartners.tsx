@@ -7,12 +7,14 @@ const partners = [
     logo: "https://upload.wikimedia.org/wikipedia/commons/6/6d/Uber_Eats_2020_logo.svg",
     url: "https://www.ubereats.com",
     bgColor: "bg-black",
+    wordmarkColor: "",
   },
   {
     name: "DoorDash",
-    logo: "https://upload.wikimedia.org/wikipedia/commons/6/6d/Uber_Eats_2020_logo.svg",
+    logo: "",
     url: "https://www.doordash.com",
     bgColor: "bg-white",
+    wordmarkColor: "#FF3008",
   },
 ];
 
@@ -38,14 +40,16 @@ export const DeliveryPartners = () => {
               rel="noopener noreferrer"
               className="group"
             >
-              <div 
-                className={`${partner.bgColor} rounded-2xl p-6 md:p-8 shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105 flex items-center justify-center min-w-[180px] md:min-w-[220px] h-24 md:h-28 border border-border`}
+              <div
+                className={`${partner.bgColor} rounded-2xl p-6 md:p-8 shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105 flex items-center justify-center min-w-[150px] sm:min-w-[180px] md:min-w-[220px] h-24 md:h-28 border border-border`}
               >
-                <img
-                  src={partner.logo}
-                  alt={partner.name}
-                  className="h-10 md:h-12 object-contain"
-                />
+                {partner.logo ? (
+                  <img src={partner.logo} alt={partner.name} className="h-10 md:h-12 object-contain" />
+                ) : (
+                  <span className="text-2xl md:text-3xl font-extrabold" style={{ color: partner.wordmarkColor }}>
+                    {partner.name}
+                  </span>
+                )}
               </div>
               <p className="text-center mt-3 text-sm text-muted-foreground group-hover:text-primary transition-colors flex items-center justify-center gap-1">
                 Order on {partner.name}
