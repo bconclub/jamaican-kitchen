@@ -1,7 +1,7 @@
 // Live Supabase data for the admin dashboard (orders feed + menu + locations).
 // Plain hooks (no react-query provider in this TanStack Start app) with
 // Supabase Realtime subscriptions so the order feed updates with no refresh.
-import { useEffect, useState, useCallback } from "react";
+import { useEffect, useState, useCallback, useId } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import type { Order, OrderStatus, MenuItem, MenuCategory, Location, Channel, Customer } from "./types";
 
@@ -68,6 +68,7 @@ function mapOrder(o: DbOrder): Order {
 export function useLiveOrders() {
   const [orders, setOrders] = useState<Order[]>([]);
   const [loading, setLoading] = useState(true);
+  const channelId = useId();
 
   const reload = useCallback(async () => {
     const { data, error } = await supabase
@@ -81,15 +82,16 @@ export function useLiveOrders() {
 
   useEffect(() => {
     reload();
+    // Unique channel name per hook instance — Supabase rejects duplicate-named channels.
     const ch = supabase
-      .channel("admin-orders-feed")
+      .channel(`admin-orders-feed-${channelId}`)
       .on("postgres_changes", { event: "*", schema: "public", table: "orders" }, reload)
       .on("postgres_changes", { event: "*", schema: "public", table: "order_status_events" }, reload)
       .subscribe();
     return () => {
       supabase.removeChannel(ch);
     };
-  }, [reload]);
+  }, [reload, channelId]);
 
   return { orders, loading, reload };
 }
