@@ -3,7 +3,7 @@
 // Supabase Realtime subscriptions so the order feed updates with no refresh.
 import { useEffect, useState, useCallback } from "react";
 import { supabase } from "@/integrations/supabase/client";
-import type { Order, OrderStatus, MenuItem, MenuCategory, Location, Channel } from "./types";
+import type { Order, OrderStatus, MenuItem, MenuCategory, Location, Channel, Customer } from "./types";
 
 // ---------- Orders (live + realtime) ----------
 interface DbOrderItem {
@@ -128,6 +128,55 @@ export function useLiveLocations() {
       });
   }, []);
   return locations;
+}
+
+// ---------- Customers (live, with order aggregates) ----------
+export function useLiveCustomers() {
+  const [customers, setCustomers] = useState<Customer[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    let active = true;
+    (async () => {
+      const [{ data: cust }, { data: ords }] = await Promise.all([
+        supabase.from("customers").select("*").order("created_at", { ascending: false }),
+        supabase.from("orders").select("customer_id, total, created_at"),
+      ]);
+      if (!active) return;
+      const agg = new Map<string, { count: number; ltv: number; last: string }>();
+      for (const o of ords ?? []) {
+        if (!o.customer_id) continue;
+        const a = agg.get(o.customer_id) ?? { count: 0, ltv: 0, last: o.created_at };
+        a.count += 1;
+        a.ltv += num(o.total);
+        if (o.created_at > a.last) a.last = o.created_at;
+        agg.set(o.customer_id, a);
+      }
+      setCustomers(
+        (cust ?? []).map((c) => {
+          const a = agg.get(c.id);
+          return {
+            id: c.id,
+            name: c.name ?? "Guest",
+            email: c.email ?? "",
+            phone: c.phone ?? "",
+            channels: (c.channels ?? ["web"]) as Channel[],
+            orders: a?.count ?? 0,
+            lifetimeValue: a?.ltv ?? 0,
+            lastOrder: a?.last ?? c.created_at,
+            favorite: "—",
+            tags: [],
+          };
+        }),
+      );
+      setLoading(false);
+    })();
+    return () => {
+      active = false;
+    };
+  }, []);
+
+  return { customers, loading };
 }
 
 // ---------- Menu (live) ----------

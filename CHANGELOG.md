@@ -1,5 +1,12 @@
 # Changelog
 
+## 2026-06-22 14:30 IST · Admin: live location switcher + live customers
+
+- **Admin TopBar location switcher** now lists the real 6 CT locations from the DB (was wrong mock towns: Hartford, New Haven…).
+- **Admin Customers page** now reads real customers from Supabase, with order count + lifetime value computed live from the orders table.
+- New `useLiveCustomers` and live-locations wiring in `live-data.ts`.
+- Verified website redesign in browser: header fixed, FAQ/nav pages render, favicon + SEO live.
+
 ## 2026-06-22 14:17 IST · Website header redesign, nav pages, favicon
 
 - **Header redesigned** — replaced the broken oversized header (h-48, tiny floating logo) with a clean h-16/h-20 bar: logo left, real desktop nav (Order Online, Catering, Locations, More dropdown), Order Now + cart right, mobile hamburger drawer.

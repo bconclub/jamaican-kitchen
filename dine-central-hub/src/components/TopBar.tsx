@@ -10,13 +10,15 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
-import { LOCATIONS, ORDERS, CUSTOMERS, MENU } from "@/lib/mock-data";
+import { ORDERS, CUSTOMERS, MENU } from "@/lib/mock-data";
+import { useLiveLocations } from "@/lib/live-data";
 import { useCurrentLocation, setCurrentLocation } from "@/lib/store";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { useNavigate } from "@tanstack/react-router";
 
 export function TopBar() {
   const loc = useCurrentLocation();
+  const LOCATIONS = useLiveLocations();
   const navigate = useNavigate();
   const [q, setQ] = useState("");
   const [open, setOpen] = useState(false);

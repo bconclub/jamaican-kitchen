@@ -1,6 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { PageHeader, formatMoney } from "@/components/PageHeader";
-import { CUSTOMERS } from "@/lib/mock-data";
+import { useLiveCustomers } from "@/lib/live-data";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
@@ -14,10 +14,11 @@ export const Route = createFileRoute("/_app/customers")({
 });
 
 function CustomersPage() {
+  const { customers: CUSTOMERS } = useLiveCustomers();
   const [q, setQ] = useState("");
   const filtered = useMemo(
     () => CUSTOMERS.filter((c) => (c.name + c.email).toLowerCase().includes(q.toLowerCase())),
-    [q],
+    [CUSTOMERS, q],
   );
   const totalLtv = CUSTOMERS.reduce((s, c) => s + c.lifetimeValue, 0);
   const vip = CUSTOMERS.filter((c) => c.tags.includes("VIP")).length;
