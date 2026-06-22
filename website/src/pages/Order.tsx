@@ -30,7 +30,7 @@ const Order = () => {
   return <div className="min-h-screen bg-background">
       <Header />
       
-      <main className="pt-40 md:pt-52">
+      <main className="pt-20 md:pt-24">
         {/* Hero Banner */}
         <div className="bg-gradient-to-r from-secondary to-secondary/80 text-secondary-foreground py-8">
           <div className="container mx-auto px-4">
@@ -89,7 +89,7 @@ const Order = () => {
         </div>
 
         {/* Category Navigation */}
-        <div className="sticky top-32 md:top-48 z-30 bg-background border-b border-border shadow-sm">
+        <div className="sticky top-16 md:top-20 z-30 bg-background border-b border-border shadow-sm">
           <div className="container mx-auto px-4">
             <ScrollArea className="w-full whitespace-nowrap">
               <div className="flex gap-2 py-3">
@@ -107,7 +107,7 @@ const Order = () => {
           <div className="grid lg:grid-cols-4 gap-8">
             {/* Location Selector - Sidebar on desktop */}
             <div className="lg:col-span-1 order-first lg:order-last">
-              <div className="lg:sticky lg:top-64">
+              <div className="lg:sticky lg:top-36">
                 <LocationSelector selectedLocation={selectedLocation} onLocationChange={setSelectedLocation} />
               </div>
             </div>

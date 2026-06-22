@@ -15,11 +15,11 @@ const quickLinks = [{
   icon: MapPin
 }, {
   label: "Contact Us",
-  href: "/faq",
+  href: "/contact",
   icon: Phone
 }];
 export const HeroSection = () => {
-  return <section className="relative min-h-[90vh] flex items-center pt-32">
+  return <section className="relative min-h-[90vh] flex items-center pt-24">
       {/* Background Image */}
       <div className="absolute inset-0 bg-cover bg-center bg-no-repeat" style={{
       backgroundImage: `url('https://images.unsplash.com/photo-1504674900247-0877df9cc836?w=1920&q=80')`

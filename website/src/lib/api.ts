@@ -140,3 +140,23 @@ export async function submitCateringRequest(input: CateringInput): Promise<void>
   });
   if (error) throw error;
 }
+
+export interface ContactInput {
+  name: string;
+  email: string;
+  phone: string;
+  subject: string;
+  message: string;
+}
+
+/** Submit a Contact Us message. */
+export async function submitContactMessage(input: ContactInput): Promise<void> {
+  const { error } = await supabase.from("contact_messages").insert({
+    name: input.name,
+    email: input.email || null,
+    phone: input.phone || null,
+    subject: input.subject || null,
+    message: input.message,
+  });
+  if (error) throw error;
+}
