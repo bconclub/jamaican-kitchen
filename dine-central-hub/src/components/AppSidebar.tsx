@@ -15,6 +15,7 @@ import {
   ShieldCheck,
   CreditCard,
   FileText,
+  Workflow,
 } from "lucide-react";
 import logo from "@/assets/jamaican-kitchen-logo.jpeg";
 import {
@@ -49,6 +50,7 @@ const chain = [
   { title: "Reports", url: "/reports", icon: FileText },
 ];
 const setup = [
+  { title: "System Flow", url: "/system", icon: Workflow },
   { title: "Integrations", url: "/integrations", icon: Plug },
   { title: "Settings", url: "/settings", icon: Settings },
 ];

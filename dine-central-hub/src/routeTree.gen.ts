@@ -12,6 +12,7 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as LoginRouteImport } from './routes/login'
 import { Route as AppRouteImport } from './routes/_app'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as AppSystemRouteImport } from './routes/_app/system'
 import { Route as AppStaffRouteImport } from './routes/_app/staff'
 import { Route as AppSettingsRouteImport } from './routes/_app/settings'
 import { Route as AppReportsRouteImport } from './routes/_app/reports'
@@ -43,6 +44,11 @@ const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => rootRouteImport,
+} as any)
+const AppSystemRoute = AppSystemRouteImport.update({
+  id: '/system',
+  path: '/system',
+  getParentRoute: () => AppRoute,
 } as any)
 const AppStaffRoute = AppStaffRouteImport.update({
   id: '/staff',
@@ -149,6 +155,7 @@ export interface FileRoutesByFullPath {
   '/reports': typeof AppReportsRoute
   '/settings': typeof AppSettingsRoute
   '/staff': typeof AppStaffRoute
+  '/system': typeof AppSystemRoute
   '/orders/$id': typeof AppOrdersIdRoute
   '/api/public/webhooks/$channel': typeof ApiPublicWebhooksChannelRoute
 }
@@ -170,6 +177,7 @@ export interface FileRoutesByTo {
   '/reports': typeof AppReportsRoute
   '/settings': typeof AppSettingsRoute
   '/staff': typeof AppStaffRoute
+  '/system': typeof AppSystemRoute
   '/orders/$id': typeof AppOrdersIdRoute
   '/api/public/webhooks/$channel': typeof ApiPublicWebhooksChannelRoute
 }
@@ -193,6 +201,7 @@ export interface FileRoutesById {
   '/_app/reports': typeof AppReportsRoute
   '/_app/settings': typeof AppSettingsRoute
   '/_app/staff': typeof AppStaffRoute
+  '/_app/system': typeof AppSystemRoute
   '/_app/orders/$id': typeof AppOrdersIdRoute
   '/api/public/webhooks/$channel': typeof ApiPublicWebhooksChannelRoute
 }
@@ -216,6 +225,7 @@ export interface FileRouteTypes {
     | '/reports'
     | '/settings'
     | '/staff'
+    | '/system'
     | '/orders/$id'
     | '/api/public/webhooks/$channel'
   fileRoutesByTo: FileRoutesByTo
@@ -237,6 +247,7 @@ export interface FileRouteTypes {
     | '/reports'
     | '/settings'
     | '/staff'
+    | '/system'
     | '/orders/$id'
     | '/api/public/webhooks/$channel'
   id:
@@ -259,6 +270,7 @@ export interface FileRouteTypes {
     | '/_app/reports'
     | '/_app/settings'
     | '/_app/staff'
+    | '/_app/system'
     | '/_app/orders/$id'
     | '/api/public/webhooks/$channel'
   fileRoutesById: FileRoutesById
@@ -292,6 +304,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/'
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
+    }
+    '/_app/system': {
+      id: '/_app/system'
+      path: '/system'
+      fullPath: '/system'
+      preLoaderRoute: typeof AppSystemRouteImport
+      parentRoute: typeof AppRoute
     }
     '/_app/staff': {
       id: '/_app/staff'
@@ -443,6 +462,7 @@ interface AppRouteChildren {
   AppReportsRoute: typeof AppReportsRoute
   AppSettingsRoute: typeof AppSettingsRoute
   AppStaffRoute: typeof AppStaffRoute
+  AppSystemRoute: typeof AppSystemRoute
 }
 
 const AppRouteChildren: AppRouteChildren = {
@@ -461,6 +481,7 @@ const AppRouteChildren: AppRouteChildren = {
   AppReportsRoute: AppReportsRoute,
   AppSettingsRoute: AppSettingsRoute,
   AppStaffRoute: AppStaffRoute,
+  AppSystemRoute: AppSystemRoute,
 }
 
 const AppRouteWithChildren = AppRoute._addFileChildren(AppRouteChildren)

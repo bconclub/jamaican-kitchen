@@ -1,5 +1,11 @@
 # Changelog
 
+## 2026-06-22 14:45 IST · Admin: React Flow system map
+
+- New **System Flow** page (`/system`) using @xyflow/react — interactive end-to-end diagram of the whole system: website order → place_order RPC → orders/items/events → Supabase Realtime → admin live feed, plus catering, contact, menu, and auth/RLS paths. Colour-coded by layer; pending pieces (contact_messages) shown greyed.
+- Added "System Flow" to the admin sidebar (Setup group).
+- Verified in browser (logged-in admin renders the full map; location switcher shows live "All locations (6)").
+
 ## 2026-06-22 14:30 IST · Admin: live location switcher + live customers
 
 - **Admin TopBar location switcher** now lists the real 6 CT locations from the DB (was wrong mock towns: Hartford, New Haven…).
