@@ -1,5 +1,11 @@
 # Changelog
 
+## 2026-06-22 16:37 IST · Add button, live notification bell, desktop order panel
+
+- **BestSellers** card button: "Add to Cart" → "+ Add" (Plus icon) and now actually adds to cart (was a dead button).
+- **Admin notification bell** is now live: red count badge of new orders + popover listing recent/new orders (updates via realtime).
+- **Desktop right-side order panel**: clicking an order in the bell opens a slide-in Sheet with items, totals, and Accept/Reject/Mark-ready actions + link to the full page.
+
 ## 2026-06-22 15:13 IST · Wire remaining admin pages live + Messages inbox + website fixes
 
 - **Dashboard** now computes KPIs (revenue, orders, AOV, customers), revenue trend, fulfillment mix, and by-location chart from live orders within the selected date range (was mock).

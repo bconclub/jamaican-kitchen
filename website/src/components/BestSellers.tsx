@@ -1,7 +1,9 @@
 import { Link } from "react-router-dom";
-import { Star, Flame } from "lucide-react";
+import { Star, Flame, Plus } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
+import { useCart } from "@/contexts/CartContext";
+import { toast } from "sonner";
 
 type SpiceLevel = "mild" | "medium" | "hot";
 
@@ -85,6 +87,19 @@ const SpiceLevelIndicator = ({ level }: { level: SpiceLevel }) => {
 };
 
 export const BestSellers = () => {
+  const { addItem } = useCart();
+
+  const handleAdd = (dish: Dish) => {
+    addItem({
+      id: dish.id,
+      name: dish.name,
+      price: parseFloat(dish.price.replace(/[^0-9.]/g, "")) || 0,
+      spiceLevel: dish.spiceLevel,
+      image: dish.image,
+    });
+    toast.success(`${dish.name} added to cart!`);
+  };
+
   return (
     <section className="py-16 md:py-24 bg-muted/30">
       <div className="container mx-auto px-4">
@@ -128,8 +143,9 @@ export const BestSellers = () => {
                 </p>
                 <div className="flex items-center justify-between">
                   <span className="text-xl font-bold text-secondary">{dish.price}</span>
-                  <Button size="sm" className="bg-primary text-primary-foreground hover:bg-primary/90">
-                    Add to Cart
+                  <Button size="sm" onClick={() => handleAdd(dish)} className="bg-primary text-primary-foreground hover:bg-primary/90 gap-1">
+                    <Plus className="h-4 w-4" />
+                    Add
                   </Button>
                 </div>
               </CardContent>
