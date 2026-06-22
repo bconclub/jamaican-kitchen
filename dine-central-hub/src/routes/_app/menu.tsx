@@ -1,11 +1,12 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Switch } from "@/components/ui/switch";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
-import { CATEGORIES, MENU, CHANNEL_META } from "@/lib/mock-data";
+import { CHANNEL_META } from "@/lib/mock-data";
+import { useLiveMenu } from "@/lib/live-data";
 import type { Channel, MenuItem } from "@/lib/types";
 import { PageHeader, formatMoney } from "@/components/PageHeader";
 import { Plus, Search } from "lucide-react";
@@ -24,12 +25,15 @@ function ensureOverrides(m: MenuItem) {
 }
 
 function MenuPage() {
+  const { items: liveItems, categories: CATEGORIES } = useLiveMenu();
   const [cat, setCat] = useState<string>("all");
   const [q, setQ] = useState("");
   const [tab, setTab] = useState<"base" | Channel>("base");
-  const [items, setItems] = useState<MenuItem[]>(() =>
-    MENU.map((m) => ({ ...m, channelOverrides: ensureOverrides(m) })),
-  );
+  const [items, setItems] = useState<MenuItem[]>([]);
+
+  useEffect(() => {
+    setItems(liveItems.map((m) => ({ ...m, channelOverrides: ensureOverrides(m) })));
+  }, [liveItems]);
 
   const filtered = items.filter(
     (m) =>

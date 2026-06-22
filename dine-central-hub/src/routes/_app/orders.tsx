@@ -6,7 +6,8 @@ import { Input } from "@/components/ui/input";
 import { ChannelBadge } from "@/components/ChannelBadge";
 import { StatusPill } from "@/components/StatusPill";
 import { PageHeader, formatMoney } from "@/components/PageHeader";
-import { CHANNEL_META, LOCATIONS, ORDERS, STATUS_META } from "@/lib/mock-data";
+import { CHANNEL_META, STATUS_META } from "@/lib/mock-data";
+import { useLiveOrders, useLiveLocations, updateOrderStatus } from "@/lib/live-data";
 import { useCurrentLocation } from "@/lib/store";
 import type { Channel, OrderStatus } from "@/lib/types";
 import { Check, X, ChefHat, CheckCheck, Search, ListFilter, Timer } from "lucide-react";
@@ -77,6 +78,12 @@ const ALL_CHANNELS = Object.keys(CHANNEL_META) as Channel[];
 
 function OrdersPage() {
   const loc = useCurrentLocation();
+  const { orders: ORDERS } = useLiveOrders();
+  const liveLocations = useLiveLocations();
+  const locName = useMemo(
+    () => new Map(liveLocations.map((l) => [l.id, l.name])),
+    [liveLocations],
+  );
   const [channelFilter, setChannelFilter] = useState<Channel | "all">("all");
   const [statusFilter, setStatusFilter] = useState<OrderStatus | "all">("all");
   const [q, setQ] = useState("");
@@ -87,6 +94,15 @@ function OrdersPage() {
     return () => clearInterval(id);
   }, []);
 
+  const handleStatus = async (id: string, status: OrderStatus, shortId: string, label: string) => {
+    try {
+      await updateOrderStatus(id, status);
+      toast.success(`${shortId} ${label}`);
+    } catch {
+      toast.error(`Could not update ${shortId}`);
+    }
+  };
+
   const filtered = useMemo(() => {
     return ORDERS.filter((o) => {
       if (loc !== "all" && o.locationId !== loc) return false;
@@ -95,7 +111,7 @@ function OrdersPage() {
       if (q && !(o.shortId.includes(q) || o.customerName.toLowerCase().includes(q.toLowerCase()))) return false;
       return true;
     });
-  }, [loc, channelFilter, statusFilter, q]);
+  }, [ORDERS, loc, channelFilter, statusFilter, q]);
 
   const counts = ALL_STATUSES.map((s) => ({
     status: s,
@@ -195,7 +211,7 @@ function OrdersPage() {
               </thead>
               <tbody>
                 {filtered.map((o) => {
-                  const loc = LOCATIONS.find((l) => l.id === o.locationId);
+                  const locationName = locName.get(o.locationId) ?? "—";
                   return (
                     <tr key={o.id} className="border-b hover:bg-muted/50">
                       <td className="py-2.5">
@@ -205,7 +221,7 @@ function OrdersPage() {
                       </td>
                       <td className="py-2.5"><ChannelBadge channel={o.channel} /></td>
                       <td className="py-2.5">{o.customerName}</td>
-                      <td className="py-2.5 text-xs text-muted-foreground">{loc?.name.replace("Jamaican Kitchen — ", "")}</td>
+                      <td className="py-2.5 text-xs text-muted-foreground">{locationName}</td>
                       <td className="py-2.5 text-xs capitalize">{o.type.replace("_", " ")}</td>
                       <td className="py-2.5 text-xs text-muted-foreground tabular-nums">{format(new Date(o.createdAt), "MMM d, h:mm a")}</td>
                       <td className="py-2.5">
@@ -229,16 +245,16 @@ function OrdersPage() {
                         <div className="flex justify-end gap-1">
                           {o.status === "new" && (
                             <>
-                              <Button size="sm" className="h-7 px-2" onClick={() => toast.success(`Accepted ${o.shortId}`)}>
+                              <Button size="sm" className="h-7 px-2" onClick={() => handleStatus(o.id, "accepted", o.shortId, "accepted")}>
                                 <Check className="h-3.5 w-3.5" />
                               </Button>
-                              <Button size="sm" variant="outline" className="h-7 px-2" onClick={() => toast.error(`Rejected ${o.shortId}`)}>
+                              <Button size="sm" variant="outline" className="h-7 px-2" onClick={() => handleStatus(o.id, "cancelled", o.shortId, "rejected")}>
                                 <X className="h-3.5 w-3.5" />
                               </Button>
                             </>
                           )}
                           {(o.status === "accepted" || o.status === "preparing") && (
-                            <Button size="sm" variant="outline" className="h-7 px-2" onClick={() => toast.success(`${o.shortId} marked ready`)}>
+                            <Button size="sm" variant="outline" className="h-7 px-2" onClick={() => handleStatus(o.id, "ready", o.shortId, "marked ready")}>
                               <CheckCheck className="h-3.5 w-3.5" />
                             </Button>
                           )}
