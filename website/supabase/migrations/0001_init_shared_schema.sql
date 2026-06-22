@@ -258,7 +258,7 @@ begin
 
   v_total := coalesce(p_subtotal,0) + coalesce(p_tax,0) + coalesce(p_tip,0) + coalesce(p_fees,0);
 
-  insert into public.orders (
+  insert into public.orders as o (
     channel, location_id, customer_id, customer_name, customer_phone, customer_email,
     subtotal, tax, tip, fees, total, status, type, notes, address
   ) values (
@@ -266,7 +266,7 @@ begin
     p_customer->>'name', p_customer->>'phone', p_customer->>'email',
     coalesce(p_subtotal,0), coalesce(p_tax,0), coalesce(p_tip,0), coalesce(p_fees,0),
     v_total, 'new', coalesce(p_type,'pickup')::public.order_type, p_notes, p_address
-  ) returning id, short_id into v_order_id, v_short_id;
+  ) returning o.id, o.short_id into v_order_id, v_short_id;
 
   for v_item in select * from jsonb_array_elements(coalesce(p_items,'[]'::jsonb))
   loop
