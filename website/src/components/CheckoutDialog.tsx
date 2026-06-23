@@ -119,6 +119,22 @@ export const CheckoutDialog = ({ trigger }: { trigger: React.ReactNode }) => {
               <DialogTitle>Checkout (Pickup)</DialogTitle>
             </DialogHeader>
             <div className="space-y-4 py-2">
+              {/* Test helper, pre-fills customer details so orders can be placed quickly. */}
+              <Button
+                type="button"
+                variant="outline"
+                size="sm"
+                className="w-full border-dashed text-muted-foreground"
+                onClick={() => {
+                  setName("Test Customer");
+                  setPhone("(860) 555-0100");
+                  setEmail("test@jamaicankitchenct.com");
+                  setNotes("Test order");
+                }}
+              >
+                Pre-fill test details
+              </Button>
+
               <div className="space-y-2">
                 <Label htmlFor="co-name">Name *</Label>
                 <Input id="co-name" value={name} onChange={(e) => setName(e.target.value)} placeholder="Your name" />

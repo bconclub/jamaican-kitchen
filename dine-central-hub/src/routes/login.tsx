@@ -4,8 +4,9 @@ import { useAuth } from "@/lib/auth";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Loader2 } from "lucide-react";
+import wordmark from "@/assets/jamaican-kitchen-wordmark.png";
 
 export const Route = createFileRoute("/login")({
   component: LoginPage,
@@ -37,11 +38,11 @@ function LoginPage() {
   };
 
   return (
-    <div className="flex min-h-screen items-center justify-center bg-muted/30 px-4">
-      <Card className="w-full max-w-sm">
-        <CardHeader className="text-center">
-          <CardTitle className="text-2xl">Jamaican Kitchen</CardTitle>
-          <p className="text-sm text-muted-foreground">Staff sign in</p>
+    <div className="flex min-h-screen flex-col items-center justify-center bg-muted/30 px-4">
+      <Card className="w-full max-w-sm overflow-hidden">
+        <CardHeader className="items-center gap-3 border-b bg-background py-7 text-center">
+          <img src={wordmark} alt="Jamaican Kitchen" className="h-16 w-auto" />
+          <p className="text-sm font-medium text-muted-foreground">Staff Operations Portal</p>
         </CardHeader>
         <CardContent>
           <form onSubmit={handleSubmit} className="space-y-4">

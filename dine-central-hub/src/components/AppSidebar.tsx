@@ -18,7 +18,7 @@ import {
   Workflow,
   Inbox,
 } from "lucide-react";
-import logo from "@/assets/jamaican-kitchen-logo.png";
+import iconMark from "@/assets/jamaican-kitchen-icon.png";
 import {
   Sidebar,
   SidebarContent,
@@ -84,10 +84,12 @@ export function AppSidebar() {
   return (
     <Sidebar collapsible="icon">
       <SidebarHeader className="border-b border-sidebar-border">
-        <div className="flex items-center gap-2 px-2 py-3">
-          <div className="flex h-10 w-10 shrink-0 items-center justify-center overflow-hidden rounded-lg bg-background ring-1 ring-sidebar-border">
-            <img src={logo} alt="Jamaican Kitchen" className="h-full w-full object-contain" />
-          </div>
+        <div className="flex items-center gap-2.5 px-2 py-3">
+          <img
+            src={iconMark}
+            alt="Jamaican Kitchen"
+            className="h-10 w-10 shrink-0 rounded-lg object-cover ring-1 ring-sidebar-border"
+          />
           <div className="flex flex-col leading-tight">
             <span className="text-sm font-semibold">Jamaican Kitchen</span>
             <span className="text-xs text-muted-foreground">Connecticut · Chain Ops</span>

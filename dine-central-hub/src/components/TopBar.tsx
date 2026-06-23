@@ -17,6 +17,9 @@ import { ChannelBadge } from "@/components/ChannelBadge";
 import { formatMoney } from "@/components/PageHeader";
 import { useLiveLocations, useLiveOrders, useLiveCustomers, useLiveMenu, updateOrderStatus } from "@/lib/live-data";
 import { useCurrentLocation, setCurrentLocation } from "@/lib/store";
+import { useAuth } from "@/lib/auth";
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
+import { LogOut } from "lucide-react";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { useNavigate, Link } from "@tanstack/react-router";
 import { format } from "date-fns";
@@ -29,6 +32,15 @@ export function TopBar() {
   const { customers: CUSTOMERS } = useLiveCustomers();
   const { items: MENU } = useLiveMenu();
   const navigate = useNavigate();
+  const { user, signOut } = useAuth();
+
+  const email = user?.email ?? "";
+  const initials = useMemo(() => {
+    const local = email.split("@")[0] ?? "";
+    const parts = local.split(/[._-]+/).filter(Boolean);
+    const letters = parts.length >= 2 ? parts[0][0] + parts[1][0] : local.slice(0, 2);
+    return (letters || "JK").toUpperCase();
+  }, [email]);
 
   const [panelId, setPanelId] = useState<string | null>(null);
   const newOrders = useMemo(() => ORDERS.filter((o) => o.status === "new"), [ORDERS]);
@@ -202,9 +214,31 @@ export function TopBar() {
             </div>
           </PopoverContent>
         </Popover>
-        <Avatar className="h-8 w-8">
-          <AvatarFallback className="bg-primary text-primary-foreground text-xs">GC</AvatarFallback>
-        </Avatar>
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <button className="rounded-full outline-none ring-offset-background focus-visible:ring-2 focus-visible:ring-ring">
+              <Avatar className="h-8 w-8">
+                <AvatarFallback className="bg-secondary text-secondary-foreground text-xs font-semibold">{initials}</AvatarFallback>
+              </Avatar>
+            </button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent align="end" className="w-56">
+            <DropdownMenuLabel className="flex flex-col gap-0.5">
+              <span className="text-sm font-semibold">Signed in</span>
+              <span className="truncate text-xs font-normal text-muted-foreground">{email || "Staff"}</span>
+            </DropdownMenuLabel>
+            <DropdownMenuSeparator />
+            <DropdownMenuItem
+              onClick={async () => {
+                await signOut();
+                navigate({ to: "/login" });
+              }}
+            >
+              <LogOut className="mr-2 h-4 w-4" />
+              Sign out
+            </DropdownMenuItem>
+          </DropdownMenuContent>
+        </DropdownMenu>
       </div>
 
       {/* Desktop right-side order detail panel */}

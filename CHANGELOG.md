@@ -1,5 +1,19 @@
 # Changelog
 
+## 2026-06-23 18:45 IST · Storefront order UX + real delivery logos + admin brand
+
+- **Quick Links panel removed** from the hero (both the desktop floating panel and the mobile inline grid) — was buggy; parked for later.
+- **Add-to-Order quantity steppers**: menu cards (`MenuItemCard`) and home `BestSellers` now add on first click, then swap to a live `- N +` counter bound to real cart quantity; dropping to 0 reverts to "Add to Order". Buttons renamed "Add" -> "Add to Order", toasts say "added to your order".
+- **Cart -> "Your Order"**: `CartSidebar` title, empty state, and Clear button reworded.
+- **Location lock** (`LocationSelector`): once the order has items the pickup location is protected - shows a lock note and, on change attempt, an AlertDialog ("Clear order & switch" / "Keep my order") that clears the cart before switching so items can't mix across stores.
+- **Real delivery logos**: replaced typed wordmarks with official brand SVGs bundled locally - green Uber Eats mark on black, red DoorDash chevron on white (`website/src/assets/{ubereats,doordash}-logo.svg`). No more broken external image.
+- **Testimonials -> carousel**: review grid converted to an Embla carousel (`Testimonials`) with prev/next arrows, loop, responsive 1/2/3 per view.
+- **Checkout pre-fill test button**: dashed "Pre-fill test details" button in `CheckoutDialog` fills name/phone/email/notes for quick test orders.
+- **Admin rebrand** (`dine-central-hub`): login wordmark, sidebar icon mark, favicon set, and a real user avatar dropdown with sign-out in `TopBar`.
+- User-facing: storefront ordering flow now behaves like a real cart; delivery section shows recognizable brand logos; admin looks branded.
+- (HEAD)
+
+
 ## 2026-06-22 17:12 IST · Responsive/design pass across all pages
 
 - **Duplicate X fixed**: the Sheet primitive already renders a close button; removed the extra custom X in the mobile nav drawer and the cart drawer (was showing two crosses).

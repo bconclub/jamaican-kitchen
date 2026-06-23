@@ -1,5 +1,12 @@
 import { Star, Quote } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
+import {
+  Carousel,
+  CarouselContent,
+  CarouselItem,
+  CarouselNext,
+  CarouselPrevious,
+} from "@/components/ui/carousel";
 
 interface Testimonial {
   id: string;
@@ -78,57 +85,39 @@ export const Testimonials = () => {
           </p>
         </div>
 
-        {/* Testimonials Grid */}
-        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {testimonials.slice(0, 3).map((testimonial, index) => (
-            <Card 
-              key={testimonial.id} 
-              className="bg-card border-2 border-border hover:border-primary/50 transition-all duration-300 hover:shadow-lg animate-slide-up"
-              style={{ animationDelay: `${index * 100}ms` }}
-            >
-              <CardContent className="p-6">
-                <div className="flex items-center gap-4 mb-4">
-                  <div className="h-12 w-12 rounded-full bg-gradient-to-br from-primary to-secondary flex items-center justify-center text-primary-foreground font-bold text-lg">
-                    {testimonial.name.charAt(0)}
-                  </div>
-                  <div>
-                    <h4 className="font-semibold text-foreground">{testimonial.name}</h4>
-                    <StarRating rating={testimonial.rating} />
-                  </div>
-                </div>
-                <p className="text-muted-foreground italic leading-relaxed">
-                  "{testimonial.text}"
-                </p>
-              </CardContent>
-            </Card>
-          ))}
-        </div>
-
-        {/* Additional Reviews Row */}
-        <div className="grid md:grid-cols-2 gap-6 mt-6 max-w-4xl mx-auto">
-          {testimonials.slice(3).map((testimonial, index) => (
-            <Card 
-              key={testimonial.id} 
-              className="bg-card border-2 border-border hover:border-primary/50 transition-all duration-300 hover:shadow-lg animate-slide-up"
-              style={{ animationDelay: `${(index + 3) * 100}ms` }}
-            >
-              <CardContent className="p-6">
-                <div className="flex items-center gap-4 mb-4">
-                  <div className="h-12 w-12 rounded-full bg-gradient-to-br from-secondary to-accent flex items-center justify-center text-secondary-foreground font-bold text-lg">
-                    {testimonial.name.charAt(0)}
-                  </div>
-                  <div>
-                    <h4 className="font-semibold text-foreground">{testimonial.name}</h4>
-                    <StarRating rating={testimonial.rating} />
-                  </div>
-                </div>
-                <p className="text-muted-foreground italic leading-relaxed">
-                  "{testimonial.text}"
-                </p>
-              </CardContent>
-            </Card>
-          ))}
-        </div>
+        {/* Testimonials Carousel */}
+        <Carousel
+          opts={{ align: "start", loop: true }}
+          className="w-full max-w-6xl mx-auto"
+        >
+          <CarouselContent className="-ml-4">
+            {testimonials.map((testimonial) => (
+              <CarouselItem
+                key={testimonial.id}
+                className="pl-4 md:basis-1/2 lg:basis-1/3"
+              >
+                <Card className="h-full bg-card border-2 border-border hover:border-primary/50 transition-all duration-300 hover:shadow-lg">
+                  <CardContent className="p-6">
+                    <div className="flex items-center gap-4 mb-4">
+                      <div className="h-12 w-12 rounded-full bg-gradient-to-br from-primary to-secondary flex items-center justify-center text-primary-foreground font-bold text-lg">
+                        {testimonial.name.charAt(0)}
+                      </div>
+                      <div>
+                        <h4 className="font-semibold text-foreground">{testimonial.name}</h4>
+                        <StarRating rating={testimonial.rating} />
+                      </div>
+                    </div>
+                    <p className="text-muted-foreground italic leading-relaxed">
+                      "{testimonial.text}"
+                    </p>
+                  </CardContent>
+                </Card>
+              </CarouselItem>
+            ))}
+          </CarouselContent>
+          <CarouselPrevious className="hidden sm:flex" />
+          <CarouselNext className="hidden sm:flex" />
+        </Carousel>
       </div>
     </section>
   );

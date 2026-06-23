@@ -17,14 +17,14 @@ export const CartSidebar = () => {
         <SheetHeader className="p-4 border-b border-border">
           <SheetTitle className="flex items-center gap-2">
             <ShoppingBag className="h-5 w-5" />
-            Your Cart ({totalItems})
+            Your Order ({totalItems})
           </SheetTitle>
         </SheetHeader>
 
         {items.length === 0 ? (
           <div className="flex-1 flex flex-col items-center justify-center p-8 text-center">
             <ShoppingBag className="h-16 w-16 text-muted-foreground/30 mb-4" />
-            <h3 className="font-semibold text-lg mb-2">Your cart is empty</h3>
+            <h3 className="font-semibold text-lg mb-2">Your order is empty</h3>
             <p className="text-muted-foreground text-sm">
               Add some delicious Jamaican dishes to get started!
             </p>
@@ -113,7 +113,7 @@ export const CartSidebar = () => {
                 className="w-full mt-2 text-muted-foreground"
                 onClick={clearCart}
               >
-                Clear Cart
+                Clear Order
               </Button>
             </div>
           </>
