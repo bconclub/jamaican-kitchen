@@ -34,6 +34,14 @@
 
 - Follow-up to the confirmation fix: the **Done** button calls `setOpen(false)` programmatically, which (in a controlled Radix Dialog) does NOT fire `onOpenChange` — so the deferred `clearCart()` never ran and the placed order's items lingered in the cart.
 - **Fix:** `clearCart()` directly in the Done handler, and also `setCartOpen(false)` so the cart drawer closes for a clean finish after an order. Verified live: order `JK-71A2E` placed on prod, confirmation showed the number, Done cleared the cart and closed the drawer.
+- (c906057)
+
+
+## 2026-06-24 00:25 IST · Proper thank-you pages (order + catering) + "Add" button
+
+- **Order thank-you PAGE** (`/order-confirmation`): replaced the small confirmation modal with a real page. On placing an order, the cart snapshots the order into `CartContext.lastOrder`, clears, and navigates to the page, which shows: the order number, every item ordered (image, qty, line total), subtotal/tax/total, the pickup location (address + phone), a numbered "What happens next" (preparing → show number at counter → pay at pickup), and Order-more / Home CTAs. No more landing on an empty cart.
+- **Catering confirmation**: the catering form (`EventBookingForm`) now shows a proper success card after submit — event summary (type, date, guests, location) + a "What happens next" (review → 24h quote → finalize) instead of just a toast. Still writes to `catering_requests` (→ admin Catering page).
+- **Button label**: menu + best-seller cards now say "Add" (was "Add to Order"); becomes the `- N +` stepper once added.
 - (HEAD)
 
 

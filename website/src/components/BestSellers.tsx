@@ -151,7 +151,7 @@ export const BestSellers = () => {
                       className="bg-primary text-primary-foreground hover:bg-primary/90 gap-1"
                     >
                       <Plus className="h-4 w-4" />
-                      Add to Order
+                      Add
                     </Button>
                   ) : (
                     <div className="flex items-center gap-1 rounded-md bg-secondary text-secondary-foreground">

@@ -12,13 +12,22 @@ import {
 } from "@/components/ui/select";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { eventTypes } from "@/data/cateringData";
-import { Calendar, Users, MapPin, Phone, Mail, Send } from "lucide-react";
+import { Calendar, Users, MapPin, Phone, Mail, Send, CheckCircle2, Clock } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { submitCateringRequest } from "@/lib/api";
+
+interface SubmittedSummary {
+  name: string;
+  eventType: string;
+  eventDate: string;
+  guestCount: string;
+  location: string;
+}
 
 export const EventBookingForm = () => {
   const { toast } = useToast();
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [submitted, setSubmitted] = useState<SubmittedSummary | null>(null);
   const [formData, setFormData] = useState({
     name: "",
     email: "",
@@ -57,10 +66,12 @@ export const EventBookingForm = () => {
         message: formData.message,
       });
 
-      toast({
-        title: "Request Submitted!",
-        description:
-          "We'll contact you within 24 hours to discuss your catering needs.",
+      setSubmitted({
+        name: formData.name,
+        eventType: formData.eventType,
+        eventDate: formData.eventDate,
+        guestCount: formData.guestCount,
+        location: formData.location,
       });
 
       setFormData({
@@ -84,6 +95,77 @@ export const EventBookingForm = () => {
       setIsSubmitting(false);
     }
   };
+
+  if (submitted) {
+    return (
+      <Card className="border-2 border-primary/30 shadow-lg">
+        <CardContent className="p-6 md:p-8 text-center">
+          <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-primary/15">
+            <CheckCircle2 className="h-9 w-9 text-primary" />
+          </div>
+          <h3 className="text-2xl font-bold mb-1">
+            Catering request received{submitted.name ? `, ${submitted.name.split(" ")[0]}` : ""}!
+          </h3>
+          <p className="text-muted-foreground mb-6">
+            Thanks for telling us about your event. Here's what we've got.
+          </p>
+
+          {/* Event summary */}
+          <div className="mx-auto max-w-md rounded-xl border border-border bg-muted/40 p-4 text-left space-y-2 text-sm">
+            {submitted.eventType && (
+              <div className="flex items-center gap-2">
+                <Calendar className="h-4 w-4 text-secondary" />
+                <span className="text-muted-foreground">Event:</span>
+                <span className="font-medium">{submitted.eventType}</span>
+              </div>
+            )}
+            {submitted.eventDate && (
+              <div className="flex items-center gap-2">
+                <Clock className="h-4 w-4 text-secondary" />
+                <span className="text-muted-foreground">Date:</span>
+                <span className="font-medium">{submitted.eventDate}</span>
+              </div>
+            )}
+            {submitted.guestCount && (
+              <div className="flex items-center gap-2">
+                <Users className="h-4 w-4 text-secondary" />
+                <span className="text-muted-foreground">Guests:</span>
+                <span className="font-medium">{submitted.guestCount}</span>
+              </div>
+            )}
+            {submitted.location && (
+              <div className="flex items-center gap-2">
+                <MapPin className="h-4 w-4 text-secondary" />
+                <span className="text-muted-foreground">Location:</span>
+                <span className="font-medium">{submitted.location}</span>
+              </div>
+            )}
+          </div>
+
+          {/* Next steps */}
+          <div className="mx-auto max-w-md rounded-xl border-2 border-primary/30 bg-primary/5 p-4 mt-5 text-left">
+            <p className="font-semibold mb-2">What happens next</p>
+            <ul className="space-y-2 text-sm text-muted-foreground">
+              <li className="flex gap-2"><span className="font-bold text-primary">1.</span> Our catering team reviews your event details.</li>
+              <li className="flex gap-2"><span className="font-bold text-primary">2.</span> We'll contact you within <span className="font-semibold text-foreground">24 hours</span> with a custom quote.</li>
+              <li className="flex gap-2"><span className="font-bold text-primary">3.</span> We finalize the menu and lock in your date.</li>
+            </ul>
+            <p className="mt-3 flex items-center gap-1.5 text-sm text-muted-foreground">
+              <Phone className="h-4 w-4" /> Need it sooner? Call us at (860) 555-JERK.
+            </p>
+          </div>
+
+          <Button
+            variant="outline"
+            className="mt-6"
+            onClick={() => setSubmitted(null)}
+          >
+            Submit another request
+          </Button>
+        </CardContent>
+      </Card>
+    );
+  }
 
   return (
     <Card className="border-border shadow-lg">

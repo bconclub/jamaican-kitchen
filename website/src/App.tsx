@@ -8,6 +8,7 @@ import { Chatbot } from "@/components/Chatbot";
 import { CartSidebar } from "@/components/CartSidebar";
 import Index from "./pages/Index";
 import Order from "./pages/Order";
+import OrderConfirmation from "./pages/OrderConfirmation";
 import Catering from "./pages/Catering";
 import Locations from "./pages/Locations";
 import FAQ from "./pages/FAQ";
@@ -29,6 +30,7 @@ const App = () => (
           <Routes>
             <Route path="/" element={<Index />} />
             <Route path="/order" element={<Order />} />
+            <Route path="/order-confirmation" element={<OrderConfirmation />} />
             <Route path="/catering" element={<Catering />} />
             <Route path="/locations" element={<Locations />} />
             <Route path="/faq" element={<FAQ />} />

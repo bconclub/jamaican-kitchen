@@ -9,6 +9,21 @@ export interface CartItem {
   image: string;
 }
 
+// Snapshot of a completed order, kept after the cart is cleared so the
+// confirmation / thank-you page can show what was ordered + next steps.
+export interface PlacedOrderSummary {
+  shortId: string;
+  items: Array<{ name: string; quantity: number; price: number; image?: string }>;
+  subtotal: number;
+  tax: number;
+  total: number;
+  type: "pickup";
+  customerName: string;
+  locationName: string;
+  locationAddress: string;
+  locationPhone: string;
+}
+
 interface CartContextType {
   items: CartItem[];
   addItem: (item: Omit<CartItem, "quantity">) => void;
@@ -22,6 +37,8 @@ interface CartContextType {
   isCartOpen: boolean;
   setCartOpen: (open: boolean) => void;
   openCart: () => void;
+  lastOrder: PlacedOrderSummary | null;
+  setLastOrder: (order: PlacedOrderSummary | null) => void;
 }
 
 const CartContext = createContext<CartContextType | undefined>(undefined);
@@ -30,6 +47,7 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
   const [items, setItems] = useState<CartItem[]>([]);
   const [pickupLocation, setPickupLocation] = useState<string>("vernon");
   const [isCartOpen, setCartOpen] = useState(false);
+  const [lastOrder, setLastOrder] = useState<PlacedOrderSummary | null>(null);
   const openCart = () => setCartOpen(true);
 
   const addItem = (newItem: Omit<CartItem, "quantity">) => {
@@ -83,6 +101,8 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
         isCartOpen,
         setCartOpen,
         openCart,
+        lastOrder,
+        setLastOrder,
       }}
     >
       {children}
