@@ -42,7 +42,7 @@ function LoginPage() {
       <Card className="w-full max-w-sm overflow-hidden">
         <CardHeader className="items-center gap-3 border-b bg-background py-7 text-center">
           <img src={wordmark} alt="Jamaican Kitchen" className="h-16 w-auto" />
-          <p className="text-sm font-medium text-muted-foreground">Staff Operations Portal</p>
+          <p className="text-sm font-medium text-muted-foreground">Dine Central</p>
         </CardHeader>
         <CardContent>
           <form onSubmit={handleSubmit} className="space-y-4">

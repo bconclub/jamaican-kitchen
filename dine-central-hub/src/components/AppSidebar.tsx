@@ -92,7 +92,7 @@ export function AppSidebar() {
           />
           <div className="flex flex-col leading-tight">
             <span className="text-sm font-semibold">Jamaican Kitchen</span>
-            <span className="text-xs text-muted-foreground">Connecticut · Chain Ops</span>
+            <span className="text-xs text-muted-foreground">Dine Central</span>
           </div>
         </div>
       </SidebarHeader>

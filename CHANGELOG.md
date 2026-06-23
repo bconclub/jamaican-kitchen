@@ -1,5 +1,12 @@
 # Changelog
 
+## 2026-06-24 04:30 IST · Admin wording: "Dine Central" (drop "Staff Operations Portal")
+
+- Admin login subtitle "Staff Operations Portal" → "Dine Central" (under the JK wordmark → reads "Jamaican Kitchen Dine Central").
+- Sidebar tagline "Connecticut · Chain Ops" → "Dine Central".
+- (HEAD)
+
+
 ## 2026-06-23 18:45 IST · Storefront order UX + real delivery logos + admin brand
 
 - **Quick Links panel removed** from the hero (both the desktop floating panel and the mobile inline grid) — was buggy; parked for later.
