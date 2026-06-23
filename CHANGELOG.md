@@ -11,6 +11,15 @@
 - **Checkout pre-fill test button**: dashed "Pre-fill test details" button in `CheckoutDialog` fills name/phone/email/notes for quick test orders.
 - **Admin rebrand** (`dine-central-hub`): login wordmark, sidebar icon mark, favicon set, and a real user avatar dropdown with sign-out in `TopBar`.
 - User-facing: storefront ordering flow now behaves like a real cart; delivery section shows recognizable brand logos; admin looks branded.
+- (9a11155)
+
+
+## 2026-06-23 22:10 IST · Strip Lovable branding
+
+- Removed the Lovable boilerplate `website/README.md`, replaced with a clean Jamaican Kitchen / BCON readme.
+- Removed the dev-only `lovable-tagger` Vite plugin from `website/vite.config.ts` + `package.json` (and pruned the lockfile). Zero production impact — it only injected editor data-attrs in dev.
+- Deleted the `dine-central-hub/.lovable/` planning-doc artifact.
+- Note: NOT touched (functional deps, would need a migration, not branding): admin build runs on `@lovable.dev/vite-tanstack-config`; website chatbot still calls the Lovable AI gateway (`LOVABLE_API_KEY` in `supabase/functions/chat`). The rendered apps show no Lovable branding — `index.html`, meta/OG, favicon, and all components are Jamaican Kitchen.
 - (HEAD)
 
 
