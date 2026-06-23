@@ -24,7 +24,7 @@ function DeliveryPage() {
                 <div key={l.id} className="absolute" style={{ left: `${20 + i * 25}%`, top: `${30 + (i % 2) * 25}%` }}>
                   <div className="flex flex-col items-center">
                     <div className="flex h-10 w-10 items-center justify-center rounded-full bg-primary text-primary-foreground shadow-lg ring-4 ring-primary/20"><MapPin className="h-5 w-5" /></div>
-                    <div className="mt-1 rounded bg-background px-2 py-0.5 text-xs font-medium shadow">{l.name.replace("Jamaican Kitchen — ", "")}</div>
+                    <div className="mt-1 rounded bg-background px-2 py-0.5 text-xs font-medium shadow">{l.name.replace("Jamaican Kitchen, ", "")}</div>
                   </div>
                 </div>
               ))}

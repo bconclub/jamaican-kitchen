@@ -27,7 +27,7 @@ export const HeroSection = () => {
         <div className="absolute inset-0 bg-gradient-to-r from-foreground/90 via-foreground/70 to-foreground/40" />
       </div>
 
-      {/* Quick Links Panel — desktop only (floats beside the hero) */}
+      {/* Quick Links Panel, desktop only (floats beside the hero) */}
       <div className="hidden lg:block absolute top-1/2 -translate-y-1/2 right-8 xl:right-12 z-20 animate-scale-in">
         <div className="bg-card/95 backdrop-blur-md rounded-2xl p-4 md:p-5 shadow-2xl w-[320px]">
           <h3 className="text-lg font-bold mb-3 text-foreground">Quick Links</h3>
@@ -54,7 +54,7 @@ export const HeroSection = () => {
               <span className="block text-primary">Jamaican Kitchen</span>
             </h1>
             <p className="text-lg md:text-xl text-background/90 mb-8 max-w-xl">
-              Discover the heart of Jamaica right here in Connecticut! We serve island classics like jerk chicken, curry goat, and oxtail — made fresh daily with locally sourced ingredients.
+              Discover the heart of Jamaica right here in Connecticut! We serve island classics like jerk chicken, curry goat, and oxtail, made fresh daily with locally sourced ingredients.
             </p>
             <div className="flex flex-wrap gap-4">
               <Link to="/order">
@@ -69,7 +69,7 @@ export const HeroSection = () => {
               </Link>
             </div>
 
-            {/* Quick links — inline on mobile/tablet (the floating panel is desktop-only) */}
+            {/* Quick links, inline on mobile/tablet (the floating panel is desktop-only) */}
             <div className="mt-8 grid grid-cols-2 gap-3 lg:hidden">
               {quickLinks.map((link) => (
                 <Link

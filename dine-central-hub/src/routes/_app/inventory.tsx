@@ -91,7 +91,7 @@ function InventoryPage() {
     <div>
       <PageHeader
         title="Inventory"
-        description="Track and edit stock per sales channel — web, app, POS, and delivery marketplaces."
+        description="Track and edit stock per sales channel, web, app, POS, and delivery marketplaces."
       />
       <div className="grid gap-4 md:grid-cols-3 mb-6">
         <StatCard label="Total units in stock" value={totalUnits.toLocaleString()} icon={Package} tone="info" />
@@ -135,7 +135,7 @@ function InventoryPage() {
             </TableHeader>
             <TableBody>
               {filtered.map((i) => {
-                const cat = CATEGORIES.find((c) => c.id === i.categoryId)?.name ?? "—";
+                const cat = CATEGORIES.find((c) => c.id === i.categoryId)?.name ?? "-";
                 const status =
                   i.stock === 0
                     ? { label: "Out", className: "bg-destructive/10 text-destructive" }
@@ -187,7 +187,7 @@ function InventoryPage() {
                   </TableHeader>
                   <TableBody>
                     {filtered.map((i) => {
-                      const cat = CATEGORIES.find((c) => c.id === i.categoryId)?.name ?? "—";
+                      const cat = CATEGORIES.find((c) => c.id === i.categoryId)?.name ?? "-";
                       const cs = channelStock[i.id]?.[ch] ?? { stock: 0, available: false };
                       const status =
                         !cs.available

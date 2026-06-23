@@ -86,7 +86,7 @@ function Dashboard() {
   const aov = windowOrders.length ? revenue / windowOrders.length : 0;
   const customers = new Set(windowOrders.map((o) => o.customerId || o.customerName)).size;
 
-  // Comparison ("vs previous period") deltas — deterministic per range
+  // Comparison ("vs previous period") deltas, deterministic per range
   const deltas = useMemo(() => {
     const seed = days * 7;
     return {
@@ -104,7 +104,7 @@ function Dashboard() {
       byDay.set(key, (byDay.get(key) ?? 0) + o.total);
     }
     const arr = Array.from(byDay, ([day, total]) => ({ day, total }));
-    return arr.length ? arr : [{ day: "—", total: 0 }];
+    return arr.length ? arr : [{ day: "-", total: 0 }];
   }, [channelOrders]);
   const fulfillmentMix = (["pickup", "delivery"] as const).map((t) => ({
     key: t,
@@ -115,7 +115,7 @@ function Dashboard() {
 
   const rangeLabel =
     range === "custom"
-      ? `${fmtShortDT(customStart)} – ${fmtShortDT(customEnd)}`
+      ? `${fmtShortDT(customStart)} - ${fmtShortDT(customEnd)}`
       : RANGES.find((r) => r.key === range)!.label;
   const fulfillmentLabel =
     fulfillment === "all" ? "pickup & delivery" : fulfillment === "pickup" ? "pickup only" : "delivery only";

@@ -47,7 +47,7 @@ function AccessPage() {
   const [editing, setEditing] = useState<StaffMember | null>(null);
 
   const locName = (id: string) =>
-    LOCATIONS.find((l) => l.id === id)?.name.replace("Jamaican Kitchen — ", "") ?? id;
+    LOCATIONS.find((l) => l.id === id)?.name.replace("Jamaican Kitchen, ", "") ?? id;
 
   const filtered = useMemo(
     () =>
@@ -162,7 +162,7 @@ function AccessPage() {
                   </div>
                   <Button size="sm" variant={isOwner ? "ghost" : "outline"} disabled={isOwner} onClick={() => setEditing(s)}>
                     <Lock className="h-3.5 w-3.5 mr-1" />
-                    {isOwner ? "Owner — full access" : "Edit access"}
+                    {isOwner ? "Owner, full access" : "Edit access"}
                   </Button>
                 </div>
               </CardContent>
@@ -176,7 +176,7 @@ function AccessPage() {
           {editing && (
             <>
               <DialogHeader>
-                <DialogTitle>Manage access — {editing.name}</DialogTitle>
+                <DialogTitle>Manage access, {editing.name}</DialogTitle>
                 <DialogDescription>Configure role, locations, and granular permissions.</DialogDescription>
               </DialogHeader>
               <Tabs defaultValue="permissions">
@@ -253,7 +253,7 @@ function AccessPage() {
                                 setEditing({ ...editing, locationIds: next });
                               }}
                             />
-                            <span className="text-sm">{loc.name.replace("Jamaican Kitchen — ", "")}</span>
+                            <span className="text-sm">{loc.name.replace("Jamaican Kitchen, ", "")}</span>
                           </label>
                         );
                       })}

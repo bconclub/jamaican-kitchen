@@ -47,10 +47,10 @@ function node(id: string, label: string, x: number, y: number, c: typeof C.db, w
 
 const NODES: Node[] = [
   // Customer layer (website)
-  node("web-order", "🛒 Website — Order page\n(cart + checkout)", 0, 40, C.customer),
-  node("web-cater", "🎉 Website — Catering form", 0, 180, C.customer),
-  node("web-contact", "✉️ Website — Contact form", 0, 300, C.customer),
-  node("web-menu", "📖 Website — Menu (reads live)", 0, 420, C.customer),
+  node("web-order", "🛒 Website, Order page\n(cart + checkout)", 0, 40, C.customer),
+  node("web-cater", "🎉 Website, Catering form", 0, 180, C.customer),
+  node("web-contact", "✉️ Website, Contact form", 0, 300, C.customer),
+  node("web-menu", "📖 Website, Menu (reads live)", 0, 420, C.customer),
 
   // RPC / write layer
   node("rpc", "place_order() RPC\nSECURITY DEFINER", 260, 40, C.rpc),
@@ -68,10 +68,10 @@ const NODES: Node[] = [
   node("auth", "🔐 Auth + user_roles + RLS\n(staff-only reads)", 800, 470, C.auth, 220),
 
   // Admin layer
-  node("adm-orders", "📊 Admin — Live Orders feed", 1080, 40, C.admin),
-  node("adm-cater", "📊 Admin — Catering", 1080, 180, C.admin),
-  node("adm-msgs", "📊 Admin — Messages\n(pending)", 1080, 300, C.pending),
-  node("adm-menu", "📊 Admin — Menu / Locations", 1080, 420, C.admin),
+  node("adm-orders", "📊 Admin, Live Orders feed", 1080, 40, C.admin),
+  node("adm-cater", "📊 Admin, Catering", 1080, 180, C.admin),
+  node("adm-msgs", "📊 Admin, Messages\n(pending)", 1080, 300, C.pending),
+  node("adm-menu", "📊 Admin, Menu / Locations", 1080, 420, C.admin),
 
   // Staff action loop
   node("staff", "👩‍🍳 Staff actions\naccept / ready / cancel", 1080, 560, C.admin),

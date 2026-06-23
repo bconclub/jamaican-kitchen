@@ -36,11 +36,11 @@ const ROLE_TONE: Record<StaffMember["role"], string> = {
 };
 
 function fmtTime(iso?: string | null) {
-  if (!iso) return "—";
+  if (!iso) return "-";
   return new Date(iso).toLocaleTimeString([], { hour: "numeric", minute: "2-digit" });
 }
 function fmtDate(iso?: string | null) {
-  if (!iso) return "—";
+  if (!iso) return "-";
   return new Date(iso).toLocaleDateString([], { month: "short", day: "numeric" });
 }
 function durationHours(inIso: string, outIso?: string, breakMin = 0) {
@@ -66,11 +66,11 @@ function StaffPage() {
   const [profile, setProfile] = useState<StaffMember | null>(null);
   const [addOpen, setAddOpen] = useState(false);
   const [editing, setEditing] = useState<StaffMember | null>(null);
-  // TODO: replace with real auth — owner identity drives edit permissions.
+  // TODO: replace with real auth, owner identity drives edit permissions.
   const currentUserIsOwner = true;
 
   const locName = (id: string) =>
-    LOCATIONS.find((l) => l.id === id)?.name.replace("Jamaican Kitchen — ", "") ?? id;
+    LOCATIONS.find((l) => l.id === id)?.name.replace("Jamaican Kitchen, ", "") ?? id;
 
   const filtered = useMemo(() => {
     return staff.filter((s) => {
@@ -179,7 +179,7 @@ function StaffPage() {
           <SelectContent>
             <SelectItem value="all">All locations</SelectItem>
             {LOCATIONS.map((l) => (
-              <SelectItem key={l.id} value={l.id}>{l.name.replace("Jamaican Kitchen — ", "")}</SelectItem>
+              <SelectItem key={l.id} value={l.id}>{l.name.replace("Jamaican Kitchen, ", "")}</SelectItem>
             ))}
           </SelectContent>
         </Select>
@@ -227,14 +227,14 @@ function StaffPage() {
                       </TableCell>
                       <TableCell>
                         <Badge variant="outline" className={`${ROLE_TONE[s.role]} capitalize mr-2`}>{s.role}</Badge>
-                        <span className="text-sm">{s.position ?? "—"}</span>
+                        <span className="text-sm">{s.position ?? "-"}</span>
                       </TableCell>
-                      <TableCell className="text-sm tabular-nums">{s.phone ?? "—"}</TableCell>
+                      <TableCell className="text-sm tabular-nums">{s.phone ?? "-"}</TableCell>
                       <TableCell className="text-sm">
                         {s.locationIds === "all" ? "All locations" : (s.locationIds as string[]).map(locName).join(", ")}
                       </TableCell>
                       <TableCell className="text-sm">{fmtDate(s.hireDate)}</TableCell>
-                      <TableCell className="text-right tabular-nums">{s.hourlyWage ? `$${s.hourlyWage}/hr` : "—"}</TableCell>
+                      <TableCell className="text-right tabular-nums">{s.hourlyWage ? `$${s.hourlyWage}/hr` : "-"}</TableCell>
                       <TableCell className="text-right">
                         {!s.active ? (
                           <Badge variant="secondary">Inactive</Badge>
@@ -289,11 +289,11 @@ function StaffPage() {
                         </div>
                       </TableCell>
                       <TableCell className="text-sm">
-                        {s.locationIds === "all" ? "—" : locName((s.locationIds as string[])[0])}
+                        {s.locationIds === "all" ? "-" : locName((s.locationIds as string[])[0])}
                       </TableCell>
                       <TableCell className="text-sm tabular-nums">{fmtTime(s.clockedInAt)}</TableCell>
                       <TableCell className="text-right tabular-nums">
-                        {s.clockedInAt ? `${durationHours(s.clockedInAt).toFixed(2)} h` : "—"}
+                        {s.clockedInAt ? `${durationHours(s.clockedInAt).toFixed(2)} h` : "-"}
                       </TableCell>
                       <TableCell className="text-right">
                         <Button
@@ -376,7 +376,7 @@ function StaffPage() {
                     return (
                       <TableRow key={s.id}>
                         <TableCell className="text-sm font-medium">{s.name}</TableCell>
-                        <TableCell className="text-sm">{s.position ?? "—"}</TableCell>
+                        <TableCell className="text-sm">{s.position ?? "-"}</TableCell>
                         <TableCell className="text-right tabular-nums">{sched}h</TableCell>
                         <TableCell className="text-right tabular-nums">{worked.toFixed(1)}h</TableCell>
                         <TableCell className={`text-right tabular-nums ${delta > 2 ? "text-warning" : delta < -4 ? "text-destructive" : "text-muted-foreground"}`}>
@@ -428,12 +428,12 @@ function StaffPage() {
                 <Info icon={Mail} label="Email" value={profile.email} />
                 <Info icon={Phone} label="Phone" value={profile.phone} />
                 <Info icon={MapPin} label="Address" value={profile.address} />
-                <Info icon={DollarSign} label="Wage" value={profile.hourlyWage ? `$${profile.hourlyWage}/hr` : "—"} />
+                <Info icon={DollarSign} label="Wage" value={profile.hourlyWage ? `$${profile.hourlyWage}/hr` : "-"} />
                 <Info icon={CalendarDays} label="Scheduled" value={`${profile.weeklyScheduleHours ?? 0}h / wk`} />
                 <Info
                   icon={AlertCircle}
                   label="Emergency contact"
-                  value={profile.emergencyContact ? `${profile.emergencyContact.name} · ${profile.emergencyContact.phone}` : "—"}
+                  value={profile.emergencyContact ? `${profile.emergencyContact.name} · ${profile.emergencyContact.phone}` : "-"}
                 />
               </div>
               <Separator />
@@ -509,7 +509,7 @@ function Info({ icon: Icon, label, value }: { icon: typeof Phone; label: string;
       <Icon className="h-4 w-4 mt-0.5 text-muted-foreground" />
       <div className="min-w-0">
         <div className="text-xs text-muted-foreground">{label}</div>
-        <div className="text-sm font-medium truncate">{value || "—"}</div>
+        <div className="text-sm font-medium truncate">{value || "-"}</div>
       </div>
     </div>
   );
@@ -550,7 +550,7 @@ function AddStaffDialog({ onClose, onAdd }: { onClose: () => void; onAdd: (m: St
             <SelectTrigger><SelectValue /></SelectTrigger>
             <SelectContent>
               {LOCATIONS.map((l) => (
-                <SelectItem key={l.id} value={l.id}>{l.name.replace("Jamaican Kitchen — ", "")}</SelectItem>
+                <SelectItem key={l.id} value={l.id}>{l.name.replace("Jamaican Kitchen, ", "")}</SelectItem>
               ))}
             </SelectContent>
           </Select>
@@ -696,7 +696,7 @@ function EditMemberDialog({
                       )
                     }
                   />
-                  <span className="text-sm">{l.name.replace("Jamaican Kitchen — ", "")}</span>
+                  <span className="text-sm">{l.name.replace("Jamaican Kitchen, ", "")}</span>
                 </label>
               );
             })}

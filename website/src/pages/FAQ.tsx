@@ -17,19 +17,19 @@ const faqs = [
   },
   {
     q: "How does catering work?",
-    a: "Visit the Catering page, choose your trays and portion sizes, and submit a catering request. A small portion feeds 8–12 people; a large feeds 18–22. We ask for at least 48 hours notice.",
+    a: "Visit the Catering page, choose your trays and portion sizes, and submit a catering request. A small portion feeds 8-12 people; a large feeds 18-22. We ask for at least 48 hours notice.",
   },
   {
     q: "How spicy is the food?",
-    a: "Every dish is marked Mild, Medium, or Hot so you know what to expect. Our jerk dishes pack authentic scotch-bonnet heat — ask staff if you'd like it toned down.",
+    a: "Every dish is marked Mild, Medium, or Hot so you know what to expect. Our jerk dishes pack authentic scotch-bonnet heat, ask staff if you'd like it toned down.",
   },
   {
     q: "Do you have vegetarian options?",
-    a: "Yes — veggie patties, rice & peas, festival, fried plantains, steamed cabbage and more. Let us know about allergies and we'll guide you.",
+    a: "Yes, veggie patties, rice & peas, festival, fried plantains, steamed cabbage and more. Let us know about allergies and we'll guide you.",
   },
   {
     q: "What are your hours?",
-    a: "Most locations are open 11am–9pm daily. Check the Locations page for the exact hours and phone number of your nearest spot.",
+    a: "Most locations are open 11am-9pm daily. Check the Locations page for the exact hours and phone number of your nearest spot.",
   },
 ];
 

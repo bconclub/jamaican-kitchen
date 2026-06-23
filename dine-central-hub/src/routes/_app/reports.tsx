@@ -189,7 +189,7 @@ function ReportsPage() {
     <div>
       <PageHeader
         title="Reports"
-        description="Download every report you need — sales, finance, operations, compliance."
+        description="Download every report you need, sales, finance, operations, compliance."
         actions={
           <div className="flex items-center gap-2">
             <Select value={range} onValueChange={(v) => setRange(v as "7" | "30" | "90")}>

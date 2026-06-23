@@ -153,7 +153,7 @@ function CateringPage() {
         <Stat label="Pipeline revenue" value={formatMoney(stats.revenue)} icon={Truck} />
         <Stat
           label="Next event"
-          value={stats.nextEvent ? formatDistanceToNow(new Date(stats.nextEvent.catering!.eventDate), { addSuffix: true }) : "—"}
+          value={stats.nextEvent ? formatDistanceToNow(new Date(stats.nextEvent.catering!.eventDate), { addSuffix: true }) : "-"}
           icon={CalendarDays}
           sub={stats.nextEvent?.customerName}
         />
@@ -259,7 +259,7 @@ function TrackingCard({
         <div className="text-right shrink-0">
           <div className="text-[10px] uppercase tracking-wide text-muted-foreground">ETA</div>
           <div className="text-base font-semibold tabular-nums">
-            {stage === "delivered" ? "—" : `${eta}m`}
+            {stage === "delivered" ? "-" : `${eta}m`}
           </div>
         </div>
       </div>

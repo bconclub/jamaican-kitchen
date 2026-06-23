@@ -2,14 +2,14 @@
 @tailwind components;
 @tailwind utilities;
 
-/* Jamaican Kitchen — Brand Book v2.0 design system
+/* Jamaican Kitchen, Brand Book v2.0 design system
    Flag Gold #FED100 · Flag Green #009B3A · Black #0E0E0E · off-white bg.
    All colors MUST be HSL.
 */
 
 @layer base {
   :root {
-    /* Brand fonts (licensed fonts swap in here — see index.html) */
+    /* Brand fonts (licensed fonts swap in here, see index.html) */
     --font-display: "Fredoka", "Poppins", system-ui, sans-serif;       /* Tomato Ketchup */
     --font-heading: "Poppins", system-ui, sans-serif;                  /* Geomanist */
     --font-body: "Nunito Sans", system-ui, sans-serif;                 /* Avenir */

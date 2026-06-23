@@ -223,7 +223,7 @@ export function TopBar() {
                 <div className="space-y-1">
                   <div className="font-medium">{panelOrder.customerName}</div>
                   <div className="flex items-center gap-1 text-muted-foreground">
-                    <MapPin className="h-3.5 w-3.5" /> {locName.get(panelOrder.locationId) ?? "—"} · {panelOrder.type.replace("_", " ")}
+                    <MapPin className="h-3.5 w-3.5" /> {locName.get(panelOrder.locationId) ?? "-"} · {panelOrder.type.replace("_", " ")}
                   </div>
                   <div className="text-xs text-muted-foreground">{format(new Date(panelOrder.createdAt), "MMM d, h:mm a")}</div>
                 </div>

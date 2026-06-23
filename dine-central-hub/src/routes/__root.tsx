@@ -30,9 +30,9 @@ export const Route = createRootRoute({
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
-      { title: "Jamaican Kitchen — Admin Dashboard" },
+      { title: "Jamaican Kitchen, Admin Dashboard" },
       { name: "description", content: "Operations dashboard for Jamaican Kitchen CT" },
-      { property: "og:title", content: "Jamaican Kitchen — Admin Dashboard" },
+      { property: "og:title", content: "Jamaican Kitchen, Admin Dashboard" },
       { property: "og:description", content: "Operations dashboard for Jamaican Kitchen CT" },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary" },

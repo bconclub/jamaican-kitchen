@@ -74,7 +74,7 @@ export const Testimonials = () => {
             What Our Guests Are Saying
           </h2>
           <p className="text-muted-foreground max-w-2xl mx-auto">
-            Don't just take our word for it — hear from our satisfied customers about their Jamaican Kitchen experience
+            Don't just take our word for it, hear from our satisfied customers about their Jamaican Kitchen experience
           </p>
         </div>
 

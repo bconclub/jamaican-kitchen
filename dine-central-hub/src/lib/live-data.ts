@@ -82,7 +82,7 @@ export function useLiveOrders() {
 
   useEffect(() => {
     reload();
-    // Unique channel name per hook instance — Supabase rejects duplicate-named channels.
+    // Unique channel name per hook instance, Supabase rejects duplicate-named channels.
     const ch = supabase
       .channel(`admin-orders-feed-${channelId}`)
       .on("postgres_changes", { event: "*", schema: "public", table: "orders" }, reload)
@@ -175,7 +175,7 @@ function mapCatering(r: DbCateringRequest): Order {
     catering: {
       eventDate,
       guests: r.guest_count ?? 0,
-      contactPhone: r.phone ?? "—",
+      contactPhone: r.phone ?? "-",
       setupRequired: false,
     },
   };
@@ -270,7 +270,7 @@ export function useLiveCustomers() {
             orders: a?.count ?? 0,
             lifetimeValue: a?.ltv ?? 0,
             lastOrder: a?.last ?? c.created_at,
-            favorite: "—",
+            favorite: "-",
             tags: [],
           };
         }),

@@ -61,7 +61,7 @@ const Contact = () => {
               <MapPin className="h-5 w-5 text-primary mt-0.5" />
               <div>
                 <div className="font-semibold">Locations</div>
-                <div className="text-sm text-muted-foreground">6 across Connecticut — see the Locations page.</div>
+                <div className="text-sm text-muted-foreground">6 across Connecticut, see the Locations page.</div>
               </div>
             </CardContent>
           </Card>

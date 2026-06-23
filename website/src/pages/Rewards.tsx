@@ -27,7 +27,7 @@ const Rewards = () => (
       <div className="text-center bg-muted/50 rounded-xl p-8">
         <h3 className="text-xl font-bold mb-2">Rewards are coming soon</h3>
         <p className="text-muted-foreground">
-          We're putting the finishing touches on our loyalty program. Order online today — your points
+          We're putting the finishing touches on our loyalty program. Order online today, your points
           will be waiting for you when it launches.
         </p>
       </div>

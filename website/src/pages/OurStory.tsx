@@ -1,7 +1,7 @@
 import { PageLayout } from "@/components/PageLayout";
 
 const milestones = [
-  { year: "2018", text: "Our first kitchen opens in Vernon, CT — a single counter serving jerk chicken and patties to a growing line of regulars." },
+  { year: "2018", text: "Our first kitchen opens in Vernon, CT, a single counter serving jerk chicken and patties to a growing line of regulars." },
   { year: "2020", text: "Demand for authentic catering takes off. We expand into South Windsor and Windsor Locks." },
   { year: "2022", text: "Three more locations open across Connecticut as word of our oxtail and curry goat spreads." },
   { year: "Today", text: "Six kitchens, one mission: serve the real taste of Jamaica to every neighborhood we call home." },

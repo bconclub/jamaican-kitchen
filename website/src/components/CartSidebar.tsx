@@ -7,7 +7,7 @@ import { useCart } from "@/contexts/CartContext";
 import { SpiceLevelBadge } from "./SpiceLevelBadge";
 import { CheckoutDialog } from "./CheckoutDialog";
 
-// Global cart drawer — opened from the header cart icon, mounted once in App.
+// Global cart drawer, opened from the header cart icon, mounted once in App.
 export const CartSidebar = () => {
   const { items, totalItems, totalPrice, updateQuantity, removeItem, clearCart, isCartOpen, setCartOpen } = useCart();
 

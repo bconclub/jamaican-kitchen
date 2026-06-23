@@ -116,7 +116,7 @@ export const CheckoutDialog = ({ trigger }: { trigger: React.ReactNode }) => {
         ) : (
           <>
             <DialogHeader>
-              <DialogTitle>Checkout — Pickup</DialogTitle>
+              <DialogTitle>Checkout (Pickup)</DialogTitle>
             </DialogHeader>
             <div className="space-y-4 py-2">
               <div className="space-y-2">
@@ -176,7 +176,7 @@ export const CheckoutDialog = ({ trigger }: { trigger: React.ReactNode }) => {
                     <Loader2 className="h-4 w-4 mr-2 animate-spin" /> Placing order…
                   </>
                 ) : (
-                  `Place Order — $${total.toFixed(2)}`
+                  `Place Order  ·  $${total.toFixed(2)}`
                 )}
               </Button>
             </DialogFooter>

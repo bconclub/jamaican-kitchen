@@ -57,7 +57,7 @@ function AnalyticsPage() {
       byDay.set(day, e);
     }
     const arr = Array.from(byDay.values());
-    return arr.length ? arr : [{ day: "—", web: 0, app: 0, total: 0 }];
+    return arr.length ? arr : [{ day: "-", web: 0, app: 0, total: 0 }];
   }, [orders]);
 
   const totalRevenue = revenue.reduce((s, d) => s + d.total, 0);

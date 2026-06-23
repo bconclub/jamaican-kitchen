@@ -141,7 +141,7 @@ function OrderDetail() {
                 </div>
               ) : (
                 <div className="text-sm text-muted-foreground">
-                  No review yet — review request will be sent after order completion.
+                  No review yet, review request will be sent after order completion.
                 </div>
               )}
             </CardContent>

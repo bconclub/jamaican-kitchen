@@ -22,7 +22,7 @@ import {
 import { toast } from "sonner";
 import { format } from "date-fns";
 
-// Deterministic mock helpers — duration, staff comments, customer reviews.
+// Deterministic mock helpers, duration, staff comments, customer reviews.
 function durationMinutes(o: { id: string; status: OrderStatus; createdAt: string }) {
   const seed = [...o.id].reduce((a, c) => a + c.charCodeAt(0), 0);
   if (o.status === "completed") return 18 + (seed % 22); // 18-39 min total
@@ -30,7 +30,7 @@ function durationMinutes(o: { id: string; status: OrderStatus; createdAt: string
   // in-progress: time elapsed since creation
   return Math.max(1, Math.round((Date.now() - new Date(o.createdAt).getTime()) / 60000));
 }
-// Live elapsed time in seconds since order placed — used for ticking countdown.
+// Live elapsed time in seconds since order placed, used for ticking countdown.
 function liveElapsedSeconds(createdAt: string) {
   return Math.max(0, Math.floor((Date.now() - new Date(createdAt).getTime()) / 1000));
 }
@@ -47,10 +47,10 @@ function isFinal(s: OrderStatus) {
 }
 const STAFF_NOTES = [
   "Double oxtail, extra gravy on the side.",
-  "Customer is a regular — please prioritise.",
+  "Customer is a regular, please prioritise.",
   "Allergy: shellfish. Confirmed with kitchen.",
   "Running 5 min behind, courier notified.",
-  "Repacked patties — first batch was cold.",
+  "Repacked patties, first batch was cold.",
 ];
 const REVIEWS = [
   { rating: 5, text: "Best jerk chicken in CT, hands down." },
@@ -211,7 +211,7 @@ function OrdersPage() {
               </thead>
               <tbody>
                 {filtered.map((o) => {
-                  const locationName = locName.get(o.locationId) ?? "—";
+                  const locationName = locName.get(o.locationId) ?? "-";
                   return (
                     <tr key={o.id} className="border-b hover:bg-muted/50">
                       <td className="py-2.5">

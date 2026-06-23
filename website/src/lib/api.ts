@@ -1,4 +1,4 @@
-// Data access layer — Supabase-backed, with graceful fallback to static data
+// Data access layer, Supabase-backed, with graceful fallback to static data
 // so the storefront keeps rendering even before the schema is applied.
 import { supabase } from "@/integrations/supabase/client";
 import { menuCategories as staticMenu, type MenuCategory } from "@/data/menuData";

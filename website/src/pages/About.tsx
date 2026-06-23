@@ -4,7 +4,7 @@ import { Heart, Leaf, Users } from "lucide-react";
 
 const values = [
   { icon: Heart, title: "Made with Love", text: "Family recipes passed down through generations, cooked fresh every day." },
-  { icon: Leaf, title: "Authentic Ingredients", text: "Real scotch bonnet, pimento, and island spices — never shortcuts." },
+  { icon: Leaf, title: "Authentic Ingredients", text: "Real scotch bonnet, pimento, and island spices, never shortcuts." },
   { icon: Users, title: "Community First", text: "Proudly serving Connecticut neighborhoods across six locations." },
 ];
 
@@ -13,7 +13,7 @@ const About = () => (
     <div className="max-w-3xl mx-auto space-y-6 text-muted-foreground leading-relaxed">
       <p>
         Jamaican Kitchen brings the bold, soulful flavors of the Caribbean to Connecticut. From smoky
-        jerk chicken to fall-off-the-bone oxtail, every plate is cooked the way it would be back home —
+        jerk chicken to fall-off-the-bone oxtail, every plate is cooked the way it would be back home -
         slow, seasoned, and full of heart.
       </p>
       <p>

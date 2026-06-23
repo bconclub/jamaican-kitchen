@@ -30,8 +30,8 @@ function MessagesPage() {
       <PageHeader title="Messages" description="Catering requests and contact form submissions from the website." />
       <div className="grid gap-4 md:grid-cols-3 mb-6">
         <Stat label="Catering requests" value={catering.length.toString()} icon={PartyPopper} />
-        <Stat label="Contact messages" value={tableMissing ? "—" : messages.length.toString()} icon={Inbox} />
-        <Stat label="New contact" value={tableMissing ? "—" : messages.filter((m) => m.status === "new").length.toString()} icon={Mail} />
+        <Stat label="Contact messages" value={tableMissing ? "-" : messages.length.toString()} icon={Inbox} />
+        <Stat label="New contact" value={tableMissing ? "-" : messages.filter((m) => m.status === "new").length.toString()} icon={Mail} />
       </div>
 
       <Tabs defaultValue="catering">
@@ -66,7 +66,7 @@ function MessagesPage() {
 
         <TabsContent value="contact" className="mt-0 space-y-3">
           {tableMissing ? (
-            <EmptyState text="The contact_messages table isn't set up yet — apply it in Supabase and messages will appear here." />
+            <EmptyState text="The contact_messages table isn't set up yet, apply it in Supabase and messages will appear here." />
           ) : messages.length === 0 ? (
             <EmptyState text="No contact messages yet. Submissions from the website Contact page appear here." />
           ) : (

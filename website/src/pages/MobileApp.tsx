@@ -9,15 +9,15 @@ const MobileApp = () => (
         <Smartphone className="h-10 w-10 text-primary" />
       </div>
       <p className="text-muted-foreground mb-8">
-        The Jamaican Kitchen app puts the whole menu in your pocket — reorder favorites in a tap, save
+        The Jamaican Kitchen app puts the whole menu in your pocket, reorder favorites in a tap, save
         your pickup location, and skip the line.
       </p>
       <div className="flex flex-col sm:flex-row gap-4 justify-center">
         <Button size="lg" variant="outline" className="gap-2" disabled>
-          <Apple className="h-5 w-5" /> App Store — Coming Soon
+          <Apple className="h-5 w-5" /> App Store (Coming Soon)
         </Button>
         <Button size="lg" variant="outline" className="gap-2" disabled>
-          <Smartphone className="h-5 w-5" /> Google Play — Coming Soon
+          <Smartphone className="h-5 w-5" /> Google Play (Coming Soon)
         </Button>
       </div>
     </div>
