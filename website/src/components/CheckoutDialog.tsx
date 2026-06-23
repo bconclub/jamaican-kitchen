@@ -27,7 +27,7 @@ import { toast } from "sonner";
 const TAX_RATE = 0.0635; // CT sales tax
 
 export const CheckoutDialog = ({ trigger }: { trigger: React.ReactNode }) => {
-  const { items, totalPrice, clearCart, pickupLocation } = useCart();
+  const { items, totalPrice, clearCart, pickupLocation, setCartOpen } = useCart();
   const { data: locations } = useLocations();
 
   const [open, setOpen] = useState(false);
@@ -116,7 +116,17 @@ export const CheckoutDialog = ({ trigger }: { trigger: React.ReactNode }) => {
             <p className="text-sm text-muted-foreground mb-6">
               We'll have it ready for pickup. Show this number at the counter.
             </p>
-            <Button className="w-full" onClick={() => setOpen(false)}>
+            <Button
+              className="w-full"
+              onClick={() => {
+                // Clear the cart now that the customer has seen their order number.
+                // (Done sets open=false programmatically, which doesn't fire onOpenChange,
+                // so we clear here rather than relying on it.)
+                clearCart();
+                setOpen(false);
+                setCartOpen(false);
+              }}
+            >
               Done
             </Button>
           </div>

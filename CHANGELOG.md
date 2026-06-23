@@ -27,6 +27,13 @@
 
 - **Bug:** placing an order called `clearCart()` immediately on success. The `CheckoutDialog` is mounted inside `CartSidebar`'s non-empty branch, so emptying the cart unmounted the dialog and the "Order Confirmed!" / order-number screen never appeared (order still placed fine, but no confirmation).
 - **Fix:** defer `clearCart()` to when the confirmation dialog is dismissed (`onOpenChange` close) instead of on success, so the thank-you screen with the order number (`JK-XXXXX`) stays up until the customer clicks Done.
+- (5507fee)
+
+
+## 2026-06-23 22:55 IST · Fix: cart not clearing after Done on order confirmation
+
+- Follow-up to the confirmation fix: the **Done** button calls `setOpen(false)` programmatically, which (in a controlled Radix Dialog) does NOT fire `onOpenChange` — so the deferred `clearCart()` never ran and the placed order's items lingered in the cart.
+- **Fix:** `clearCart()` directly in the Done handler, and also `setCartOpen(false)` so the cart drawer closes for a clean finish after an order. Verified live: order `JK-71A2E` placed on prod, confirmation showed the number, Done cleared the cart and closed the drawer.
 - (HEAD)
 
 
