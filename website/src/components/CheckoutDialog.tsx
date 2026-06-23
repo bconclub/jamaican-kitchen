@@ -81,7 +81,9 @@ export const CheckoutDialog = ({ trigger }: { trigger: React.ReactNode }) => {
         notes: notes.trim() || undefined,
       });
       setPlaced({ shortId: result.shortId });
-      clearCart();
+      // NOTE: don't clearCart() here — the cart becoming empty unmounts this dialog
+      // (it lives in CartSidebar's non-empty branch) and the confirmation never shows.
+      // We clear the cart when the confirmation is dismissed instead (see onOpenChange).
     } catch (err) {
       console.error(err);
       toast.error("Could not place your order. Please try again.");
@@ -95,7 +97,12 @@ export const CheckoutDialog = ({ trigger }: { trigger: React.ReactNode }) => {
       open={open}
       onOpenChange={(o) => {
         setOpen(o);
-        if (!o) reset();
+        if (!o) {
+          // If an order was placed, clear the cart now (on dismiss) rather than on
+          // success, so the confirmation screen stays mounted while it's shown.
+          if (placed) clearCart();
+          reset();
+        }
       }}
     >
       <DialogTrigger asChild>{trigger}</DialogTrigger>

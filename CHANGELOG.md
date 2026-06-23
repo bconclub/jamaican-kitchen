@@ -20,6 +20,13 @@
 - Removed the dev-only `lovable-tagger` Vite plugin from `website/vite.config.ts` + `package.json` (and pruned the lockfile). Zero production impact — it only injected editor data-attrs in dev.
 - Deleted the `dine-central-hub/.lovable/` planning-doc artifact.
 - Note: NOT touched (functional deps, would need a migration, not branding): admin build runs on `@lovable.dev/vite-tanstack-config`; website chatbot still calls the Lovable AI gateway (`LOVABLE_API_KEY` in `supabase/functions/chat`). The rendered apps show no Lovable branding — `index.html`, meta/OG, favicon, and all components are Jamaican Kitchen.
+- (00e407a)
+
+
+## 2026-06-23 22:35 IST · Fix: order confirmation (thank-you) screen never showed
+
+- **Bug:** placing an order called `clearCart()` immediately on success. The `CheckoutDialog` is mounted inside `CartSidebar`'s non-empty branch, so emptying the cart unmounted the dialog and the "Order Confirmed!" / order-number screen never appeared (order still placed fine, but no confirmation).
+- **Fix:** defer `clearCart()` to when the confirmation dialog is dismissed (`onOpenChange` close) instead of on success, so the thank-you screen with the order number (`JK-XXXXX`) stays up until the customer clicks Done.
 - (HEAD)
 
 
