@@ -89,30 +89,44 @@ export interface PlaceOrderInput {
   tip?: number;
   notes?: string;
   address?: string;
+  walletRedeem?: number; // amount of wallet balance to apply
 }
 
 export interface PlacedOrder {
   orderId: string;
   shortId: string;
+  cashbackEarned: number;
+  walletBalance: number;
 }
 
 /** Submit an order via the place_order security-definer RPC. */
 export async function placeOrder(input: PlaceOrderInput): Promise<PlacedOrder> {
-  const { data, error } = await supabase.rpc("place_order", {
-    p_location_slug: input.locationSlug,
-    p_customer: input.customer,
-    p_type: input.type,
-    p_items: input.items,
-    p_subtotal: input.subtotal,
-    p_tax: input.tax,
-    p_tip: input.tip ?? 0,
-    p_notes: input.notes ?? null,
-    p_address: input.address ?? null,
-  });
+  // New RPC args (p_wallet_redeem) aren't in the generated types yet.
+  const { data, error } = await (supabase.rpc as unknown as (fn: string, args: Record<string, unknown>) => Promise<{ data: unknown; error: { message: string } | null }>)(
+    "place_order",
+    {
+      p_location_slug: input.locationSlug,
+      p_customer: input.customer,
+      p_type: input.type,
+      p_items: input.items,
+      p_subtotal: input.subtotal,
+      p_tax: input.tax,
+      p_tip: input.tip ?? 0,
+      p_notes: input.notes ?? null,
+      p_address: input.address ?? null,
+      p_wallet_redeem: input.walletRedeem ?? 0,
+    },
+  );
   if (error) throw error;
-  const row = Array.isArray(data) ? data[0] : data;
+  const rows = data as Array<{ order_id: string; short_id: string; cashback_earned?: number; wallet_balance?: number }> | null;
+  const row = Array.isArray(rows) ? rows[0] : rows;
   if (!row) throw new Error("Order could not be created");
-  return { orderId: row.order_id, shortId: row.short_id };
+  return {
+    orderId: row.order_id,
+    shortId: row.short_id,
+    cashbackEarned: Number(row.cashback_earned ?? 0),
+    walletBalance: Number(row.wallet_balance ?? 0),
+  };
 }
 
 export interface CateringInput {

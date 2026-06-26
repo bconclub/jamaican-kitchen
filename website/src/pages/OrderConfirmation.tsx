@@ -3,7 +3,7 @@ import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
 import { Button } from "@/components/ui/button";
 import { useCart } from "@/contexts/CartContext";
-import { CheckCircle2, MapPin, Phone, Receipt, Clock, CreditCard, ShoppingBag } from "lucide-react";
+import { CheckCircle2, MapPin, Phone, Receipt, Clock, CreditCard, ShoppingBag, Wallet } from "lucide-react";
 
 const OrderConfirmation = () => {
   const { lastOrder } = useCart();
@@ -73,6 +73,28 @@ const OrderConfirmation = () => {
               </div>
             </div>
           </div>
+
+          {/* Cashback / wallet */}
+          {(o.cashbackEarned ?? 0) > 0 && (
+            <div className="rounded-2xl border-2 border-primary/30 bg-primary/5 p-5 md:p-6 mb-6">
+              <h2 className="flex items-center gap-2 font-bold text-lg mb-1">
+                <Wallet className="h-5 w-5 text-secondary" /> You earned ${(o.cashbackEarned ?? 0).toFixed(2)} cashback
+              </h2>
+              {o.signedIn ? (
+                <p className="text-sm text-muted-foreground">
+                  Your wallet balance is now <span className="font-semibold text-secondary">${(o.walletBalance ?? 0).toFixed(2)}</span>.
+                  Spend it on your next order.{" "}
+                  <Link to="/account" className="font-medium text-primary underline">View wallet</Link>
+                </p>
+              ) : (
+                <p className="text-sm text-muted-foreground">
+                  It's waiting in your wallet.{" "}
+                  <Link to="/account" className="font-medium text-primary underline">Sign in with your email</Link>{" "}
+                  to claim it and spend it on your next order.
+                </p>
+              )}
+            </div>
+          )}
 
           {/* Pickup details */}
           <div className="rounded-2xl border-2 border-border bg-card p-5 md:p-6 mb-6">
