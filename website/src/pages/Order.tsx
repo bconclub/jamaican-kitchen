@@ -8,7 +8,7 @@ import { useMenu } from "@/hooks/useMenu";
 import { useCart } from "@/contexts/CartContext";
 import { Button } from "@/components/ui/button";
 import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
-import { Download, Share2 } from "lucide-react";
+import { Share2 } from "lucide-react";
 import { toast } from "sonner";
 const Order = () => {
   const { data: menuCategories } = useMenu();
@@ -33,13 +33,8 @@ const Order = () => {
                 </p>
               </div>
               <div className="flex items-center gap-3">
-                <Button variant="outline" size="sm" className="bg-secondary-foreground/10 border-secondary-foreground/20 text-secondary-foreground hover:bg-secondary-foreground/20" onClick={() => {
-                window.print();
-                toast.success("Preparing menu for download...");
-              }}>
-                  <Download className="h-4 w-4 mr-2" />
-                  Download Menu
-                </Button>
+                {/* Download Menu removed: the menu is dynamic (prices/availability change),
+                    so a downloaded copy would go stale. Online menu stays the source of truth. */}
                 <Button variant="outline" size="sm" className="bg-secondary-foreground/10 border-secondary-foreground/20 text-secondary-foreground hover:bg-secondary-foreground/20" onClick={async () => {
                 if (navigator.share) {
                   try {
