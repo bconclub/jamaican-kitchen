@@ -31,6 +31,7 @@ interface DbOrder {
   address: string | null;
   notes: string | null;
   created_at: string;
+  updated_at: string | null;
   order_items: DbOrderItem[];
 }
 
@@ -59,6 +60,7 @@ function mapOrder(o: DbOrder): Order {
     status: o.status,
     type: o.type === "dine_in" ? "dine_in" : o.type,
     createdAt: o.created_at,
+    updatedAt: o.updated_at ?? o.created_at,
     etaMinutes: o.eta_minutes ?? 20,
     address: o.address ?? undefined,
     notes: o.notes ?? undefined,

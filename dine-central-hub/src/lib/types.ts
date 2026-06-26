@@ -46,6 +46,7 @@ export interface Order {
   status: OrderStatus;
   type: "delivery" | "pickup" | "dine_in";
   createdAt: string; // ISO
+  updatedAt?: string; // ISO, last status change (used to freeze the duration timer)
   etaMinutes: number;
   address?: string;
   notes?: string;

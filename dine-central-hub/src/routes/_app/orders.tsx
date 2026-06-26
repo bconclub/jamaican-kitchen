@@ -45,6 +45,15 @@ function formatHMS(totalSeconds: number) {
 function isFinal(s: OrderStatus) {
   return s === "completed" || s === "cancelled";
 }
+// The prep timer ticks only while the order is being worked on. Once it's
+// Ready (or beyond), the timer freezes at the elapsed prep time.
+function isTicking(s: OrderStatus) {
+  return s === "new" || s === "accepted" || s === "preparing";
+}
+function frozenMinutes(o: { createdAt: string; updatedAt?: string }) {
+  const end = o.updatedAt ? new Date(o.updatedAt).getTime() : Date.now();
+  return Math.max(1, Math.round((end - new Date(o.createdAt).getTime()) / 60000));
+}
 const STAFF_NOTES = [
   "Double oxtail, extra gravy on the side.",
   "Customer is a regular, please prioritise.",
@@ -227,16 +236,16 @@ function OrdersPage() {
                       <td className="py-2.5">
                         <span
                           className={`inline-flex items-center gap-1 rounded-md px-1.5 py-0.5 text-xs tabular-nums ${
-                            isFinal(o.status)
-                              ? "bg-muted text-foreground"
-                              : "bg-warning/10 text-warning-foreground"
+                            isTicking(o.status)
+                              ? "bg-warning/10 text-warning-foreground"
+                              : "bg-muted text-foreground"
                           }`}
                         >
                           <Timer className="h-3 w-3" />
-                          {isFinal(o.status)
-                            ? `${durationMinutes(o)}m`
-                            : formatHMS(liveElapsedSeconds(o.createdAt))}
-                          {!isFinal(o.status) && <span className="opacity-60">· live</span>}
+                          {isTicking(o.status)
+                            ? formatHMS(liveElapsedSeconds(o.createdAt))
+                            : `${frozenMinutes(o)}m`}
+                          {isTicking(o.status) && <span className="opacity-60">· live</span>}
                         </span>
                       </td>
                       <td className="py-2.5"><StatusPill status={o.status} /></td>
