@@ -4,7 +4,7 @@ import { PageLayout } from "@/components/PageLayout";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Gift, Star, Trophy, Wallet, Loader2, Mail, LogOut, ArrowDownLeft, ArrowUpRight, Receipt } from "lucide-react";
+import { Gift, Star, Trophy, Wallet, Loader2, Mail, LogOut, ArrowDownLeft, ArrowUpRight, Receipt, ChevronDown } from "lucide-react";
 import { useAuth } from "@/lib/auth";
 import { fetchMyWallet, fetchMyOrders, type WalletSummary, type MyOrder, CASHBACK_RATE } from "@/lib/loyalty";
 
@@ -24,6 +24,7 @@ const Rewards = () => {
   const [wallet, setWallet] = useState<WalletSummary | null>(null);
   const [orders, setOrders] = useState<MyOrder[]>([]);
   const [loadingData, setLoadingData] = useState(false);
+  const [openOrder, setOpenOrder] = useState<string | null>(null);
 
   useEffect(() => {
     if (!session) {
@@ -145,20 +146,46 @@ const Rewards = () => {
                 </p>
               ) : (
                 <div className="space-y-2">
-                  {orders.map((o) => (
-                    <div key={o.id} className="flex items-center justify-between rounded-lg border border-border p-3">
-                      <div>
-                        <p className="text-sm font-semibold text-secondary">{o.shortId}</p>
-                        <p className="text-xs text-muted-foreground">
-                          {new Date(o.createdAt).toLocaleDateString()} · <span className="capitalize">{o.status.replace(/_/g, " ")}</span>
-                        </p>
+                  {orders.map((o) => {
+                    const open = openOrder === o.id;
+                    return (
+                      <div key={o.id} className="rounded-lg border border-border overflow-hidden">
+                        <button
+                          type="button"
+                          onClick={() => setOpenOrder(open ? null : o.id)}
+                          className="w-full flex items-center justify-between p-3 text-left hover:bg-muted/40 transition-colors"
+                        >
+                          <div className="flex items-center gap-2">
+                            <ChevronDown className={`h-4 w-4 text-muted-foreground transition-transform ${open ? "rotate-180" : ""}`} />
+                            <div>
+                              <p className="text-sm font-semibold text-secondary">{o.shortId}</p>
+                              <p className="text-xs text-muted-foreground">
+                                {new Date(o.createdAt).toLocaleDateString()} · <span className="capitalize">{o.status.replace(/_/g, " ")}</span> · {o.items.reduce((n, it) => n + it.qty, 0)} item{o.items.reduce((n, it) => n + it.qty, 0) === 1 ? "" : "s"}
+                              </p>
+                            </div>
+                          </div>
+                          <div className="text-right">
+                            <p className="font-semibold">${o.total.toFixed(2)}</p>
+                            {o.cashbackEarned > 0 && <p className="text-xs text-primary">+${o.cashbackEarned.toFixed(2)} back</p>}
+                          </div>
+                        </button>
+                        {open && (
+                          <div className="border-t border-border bg-muted/30 px-3 py-2 space-y-1">
+                            {o.items.length === 0 ? (
+                              <p className="text-xs text-muted-foreground">Item details unavailable.</p>
+                            ) : (
+                              o.items.map((it, i) => (
+                                <div key={i} className="flex items-center justify-between text-sm">
+                                  <span>{it.qty} × {it.name}</span>
+                                  <span className="text-muted-foreground">${(it.price * it.qty).toFixed(2)}</span>
+                                </div>
+                              ))
+                            )}
+                          </div>
+                        )}
                       </div>
-                      <div className="text-right">
-                        <p className="font-semibold">${o.total.toFixed(2)}</p>
-                        {o.cashbackEarned > 0 && <p className="text-xs text-primary">+${o.cashbackEarned.toFixed(2)} back</p>}
-                      </div>
-                    </div>
-                  ))}
+                    );
+                  })}
                 </div>
               )}
             </div>

@@ -245,3 +245,12 @@ create policy "staff manage reviews" on public.reviews for all
 drop policy if exists "customer reads own orders" on public.orders;
 create policy "customer reads own orders" on public.orders for select
   using (customer_id in (select id from public.customers where auth_user_id = auth.uid()));
+
+-- a customer reading the line items of their own orders
+drop policy if exists "customer reads own order items" on public.order_items;
+create policy "customer reads own order items" on public.order_items for select
+  using (order_id in (
+    select o.id from public.orders o
+    join public.customers c on c.id = o.customer_id
+    where c.auth_user_id = auth.uid()
+  ));

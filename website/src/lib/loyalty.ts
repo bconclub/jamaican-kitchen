@@ -54,6 +54,12 @@ export async function fetchMyWalletBalance(): Promise<number> {
   return Number((data as { balance?: number } | null)?.balance ?? 0);
 }
 
+export interface MyOrderItem {
+  name: string;
+  qty: number;
+  price: number;
+}
+
 export interface MyOrder {
   id: string;
   shortId: string;
@@ -61,13 +67,14 @@ export interface MyOrder {
   cashbackEarned: number;
   status: string;
   createdAt: string;
+  items: MyOrderItem[];
 }
 
-/** The signed-in customer's past orders (RLS-scoped to their own). */
+/** The signed-in customer's past orders, with line items (RLS-scoped to their own). */
 export async function fetchMyOrders(): Promise<MyOrder[]> {
   const { data } = await db
     .from("orders")
-    .select("id, short_id, total, cashback_earned, status, created_at")
+    .select("id, short_id, total, cashback_earned, status, created_at, order_items(name, qty, price)")
     .order("created_at", { ascending: false })
     .limit(20);
   return ((data as Array<Record<string, unknown>> | null) ?? []).map((o) => ({
@@ -77,5 +84,10 @@ export async function fetchMyOrders(): Promise<MyOrder[]> {
     cashbackEarned: Number(o.cashback_earned ?? 0),
     status: String(o.status ?? "new"),
     createdAt: String(o.created_at ?? ""),
+    items: (((o.order_items as Array<Record<string, unknown>>) ?? []) || []).map((it) => ({
+      name: String(it.name ?? ""),
+      qty: Number(it.qty ?? 1),
+      price: Number(it.price ?? 0),
+    })),
   }));
 }
