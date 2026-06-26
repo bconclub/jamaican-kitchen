@@ -15,6 +15,7 @@ import { eventTypes } from "@/data/cateringData";
 import { Calendar, Users, MapPin, Phone, Mail, Send, CheckCircle2, Clock } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { submitCateringRequest } from "@/lib/api";
+import { useCateringCart } from "@/contexts/CateringCartContext";
 
 interface SubmittedSummary {
   name: string;
@@ -26,6 +27,7 @@ interface SubmittedSummary {
 
 export const EventBookingForm = () => {
   const { toast } = useToast();
+  const { items: selectedItems, totalPrice: selectionTotal, clearCart: clearCateringCart } = useCateringCart();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitted, setSubmitted] = useState<SubmittedSummary | null>(null);
   const [formData, setFormData] = useState({
@@ -55,6 +57,12 @@ export const EventBookingForm = () => {
     setIsSubmitting(true);
 
     try {
+      // Fold the catering selection into the request so the quote captures it.
+      const itemsLine = selectedItems.length
+        ? `Requested items: ${selectedItems.map((i) => `${i.quantity}x ${i.name}`).join(", ")} (est. $${selectionTotal.toFixed(2)})`
+        : "";
+      const fullMessage = [itemsLine, formData.message].filter(Boolean).join("\n\n");
+
       await submitCateringRequest({
         name: formData.name,
         email: formData.email,
@@ -63,8 +71,9 @@ export const EventBookingForm = () => {
         event_date: formData.eventDate || undefined,
         guest_count: formData.guestCount ? Number(formData.guestCount) : undefined,
         location: formData.location,
-        message: formData.message,
+        message: fullMessage,
       });
+      clearCateringCart();
 
       setSubmitted({
         name: formData.name,
@@ -294,6 +303,25 @@ export const EventBookingForm = () => {
               />
             </div>
           </div>
+
+          {selectedItems.length > 0 && (
+            <div className="rounded-lg border border-border bg-muted/40 p-3">
+              <p className="text-sm font-semibold mb-2">Your catering selection ({selectedItems.reduce((n, i) => n + i.quantity, 0)} items)</p>
+              <div className="space-y-1">
+                {selectedItems.map((i) => (
+                  <div key={i.id} className="flex justify-between text-sm">
+                    <span>{i.quantity} × {i.name}</span>
+                    <span className="text-muted-foreground">${(i.price * i.quantity).toFixed(2)}</span>
+                  </div>
+                ))}
+              </div>
+              <div className="flex justify-between text-sm font-semibold border-t border-border mt-2 pt-2">
+                <span>Estimated total</span>
+                <span className="text-secondary">${selectionTotal.toFixed(2)}</span>
+              </div>
+              <p className="text-xs text-muted-foreground mt-1">We'll confirm final pricing in your quote.</p>
+            </div>
+          )}
 
           <div className="space-y-2">
             <Label htmlFor="message">Additional Details</Label>

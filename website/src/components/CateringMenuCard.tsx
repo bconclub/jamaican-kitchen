@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import { SpiceLevelBadge } from "@/components/SpiceLevelBadge";
 import { CateringItem, PortionSize } from "@/data/cateringData";
 import { Users, Plus } from "lucide-react";
-import { useCart } from "@/contexts/CartContext";
+import { useCateringCart } from "@/contexts/CateringCartContext";
 import { toast } from "sonner";
 import {
   Dialog,
@@ -20,7 +20,7 @@ interface CateringMenuCardProps {
 
 export const CateringMenuCard = ({ item }: CateringMenuCardProps) => {
   const [isOpen, setIsOpen] = useState(false);
-  const { addItem } = useCart();
+  const { addItem } = useCateringCart();
 
   const lowestPrice = Math.min(...item.portions.map((p) => p.price));
   const highestPrice = Math.max(...item.portions.map((p) => p.price));
@@ -30,10 +30,9 @@ export const CateringMenuCard = ({ item }: CateringMenuCardProps) => {
       id: `${item.id}-${portion.id}`,
       name: `${item.name} (${portion.name})`,
       price: portion.price,
-      spiceLevel: item.spiceLevel,
       image: item.image,
     });
-    toast.success(`${item.name} (${portion.name}) added to cart!`);
+    toast.success(`${item.name} (${portion.name}) added to your catering selection!`);
     setIsOpen(false);
   };
 

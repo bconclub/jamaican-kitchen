@@ -4,9 +4,11 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { CartProvider } from "@/contexts/CartContext";
+import { CateringCartProvider } from "@/contexts/CateringCartContext";
 import { AuthProvider } from "@/lib/auth";
 import { Chatbot } from "@/components/Chatbot";
 import { CartSidebar } from "@/components/CartSidebar";
+import { CateringCartSidebar } from "@/components/CateringCartSidebar";
 import Index from "./pages/Index";
 import Order from "./pages/Order";
 import OrderConfirmation from "./pages/OrderConfirmation";
@@ -25,6 +27,7 @@ const App = () => (
   <QueryClientProvider client={queryClient}>
     <AuthProvider>
     <CartProvider>
+    <CateringCartProvider>
       <TooltipProvider>
         <Toaster />
         <Sonner />
@@ -46,9 +49,11 @@ const App = () => (
             <Route path="*" element={<NotFound />} />
           </Routes>
           <CartSidebar />
+          <CateringCartSidebar />
           <Chatbot />
         </BrowserRouter>
       </TooltipProvider>
+    </CateringCartProvider>
     </CartProvider>
     </AuthProvider>
   </QueryClientProvider>

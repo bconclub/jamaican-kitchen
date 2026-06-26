@@ -8,9 +8,11 @@ import { cateringCategories } from "@/data/cateringData";
 import { Button } from "@/components/ui/button";
 import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
 import { UtensilsCrossed, Users, Clock } from "lucide-react";
+import { useCateringCart } from "@/contexts/CateringCartContext";
 
 const Catering = () => {
   const [activeCategory, setActiveCategory] = useState(cateringCategories[0].id);
+  const { totalItems: cateringItems, open: openCateringCart } = useCateringCart();
 
   const scrollToCategory = (categoryId: string) => {
     setActiveCategory(categoryId);
@@ -118,7 +120,7 @@ const Catering = () => {
         </div>
 
         {/* Catering Request Form */}
-        <div className="bg-background py-12 border-t border-border">
+        <div id="catering-quote" className="bg-background py-12 border-t border-border scroll-mt-24">
           <div className="container mx-auto px-4 max-w-3xl">
             <div className="text-center mb-8">
               <h2 className="text-3xl font-bold mb-2">Book Your Event</h2>
@@ -166,6 +168,17 @@ const Catering = () => {
           </div>
         </div>
       </main>
+
+      {/* Floating button to reopen the catering selection (separate from the online cart) */}
+      {cateringItems > 0 && (
+        <button
+          onClick={openCateringCart}
+          className="fixed bottom-6 left-6 z-40 flex items-center gap-2 rounded-full bg-secondary px-5 py-3 font-semibold text-secondary-foreground shadow-xl hover:bg-secondary/90 transition-colors"
+        >
+          <UtensilsCrossed className="h-5 w-5" />
+          Catering selection ({cateringItems})
+        </button>
+      )}
 
       <Footer />
     </div>
