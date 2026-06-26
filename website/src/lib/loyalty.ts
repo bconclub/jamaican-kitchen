@@ -53,3 +53,29 @@ export async function fetchMyWalletBalance(): Promise<number> {
   const { data } = await db.from("customer_wallets").select("balance").maybeSingle();
   return Number((data as { balance?: number } | null)?.balance ?? 0);
 }
+
+export interface MyOrder {
+  id: string;
+  shortId: string;
+  total: number;
+  cashbackEarned: number;
+  status: string;
+  createdAt: string;
+}
+
+/** The signed-in customer's past orders (RLS-scoped to their own). */
+export async function fetchMyOrders(): Promise<MyOrder[]> {
+  const { data } = await db
+    .from("orders")
+    .select("id, short_id, total, cashback_earned, status, created_at")
+    .order("created_at", { ascending: false })
+    .limit(20);
+  return ((data as Array<Record<string, unknown>> | null) ?? []).map((o) => ({
+    id: String(o.id),
+    shortId: String(o.short_id ?? ""),
+    total: Number(o.total ?? 0),
+    cashbackEarned: Number(o.cashback_earned ?? 0),
+    status: String(o.status ?? "new"),
+    createdAt: String(o.created_at ?? ""),
+  }));
+}
