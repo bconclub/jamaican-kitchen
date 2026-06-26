@@ -304,40 +304,37 @@ export function useLiveMenu() {
   const [categories, setCategories] = useState<MenuCategory[]>([]);
   const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
-    let active = true;
-    (async () => {
-      const [{ data: cats }, { data: mi }] = await Promise.all([
-        supabase.from("menu_categories").select("*").order("sort_order"),
-        supabase.from("menu_items").select("*").order("sort_order"),
-      ]);
-      if (!active) return;
-      const catList: MenuCategory[] = (cats ?? []).map((c) => ({ id: c.id, name: c.name }));
-      const catSlugById = new Map((cats ?? []).map((c) => [c.id, c.slug as string]));
-      setCategories(catList);
-      setItems(
-        (mi ?? []).map((m) => ({
-          id: m.id,
-          categoryId: m.category_id ?? "",
-          name: m.name,
-          description: m.description ?? "",
-          basePrice: num(m.base_price),
-          available: m.available,
-          channelOverrides: {
-            web: { available: m.available, priceMultiplier: 1 },
-            app: { available: m.available, priceMultiplier: 1 },
-          },
-          stock: m.stock,
-          lowStockThreshold: m.low_stock_threshold,
-          imageEmoji: EMOJI_BY_CATEGORY[catSlugById.get(m.category_id ?? "") ?? ""] ?? "🍽️",
-        })),
-      );
-      setLoading(false);
-    })();
-    return () => {
-      active = false;
-    };
+  const reload = useCallback(async () => {
+    const [{ data: cats }, { data: mi }] = await Promise.all([
+      supabase.from("menu_categories").select("*").order("sort_order"),
+      supabase.from("menu_items").select("*").order("sort_order"),
+    ]);
+    const catList: MenuCategory[] = (cats ?? []).map((c) => ({ id: c.id, name: c.name }));
+    const catSlugById = new Map((cats ?? []).map((c) => [c.id, c.slug as string]));
+    setCategories(catList);
+    setItems(
+      (mi ?? []).map((m) => ({
+        id: m.id,
+        categoryId: m.category_id ?? "",
+        name: m.name,
+        description: m.description ?? "",
+        basePrice: num(m.base_price),
+        available: m.available,
+        channelOverrides: {
+          web: { available: m.available, priceMultiplier: 1 },
+          app: { available: m.available, priceMultiplier: 1 },
+        },
+        stock: m.stock,
+        lowStockThreshold: m.low_stock_threshold,
+        imageEmoji: EMOJI_BY_CATEGORY[catSlugById.get(m.category_id ?? "") ?? ""] ?? "🍽️",
+      })),
+    );
+    setLoading(false);
   }, []);
 
-  return { items, categories, loading };
+  useEffect(() => {
+    reload();
+  }, [reload]);
+
+  return { items, categories, loading, reload };
 }
