@@ -194,7 +194,7 @@ export const CheckoutDialog = ({ trigger }: { trigger: React.ReactNode }) => {
             <Textarea id="co-notes" value={notes} onChange={(e) => setNotes(e.target.value)} placeholder="Allergies, special requests…" rows={2} />
           </div>
 
-          {/* Wallet redemption — only for signed-in customers with a balance */}
+          {/* Wallet redemption, only for signed-in customers with a balance */}
           {session && walletBalance > 0 && (
             <button
               type="button"

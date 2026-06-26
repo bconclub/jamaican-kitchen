@@ -46,7 +46,7 @@ const Rewards = () => {
   };
 
   return (
-    <PageLayout title="Your Wallet" subtitle={`Earn ${Math.round(CASHBACK_RATE * 100)}% cashback on every order — spend it on your next meal.`}>
+    <PageLayout title="Your Wallet" subtitle={`Earn ${Math.round(CASHBACK_RATE * 100)}% cashback on every order. Spend it on your next meal.`}>
       <div className="max-w-3xl mx-auto">
         {/* Perks */}
         <div className="grid md:grid-cols-3 gap-6 mb-10">
@@ -79,7 +79,7 @@ const Rewards = () => {
                   <h3 className="font-bold text-lg mb-1">Check your email</h3>
                   <p className="text-sm text-muted-foreground">
                     We sent a sign-in link to <span className="font-medium">{email}</span>. Click it to
-                    open your wallet — no password needed.
+                    open your wallet, no password needed.
                   </p>
                 </div>
               ) : (

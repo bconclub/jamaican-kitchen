@@ -45,7 +45,7 @@ const OrderConfirmation = () => {
                   <p className="font-bold">You earned ${(o.cashbackEarned ?? 0).toFixed(2)} cashback!</p>
                   <p className="text-sm text-muted-foreground">
                     {(o.walletRedeemed ?? 0) > 0 && <>Used ${(o.walletRedeemed ?? 0).toFixed(2)} from your wallet. </>}
-                    It's in your wallet — sign in with your email to spend it on your next order.
+                    It's in your wallet. Sign in with your email to spend it on your next order.
                   </p>
                 </div>
                 <Link to="/account">
@@ -135,7 +135,7 @@ const OrderConfirmation = () => {
                 <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-primary text-sm font-bold text-primary-foreground">3</span>
                 <div>
                   <p className="font-medium flex items-center gap-1.5"><CreditCard className="h-4 w-4" /> Pay at pickup</p>
-                  <p className="text-sm text-muted-foreground">Pay when you collect your order — cash or card.</p>
+                  <p className="text-sm text-muted-foreground">Pay when you collect your order, cash or card.</p>
                 </div>
               </li>
             </ol>

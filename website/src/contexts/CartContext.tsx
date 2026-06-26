@@ -65,6 +65,7 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
       }
       return [...prev, { ...newItem, quantity: 1 }];
     });
+    setCartOpen(true); // open the order panel so you can see what was added
   };
 
   const removeItem = (id: string) => {
