@@ -3,7 +3,7 @@ import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
 import { Button } from "@/components/ui/button";
 import { useCart } from "@/contexts/CartContext";
-import { CheckCircle2, MapPin, Phone, Receipt, Clock, CreditCard, ShoppingBag } from "lucide-react";
+import { CheckCircle2, MapPin, Phone, Receipt, Clock, CreditCard, ShoppingBag, Wallet } from "lucide-react";
 
 const OrderConfirmation = () => {
   const { lastOrder } = useCart();
@@ -33,6 +33,29 @@ const OrderConfirmation = () => {
               <span className="text-3xl font-bold text-secondary">{o.shortId}</span>
             </div>
           </div>
+
+          {/* Cashback / wallet */}
+          {(o.cashbackEarned ?? 0) > 0 && (
+            <div className="rounded-2xl border-2 border-primary/30 bg-primary/5 p-5 mb-6">
+              <div className="flex items-center gap-3">
+                <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-primary/15">
+                  <Wallet className="h-6 w-6 text-primary" />
+                </div>
+                <div className="flex-1">
+                  <p className="font-bold">You earned ${(o.cashbackEarned ?? 0).toFixed(2)} cashback!</p>
+                  <p className="text-sm text-muted-foreground">
+                    {(o.walletRedeemed ?? 0) > 0 && <>Used ${(o.walletRedeemed ?? 0).toFixed(2)} from your wallet. </>}
+                    It's in your wallet — sign in with your email to spend it on your next order.
+                  </p>
+                </div>
+                <Link to="/account">
+                  <Button size="sm" variant="outline" className="border-primary text-primary hover:bg-primary/10">
+                    View wallet
+                  </Button>
+                </Link>
+              </div>
+            </div>
+          )}
 
           {/* What you ordered */}
           <div className="rounded-2xl border-2 border-border bg-card p-5 md:p-6 mb-6">

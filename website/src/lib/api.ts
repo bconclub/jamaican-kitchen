@@ -89,11 +89,14 @@ export interface PlaceOrderInput {
   tip?: number;
   notes?: string;
   address?: string;
+  walletRedeem?: number; // amount of wallet balance to apply
 }
 
 export interface PlacedOrder {
   orderId: string;
   shortId: string;
+  cashbackEarned: number;
+  walletBalance: number;
 }
 
 /** Submit an order via the place_order security-definer RPC. */
@@ -108,11 +111,22 @@ export async function placeOrder(input: PlaceOrderInput): Promise<PlacedOrder> {
     p_tip: input.tip ?? 0,
     p_notes: input.notes ?? null,
     p_address: input.address ?? null,
-  });
+    p_wallet_redeem: input.walletRedeem ?? 0,
+  } as never);
   if (error) throw error;
-  const row = Array.isArray(data) ? data[0] : data;
+  const row = (Array.isArray(data) ? data[0] : data) as {
+    order_id: string;
+    short_id: string;
+    cashback_earned?: number;
+    wallet_balance?: number;
+  } | null;
   if (!row) throw new Error("Order could not be created");
-  return { orderId: row.order_id, shortId: row.short_id };
+  return {
+    orderId: row.order_id,
+    shortId: row.short_id,
+    cashbackEarned: Number(row.cashback_earned ?? 0),
+    walletBalance: Number(row.wallet_balance ?? 0),
+  };
 }
 
 export interface CateringInput {

@@ -22,6 +22,9 @@ export interface PlacedOrderSummary {
   locationName: string;
   locationAddress: string;
   locationPhone: string;
+  walletRedeemed?: number;
+  cashbackEarned?: number;
+  walletBalance?: number;
 }
 
 interface CartContextType {

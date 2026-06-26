@@ -1,6 +1,6 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { Loader2 } from "lucide-react";
+import { Loader2, Wallet } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -23,6 +23,8 @@ import {
 import { useCart } from "@/contexts/CartContext";
 import { useLocations } from "@/hooks/useMenu";
 import { placeOrder } from "@/lib/api";
+import { useAuth } from "@/lib/auth";
+import { fetchMyWalletBalance, CASHBACK_RATE } from "@/lib/loyalty";
 import { toast } from "sonner";
 
 const TAX_RATE = 0.0635; // CT sales tax
@@ -30,6 +32,7 @@ const TAX_RATE = 0.0635; // CT sales tax
 export const CheckoutDialog = ({ trigger }: { trigger: React.ReactNode }) => {
   const { items, totalPrice, clearCart, pickupLocation, setCartOpen, setLastOrder } = useCart();
   const { data: locations } = useLocations();
+  const { session } = useAuth();
   const navigate = useNavigate();
 
   const [open, setOpen] = useState(false);
@@ -41,10 +44,24 @@ export const CheckoutDialog = ({ trigger }: { trigger: React.ReactNode }) => {
   const [locationSlug, setLocationSlug] = useState("");
   const [notes, setNotes] = useState("");
 
+  const [walletBalance, setWalletBalance] = useState(0);
+  const [useWallet, setUseWallet] = useState(false);
+
   const tax = totalPrice * TAX_RATE;
   const total = totalPrice + tax;
+  const cashback = Number((totalPrice * CASHBACK_RATE).toFixed(2));
+  const redeem = useWallet ? Math.min(walletBalance, total) : 0;
+  const payable = Math.max(0, total - redeem);
 
   const effectiveLocation = locationSlug || pickupLocation || locations?.[0]?.id || "vernon";
+
+  // When a signed-in customer opens checkout, load their wallet balance.
+  useEffect(() => {
+    if (open && session) {
+      fetchMyWalletBalance().then(setWalletBalance).catch(() => setWalletBalance(0));
+      if (session.user.email) setEmail((e) => e || session.user.email!);
+    }
+  }, [open, session]);
 
   const reset = () => {
     setName("");
@@ -52,6 +69,7 @@ export const CheckoutDialog = ({ trigger }: { trigger: React.ReactNode }) => {
     setEmail("");
     setNotes("");
     setLocationSlug("");
+    setUseWallet(false);
   };
 
   const handleSubmit = async () => {
@@ -79,30 +97,26 @@ export const CheckoutDialog = ({ trigger }: { trigger: React.ReactNode }) => {
         subtotal: Number(totalPrice.toFixed(2)),
         tax: Number(tax.toFixed(2)),
         notes: notes.trim() || undefined,
+        walletRedeem: redeem > 0 ? Number(redeem.toFixed(2)) : 0,
       });
 
-      // Snapshot the order (before clearing the cart) so the confirmation page
-      // can show what was ordered + next steps.
       const loc = (locations ?? []).find((l) => l.id === effectiveLocation);
       setLastOrder({
         shortId: result.shortId,
-        items: items.map((it) => ({
-          name: it.name,
-          quantity: it.quantity,
-          price: it.price,
-          image: it.image,
-        })),
+        items: items.map((it) => ({ name: it.name, quantity: it.quantity, price: it.price, image: it.image })),
         subtotal: Number(totalPrice.toFixed(2)),
         tax: Number(tax.toFixed(2)),
-        total: Number(total.toFixed(2)),
+        total: Number(payable.toFixed(2)),
         type: "pickup",
         customerName: name.trim(),
         locationName: loc?.name ?? "Jamaican Kitchen",
         locationAddress: loc?.address ?? "",
         locationPhone: loc?.phone ?? "",
+        walletRedeemed: redeem > 0 ? Number(redeem.toFixed(2)) : 0,
+        cashbackEarned: result.cashbackEarned,
+        walletBalance: result.walletBalance,
       });
 
-      // Close everything, clear the cart, and go to the proper thank-you page.
       setOpen(false);
       setCartOpen(false);
       clearCart();
@@ -180,6 +194,25 @@ export const CheckoutDialog = ({ trigger }: { trigger: React.ReactNode }) => {
             <Textarea id="co-notes" value={notes} onChange={(e) => setNotes(e.target.value)} placeholder="Allergies, special requests…" rows={2} />
           </div>
 
+          {/* Wallet redemption — only for signed-in customers with a balance */}
+          {session && walletBalance > 0 && (
+            <button
+              type="button"
+              onClick={() => setUseWallet((v) => !v)}
+              className={`w-full flex items-center justify-between rounded-lg border-2 p-3 text-left transition-colors ${
+                useWallet ? "border-primary bg-primary/5" : "border-border"
+              }`}
+            >
+              <span className="flex items-center gap-2 text-sm font-medium">
+                <Wallet className="h-4 w-4 text-secondary" />
+                Use my wallet (${walletBalance.toFixed(2)})
+              </span>
+              <span className={`flex h-5 w-5 items-center justify-center rounded-full border-2 ${useWallet ? "border-primary bg-primary" : "border-muted-foreground/40"}`}>
+                {useWallet && <span className="h-2 w-2 rounded-full bg-primary-foreground" />}
+              </span>
+            </button>
+          )}
+
           <div className="rounded-lg bg-muted/50 p-3 space-y-1 text-sm">
             <div className="flex justify-between">
               <span className="text-muted-foreground">Subtotal</span>
@@ -189,11 +222,20 @@ export const CheckoutDialog = ({ trigger }: { trigger: React.ReactNode }) => {
               <span className="text-muted-foreground">Tax (6.35%)</span>
               <span>${tax.toFixed(2)}</span>
             </div>
+            {redeem > 0 && (
+              <div className="flex justify-between text-primary">
+                <span>Wallet applied</span>
+                <span>-${redeem.toFixed(2)}</span>
+              </div>
+            )}
             <div className="flex justify-between font-bold text-base pt-1">
               <span>Total</span>
-              <span className="text-secondary">${total.toFixed(2)}</span>
+              <span className="text-secondary">${payable.toFixed(2)}</span>
             </div>
-            <p className="text-xs text-muted-foreground pt-1">Pay at pickup.</p>
+            <p className="flex items-center gap-1.5 text-xs text-primary pt-1">
+              <Wallet className="h-3.5 w-3.5" /> You'll earn ${cashback.toFixed(2)} cashback ({Math.round(CASHBACK_RATE * 100)}%) on this order.
+            </p>
+            <p className="text-xs text-muted-foreground">Pay at pickup.</p>
           </div>
         </div>
         <DialogFooter>
@@ -203,7 +245,7 @@ export const CheckoutDialog = ({ trigger }: { trigger: React.ReactNode }) => {
                 <Loader2 className="h-4 w-4 mr-2 animate-spin" /> Placing order…
               </>
             ) : (
-              `Place Order  ·  $${total.toFixed(2)}`
+              `Place Order  ·  $${payable.toFixed(2)}`
             )}
           </Button>
         </DialogFooter>
