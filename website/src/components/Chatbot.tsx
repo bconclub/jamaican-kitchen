@@ -1,34 +1,27 @@
 import { useState, useRef, useEffect } from "react";
 import { Link } from "react-router-dom";
-import { Sparkles, X, Send, Loader2, ArrowRight } from "lucide-react";
+import { Sparkles, X, Send, Loader2, ArrowRight, Plus } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { cn } from "@/lib/utils";
+import { useMenu } from "@/hooks/useMenu";
+import { useCart } from "@/contexts/CartContext";
+import type { MenuItem } from "@/data/menuData";
+import { toast } from "sonner";
 
-interface ProductCard {
-  name: string;
-  price: string;
-  description: string;
-  image: string;
-}
 type Message = {
   role: "user" | "assistant";
   content: string;
-  cards?: ProductCard[];
+  cards?: MenuItem[];
   link?: { label: string; href: string };
 };
 
 // Calls our own server endpoint — the OpenRouter key stays on the backend.
 const CHAT_URL = "/api/chat";
 
-// Curated best sellers (mirrors the homepage) — shown as inline cards in chat.
-const BEST_SELLERS: ProductCard[] = [
-  { name: "Oxtail", price: "$18.99", description: "Slow-cooked oxtail in rich brown gravy with butter beans", image: "https://images.unsplash.com/photo-1544025162-d76694265947?w=200&q=80" },
-  { name: "Curry Goat", price: "$17.99", description: "Traditional Jamaican curry goat, slow-cooked to perfection", image: "https://images.unsplash.com/photo-1585937421612-70a008356fbe?w=200&q=80" },
-  { name: "Jerk Chicken", price: "$14.99", description: "Authentic jerk chicken in our signature spice blend", image: "https://images.unsplash.com/photo-1532550907401-a500c9a57435?w=200&q=80" },
-  { name: "Pepper Steak", price: "$16.99", description: "Tender steak strips with bell peppers in savory brown sauce", image: "https://images.unsplash.com/photo-1504674900247-0877df9cc836?w=200&q=80" },
-  { name: "Escovitch Fish", price: "$15.99", description: "Crispy fried fish topped with pickled vegetables", image: "https://images.unsplash.com/photo-1580476262798-bddd9f4b7369?w=200&q=80" },
-];
+// Best sellers (mirrors the homepage). Resolved to real menu items at render so
+// cards carry valid prices/ids and can be added straight to the cart.
+const BEST_SELLER_NAMES = ["Oxtail", "Curry Goat", "Jerk Chicken", "Pepper Steak", "Escovitch Fish"];
 
 // Follow-up chips — always visible so the conversation can keep going.
 // `kind` controls behaviour: cards (best sellers), link (menu), or ask (send to AI).
@@ -55,6 +48,19 @@ function renderFormatted(text: string) {
 }
 
 export const Chatbot = () => {
+  const { data: menu } = useMenu();
+  const { addItem } = useCart();
+  // Resolve best-seller names to real menu items (valid id/price/spice for the cart).
+  const allItems: MenuItem[] = (menu ?? []).flatMap((c) => c.items);
+  const bestSellerItems: MenuItem[] = BEST_SELLER_NAMES.map((n) =>
+    allItems.find((it) => it.name.toLowerCase().includes(n.toLowerCase())),
+  ).filter((it): it is MenuItem => Boolean(it));
+
+  const handleAdd = (item: MenuItem) => {
+    addItem({ id: item.id, name: item.name, price: item.price, spiceLevel: item.spiceLevel, image: item.image });
+    toast.success(`${item.name} added to your order!`);
+  };
+
   const [isOpen, setIsOpen] = useState(false);
   const [messages, setMessages] = useState<Message[]>([
     { role: "assistant", content: "Welcome to Jamaican Kitchen! 🇯🇲 How can I help you today? Pick a question below or type your own." },
@@ -99,7 +105,7 @@ export const Chatbot = () => {
       setMessages((prev) => [
         ...prev,
         { role: "user", content: chip.label },
-        { role: "assistant", content: "Here are our most popular dishes 🔥", cards: BEST_SELLERS },
+        { role: "assistant", content: "Here are our most popular dishes 🔥 Tap Add to drop one in your order.", cards: bestSellerItems },
       ]);
       return;
     }
@@ -165,21 +171,29 @@ export const Chatbot = () => {
                     {message.cards && (
                       <div className="mt-2 space-y-2">
                         {message.cards.map((c) => (
-                          <Link
-                            key={c.name}
-                            to={`/order#item-${c.name.toLowerCase().replace(/[^a-z0-9]+/g, "-")}`}
-                            onClick={() => setIsOpen(false)}
-                            className="flex w-full items-center gap-3 rounded-xl border border-border bg-background p-2 transition-colors hover:border-primary"
-                          >
-                            <img src={c.image} alt={c.name} className="h-12 w-12 shrink-0 rounded-lg object-cover" loading="lazy" />
-                            <div className="min-w-0 flex-1">
-                              <div className="flex items-center justify-between gap-2">
-                                <span className="truncate font-semibold">{c.name}</span>
-                                <span className="shrink-0 font-semibold text-secondary">{c.price}</span>
+                          <div key={c.id} className="flex w-full items-center gap-2 rounded-xl border border-border bg-background p-2">
+                            <Link
+                              to={`/order#item-${c.id}`}
+                              onClick={() => setIsOpen(false)}
+                              className="flex min-w-0 flex-1 items-center gap-3"
+                            >
+                              <img src={c.image} alt={c.name} className="h-12 w-12 shrink-0 rounded-lg object-cover" loading="lazy" />
+                              <div className="min-w-0 flex-1">
+                                <p className="truncate font-semibold">{c.name}</p>
+                                <p className="truncate text-xs text-muted-foreground">{c.description}</p>
                               </div>
-                              <p className="truncate text-xs text-muted-foreground">{c.description}</p>
+                            </Link>
+                            <div className="flex shrink-0 flex-col items-end gap-1">
+                              <span className="text-sm font-semibold text-secondary">${c.price.toFixed(2)}</span>
+                              <Button
+                                size="sm"
+                                onClick={() => handleAdd(c)}
+                                className="h-7 gap-1 bg-primary px-2 text-primary-foreground hover:bg-primary/90"
+                              >
+                                <Plus className="h-3.5 w-3.5" /> Add
+                              </Button>
                             </div>
-                          </Link>
+                          </div>
                         ))}
                       </div>
                     )}
