@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
-import { Menu, ShoppingCart, ChevronDown, ChevronUp, UtensilsCrossed } from "lucide-react";
+import { Menu, ShoppingCart, ChevronDown, ChevronUp, UtensilsCrossed, User } from "lucide-react";
+import { useWalletAuth } from "@/contexts/WalletAuthContext";
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetTrigger, SheetClose } from "@/components/ui/sheet";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
@@ -27,6 +28,10 @@ export const Header = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [moreOpen, setMoreOpen] = useState(false);
   const { totalItems, openCart } = useCart();
+  const { user: walletUser } = useWalletAuth();
+  const initials = walletUser?.name
+    ? walletUser.name.split(" ").map((p) => p[0]).join("").slice(0, 2).toUpperCase()
+    : "";
 
   return (
     <header className="fixed top-0 left-0 right-0 z-50 bg-background/95 backdrop-blur-md border-b border-border shadow-sm">
@@ -144,6 +149,19 @@ export const Header = () => {
                 </DropdownMenuContent>
               </DropdownMenu>
             </div>
+
+            {/* Wallet / account: shows initials when logged in, person icon otherwise. */}
+            <Link to="/account" aria-label={walletUser ? "Your wallet" : "Log in"}>
+              <Button variant="ghost" size="icon" className="relative" title={walletUser ? `${walletUser.name} — view wallet` : "Log in"}>
+                {walletUser ? (
+                  <span className="flex h-7 w-7 items-center justify-center rounded-full bg-secondary text-xs font-bold text-secondary-foreground">
+                    {initials}
+                  </span>
+                ) : (
+                  <User className="h-5 w-5" />
+                )}
+              </Button>
+            </Link>
 
             <Button variant="ghost" size="icon" className="relative" onClick={openCart} aria-label="Open cart">
               <ShoppingCart className="h-5 w-5" />

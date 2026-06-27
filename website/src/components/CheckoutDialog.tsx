@@ -24,7 +24,9 @@ import { useCart } from "@/contexts/CartContext";
 import { useLocations } from "@/hooks/useMenu";
 import { placeOrder } from "@/lib/api";
 import { useAuth } from "@/lib/auth";
+import { useWalletAuth } from "@/contexts/WalletAuthContext";
 import { fetchMyWalletBalance, CASHBACK_RATE } from "@/lib/loyalty";
+import { LogIn } from "lucide-react";
 import { toast } from "sonner";
 
 const TAX_RATE = 0.0635; // CT sales tax
@@ -33,6 +35,7 @@ export const CheckoutDialog = ({ trigger }: { trigger: React.ReactNode }) => {
   const { items, totalPrice, clearCart, pickupLocation, setCartOpen, setLastOrder } = useCart();
   const { data: locations } = useLocations();
   const { session } = useAuth();
+  const { user: walletUser, balance: walletAuthBalance, redeem: redeemWallet, addCashback } = useWalletAuth();
   const navigate = useNavigate();
 
   const [open, setOpen] = useState(false);
@@ -44,8 +47,12 @@ export const CheckoutDialog = ({ trigger }: { trigger: React.ReactNode }) => {
   const [locationSlug, setLocationSlug] = useState("");
   const [notes, setNotes] = useState("");
 
-  const [walletBalance, setWalletBalance] = useState(0);
+  const [sessionBalance, setSessionBalance] = useState(0);
   const [useWallet, setUseWallet] = useState(false);
+
+  // Logged-in customer = real Supabase session OR the demo wallet user.
+  const loggedIn = !!session || !!walletUser;
+  const walletBalance = session ? sessionBalance : walletAuthBalance;
 
   const tax = totalPrice * TAX_RATE;
   const total = totalPrice + tax;
@@ -55,13 +62,23 @@ export const CheckoutDialog = ({ trigger }: { trigger: React.ReactNode }) => {
 
   const effectiveLocation = locationSlug || pickupLocation || locations?.[0]?.id || "vernon";
 
-  // When a signed-in customer opens checkout, load their wallet balance.
+  // Prefill + load balance when checkout opens for a logged-in customer.
   useEffect(() => {
-    if (open && session) {
-      fetchMyWalletBalance().then(setWalletBalance).catch(() => setWalletBalance(0));
+    if (!open) return;
+    if (session) {
+      fetchMyWalletBalance().then(setSessionBalance).catch(() => setSessionBalance(0));
       if (session.user.email) setEmail((e) => e || session.user.email!);
+    } else if (walletUser) {
+      setEmail((e) => e || walletUser.email);
+      setName((n) => n || walletUser.name);
     }
-  }, [open, session]);
+  }, [open, session, walletUser]);
+
+  // Send checkout to the login page so they can come back and redeem.
+  const goLogin = () => {
+    setOpen(false);
+    navigate("/account");
+  };
 
   const reset = () => {
     setName("");
@@ -97,8 +114,15 @@ export const CheckoutDialog = ({ trigger }: { trigger: React.ReactNode }) => {
         subtotal: Number(totalPrice.toFixed(2)),
         tax: Number(tax.toFixed(2)),
         notes: notes.trim() || undefined,
-        walletRedeem: redeem > 0 ? Number(redeem.toFixed(2)) : 0,
+        // Real wallet redeem only with a Supabase session; demo redeem is applied below.
+        walletRedeem: session && redeem > 0 ? Number(redeem.toFixed(2)) : 0,
       });
+
+      // Demo wallet (no Supabase session): spend the redeemed credit, earn cashback.
+      if (!session && walletUser) {
+        if (redeem > 0) redeemWallet(Number(redeem.toFixed(2)));
+        addCashback(cashback);
+      }
 
       const loc = (locations ?? []).find((l) => l.id === effectiveLocation);
       setLastOrder({
@@ -194,8 +218,23 @@ export const CheckoutDialog = ({ trigger }: { trigger: React.ReactNode }) => {
             <Textarea id="co-notes" value={notes} onChange={(e) => setNotes(e.target.value)} placeholder="Allergies, special requests…" rows={2} />
           </div>
 
-          {/* Wallet redemption, only for signed-in customers with a balance */}
-          {session && walletBalance > 0 && (
+          {/* Not logged in: offer to log in so they can redeem wallet credits */}
+          {!loggedIn && (
+            <button
+              type="button"
+              onClick={goLogin}
+              className="flex w-full items-center justify-between rounded-lg border-2 border-dashed border-border p-3 text-left transition-colors hover:border-primary"
+            >
+              <span className="flex items-center gap-2 text-sm font-medium">
+                <Wallet className="h-4 w-4 text-secondary" />
+                Log in to redeem your wallet credits
+              </span>
+              <LogIn className="h-4 w-4 text-muted-foreground" />
+            </button>
+          )}
+
+          {/* Logged in with a balance: redeem toggle */}
+          {loggedIn && walletBalance > 0 && (
             <button
               type="button"
               onClick={() => setUseWallet((v) => !v)}

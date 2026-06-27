@@ -6,6 +6,7 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { CartProvider } from "@/contexts/CartContext";
 import { CateringCartProvider } from "@/contexts/CateringCartContext";
 import { AuthProvider } from "@/lib/auth";
+import { WalletAuthProvider } from "@/contexts/WalletAuthContext";
 import { Chatbot } from "@/components/Chatbot";
 import { CartSidebar } from "@/components/CartSidebar";
 import { CateringCartSidebar } from "@/components/CateringCartSidebar";
@@ -27,6 +28,7 @@ const queryClient = new QueryClient();
 const App = () => (
   <QueryClientProvider client={queryClient}>
     <AuthProvider>
+    <WalletAuthProvider>
     <CartProvider>
     <CateringCartProvider>
       <TooltipProvider>
@@ -57,6 +59,7 @@ const App = () => (
       </TooltipProvider>
     </CateringCartProvider>
     </CartProvider>
+    </WalletAuthProvider>
     </AuthProvider>
   </QueryClientProvider>
 );

@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Gift, Star, Trophy, Wallet, Loader2, Mail, LogOut, ArrowDownLeft, ArrowUpRight, Receipt, ChevronDown } from "lucide-react";
 import { useAuth } from "@/lib/auth";
+import { useWalletAuth } from "@/contexts/WalletAuthContext";
 import { fetchMyWallet, fetchMyOrders, type WalletSummary, type MyOrder, CASHBACK_RATE } from "@/lib/loyalty";
 
 const perks = [
@@ -15,21 +16,13 @@ const perks = [
 ];
 
 // DEMO auth: fully local, no backend. We generate a one-time code on screen,
-// verify it locally, and show a sample wallet. Once the real email/OTP service
-// is wired, swap this for supabase OTP + the live wallet (already built behind useAuth).
-const DEMO_KEY = "jk_demo_wallet_user";
-interface DemoUser {
-  email: string;
-  name: string;
-}
+// verify it locally; login state + balance live in WalletAuthContext (shared with
+// the header + checkout). Swap for supabase OTP + live wallet when email is wired.
 
-// Sample wallet shown in demo mode so the rewards screen looks alive.
-const DEMO_WALLET: WalletSummary = {
-  balance: 3.05,
-  transactions: [
-    { id: "d-tx-1", amount: 3.05, kind: "earn", note: "Cashback on JK-DEMO1", created_at: new Date().toISOString() },
-  ],
-};
+// Sample wallet activity shown in demo mode so the rewards screen looks alive.
+const DEMO_TRANSACTIONS: WalletSummary["transactions"] = [
+  { id: "d-tx-1", amount: 3.05, kind: "earn", note: "Cashback on JK-DEMO1", created_at: new Date().toISOString() },
+];
 const DEMO_ORDERS: MyOrder[] = [
   {
     id: "d-ord-1",
@@ -47,6 +40,7 @@ const DEMO_ORDERS: MyOrder[] = [
 
 const Rewards = () => {
   const { session, loading, signOut } = useAuth();
+  const { user: demoUser, balance: demoBalance, login, logout } = useWalletAuth();
   const [step, setStep] = useState<"email" | "otp">("email");
   const [email, setEmail] = useState("");
   const [name, setName] = useState("");
@@ -54,14 +48,6 @@ const Rewards = () => {
   const [generatedOtp, setGeneratedOtp] = useState("");
   const [sending, setSending] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [demoUser, setDemoUser] = useState<DemoUser | null>(() => {
-    try {
-      const v = localStorage.getItem(DEMO_KEY);
-      return v ? (JSON.parse(v) as DemoUser) : null;
-    } catch {
-      return null;
-    }
-  });
 
   const [wallet, setWallet] = useState<WalletSummary | null>(null);
   const [orders, setOrders] = useState<MyOrder[]>([]);
@@ -100,22 +86,11 @@ const Rewards = () => {
       return;
     }
     setError(null);
-    const u: DemoUser = { email: email.trim(), name: name.trim() || "Guest" };
-    try {
-      localStorage.setItem(DEMO_KEY, JSON.stringify(u));
-    } catch {
-      /* ignore */
-    }
-    setDemoUser(u);
+    login(email, name);
   };
 
   const handleSignOut = async () => {
-    try {
-      localStorage.removeItem(DEMO_KEY);
-    } catch {
-      /* ignore */
-    }
-    setDemoUser(null);
+    logout();
     setStep("email");
     setOtp("");
     if (session) await signOut();
@@ -123,7 +98,7 @@ const Rewards = () => {
 
   const loggedIn = !!session || !!demoUser;
   // In demo mode (no real session) show the sample wallet + orders.
-  const effWallet = session ? wallet : DEMO_WALLET;
+  const effWallet = session ? wallet : { balance: demoBalance, transactions: DEMO_TRANSACTIONS };
   const effOrders = session ? orders : DEMO_ORDERS;
   const effLoadingData = session ? loadingData : false;
   const effEmail = session ? session.user.email : demoUser?.email;
