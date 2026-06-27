@@ -1,5 +1,17 @@
 # Changelog
 
+## 2026-06-27 · Finish all in-progress (requested) features
+
+- Admin Settings now persist (localStorage): brand, taxes, notifications, integration keys.
+- Live Orders: 24h retention — completed/cancelled orders archive off the live board after 24h, still reachable by status filter (= order history).
+- Analytics: Online vs Catering channel split card.
+- Admin "New catering order": menu-item picker (with qty + estimated total) and delivery toggle + address, folded into the request.
+- Storefront catering form: Pickup/Delivery choice with a required delivery address.
+- Admin Locations overview: "Best sellers here" — top items per store by quantity.
+- Status page: the six requested items flipped to In production.
+- User-facing: catering can now specify items + delivery; owners get per-store best sellers, channel split, and saved settings.
+- (pending push)
+
 ## 2026-06-27 · Wallet: fully-local demo OTP sign-in
 
 - Wallet sign-in is now a self-contained demo: enter name + email → a random 6-digit code is generated and shown on screen → verify → wallet opens. No Supabase, no email delivery.

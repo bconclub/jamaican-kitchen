@@ -31,6 +31,15 @@ function statsFor(orders: Order[], locationId: string) {
   const active = locOrders.filter((o) => ACTIVE_STATUSES.includes(o.status)).length;
   const web = locOrders.filter((o) => o.channel === "web").length;
   const app = locOrders.filter((o) => o.channel === "app").length;
+
+  // Best sellers at this store, by quantity ordered.
+  const itemCounts = new Map<string, number>();
+  for (const o of locOrders) for (const it of o.items) itemCounts.set(it.name, (itemCounts.get(it.name) ?? 0) + it.qty);
+  const topItems = [...itemCounts.entries()]
+    .map(([name, qty]) => ({ name, qty }))
+    .sort((a, b) => b.qty - a.qty)
+    .slice(0, 5);
+
   return {
     total: locOrders.length,
     todayCount: today.length,
@@ -40,6 +49,7 @@ function statsFor(orders: Order[], locationId: string) {
     aov: locOrders.length ? revenue / locOrders.length : 0,
     web,
     app,
+    topItems,
   };
 }
 
@@ -127,6 +137,22 @@ function LocationsPage() {
                   <span className="flex items-center gap-2"><ChannelBadge channel="app" /> Mobile app</span>
                   <span className="font-medium tabular-nums">{selectedStats.app}</span>
                 </div>
+              </div>
+
+              <div className="mt-4 rounded-lg border p-3">
+                <div className="mb-2 text-xs uppercase tracking-wide text-muted-foreground">Best sellers here</div>
+                {selectedStats.topItems.length === 0 ? (
+                  <p className="text-sm text-muted-foreground">No orders yet at this location.</p>
+                ) : (
+                  <ol className="space-y-1">
+                    {selectedStats.topItems.map((it, i) => (
+                      <li key={it.name} className="flex items-center justify-between text-sm">
+                        <span className="truncate"><span className="text-muted-foreground">{i + 1}.</span> {it.name}</span>
+                        <span className="tabular-nums text-muted-foreground">{it.qty} sold</span>
+                      </li>
+                    ))}
+                  </ol>
+                )}
               </div>
 
               <div className="mt-4 space-y-2 text-sm">

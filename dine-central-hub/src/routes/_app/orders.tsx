@@ -83,6 +83,8 @@ export const Route = createFileRoute("/_app/orders")({
 });
 
 const ALL_STATUSES = Object.keys(STATUS_META) as OrderStatus[];
+// Completed/cancelled orders stay on the live board for 24h, then archive to history.
+const RETENTION_MS = 24 * 60 * 60 * 1000;
 const ALL_CHANNELS = Object.keys(CHANNEL_META) as Channel[];
 
 function OrdersPage() {
@@ -118,6 +120,12 @@ function OrdersPage() {
       if (loc !== "all" && o.locationId !== loc) return false;
       if (channelFilter !== "all" && o.channel !== channelFilter) return false;
       if (statusFilter !== "all" && o.status !== statusFilter) return false;
+      // Retention: on the live board (All), completed/cancelled orders drop off
+      // after 24h. They stay accessible by filtering to that status (= history).
+      if (statusFilter === "all" && isFinal(o.status)) {
+        const ageMs = Date.now() - new Date(o.updatedAt ?? o.createdAt).getTime();
+        if (ageMs > RETENTION_MS) return false;
+      }
       if (q && !(o.shortId.includes(q) || o.customerName.toLowerCase().includes(q.toLowerCase()))) return false;
       return true;
     });
@@ -132,7 +140,7 @@ function OrdersPage() {
     <>
       <PageHeader
         title="Live Orders"
-        description="Unified feed across every sales channel"
+        description="Live feed across every channel. Completed orders archive after 24h — filter by status to see full history."
         actions={
           <Button onClick={() => toast.success("Refreshed feed")}>Refresh</Button>
         }

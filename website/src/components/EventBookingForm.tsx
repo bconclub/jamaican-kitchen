@@ -30,6 +30,7 @@ export const EventBookingForm = () => {
   const { items: selectedItems, totalPrice: selectionTotal, clearCart: clearCateringCart } = useCateringCart();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitted, setSubmitted] = useState<SubmittedSummary | null>(null);
+  const [service, setService] = useState<"pickup" | "delivery">("pickup");
   const [formData, setFormData] = useState({
     name: "",
     email: "",
@@ -61,7 +62,11 @@ export const EventBookingForm = () => {
       const itemsLine = selectedItems.length
         ? `Requested items: ${selectedItems.map((i) => `${i.quantity}x ${i.name}`).join(", ")} (est. $${selectionTotal.toFixed(2)})`
         : "";
-      const fullMessage = [itemsLine, formData.message].filter(Boolean).join("\n\n");
+      const serviceLine =
+        service === "delivery"
+          ? `Service: Delivery${formData.location ? ` to ${formData.location}` : " (address to confirm)"}`
+          : "Service: Pickup";
+      const fullMessage = [serviceLine, itemsLine, formData.message].filter(Boolean).join("\n\n");
 
       await submitCateringRequest({
         name: formData.name,
@@ -289,18 +294,33 @@ export const EventBookingForm = () => {
             </div>
           </div>
 
-          <div className="space-y-2">
-            <Label htmlFor="location">Event Location</Label>
-            <div className="relative">
-              <MapPin className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-              <Input
-                id="location"
-                name="location"
-                value={formData.location}
-                onChange={handleChange}
-                placeholder="Event address or venue name"
-                className="pl-10"
-              />
+          <div className="grid sm:grid-cols-2 gap-4">
+            <div className="space-y-2">
+              <Label htmlFor="service">Pickup or Delivery *</Label>
+              <Select value={service} onValueChange={(v) => setService(v as "pickup" | "delivery")}>
+                <SelectTrigger id="service">
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="pickup">Pickup</SelectItem>
+                  <SelectItem value="delivery">Delivery to my event</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="location">{service === "delivery" ? "Delivery Address *" : "Event Location"}</Label>
+              <div className="relative">
+                <MapPin className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                <Input
+                  id="location"
+                  name="location"
+                  value={formData.location}
+                  onChange={handleChange}
+                  placeholder={service === "delivery" ? "Street, city, ZIP" : "Event address or venue name"}
+                  className="pl-10"
+                  required={service === "delivery"}
+                />
+              </div>
             </div>
           </div>
 

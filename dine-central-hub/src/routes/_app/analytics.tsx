@@ -2,7 +2,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import { PageHeader, formatMoney } from "@/components/PageHeader";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { CHANNEL_META } from "@/lib/mock-data";
-import { useLiveOrders } from "@/lib/live-data";
+import { useLiveOrders, useLiveCateringRequests } from "@/lib/live-data";
 import { useCurrentLocation } from "@/lib/store";
 import { useMemo, useState } from "react";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -34,6 +34,7 @@ export const Route = createFileRoute("/_app/analytics")({
 function AnalyticsPage() {
   const loc = useCurrentLocation();
   const { orders: ALL_ORDERS } = useLiveOrders();
+  const { orders: CATERING } = useLiveCateringRequests();
   const [range, setRange] = useState<"7" | "14" | "30" | "custom">("14");
   const [from, setFrom] = useState("");
   const [to, setTo] = useState("");
@@ -71,6 +72,21 @@ function AnalyticsPage() {
   const totalRevenue = revenue.reduce((s, d) => s + d.total, 0);
   const totalOrders = orders.length;
   const aov = totalOrders ? totalRevenue / totalOrders : 0;
+
+  // Online (web/app orders) vs Catering (quote requests) split for the same range.
+  const cateringInRange = useMemo(
+    () =>
+      CATERING.filter((c) => {
+        const t = new Date(c.createdAt).getTime();
+        if (range === "custom") {
+          const fromOk = !from || t >= new Date(from).getTime();
+          const toOk = !to || t <= new Date(to).getTime() + 86400000;
+          return fromOk && toOk;
+        }
+        return t >= Date.now() - days * 86400000;
+      }),
+    [CATERING, days, range, from, to],
+  );
 
   const channels: Channel[] = ["web", "app"];
   const channelMix = channels.map((c) => ({
@@ -177,6 +193,25 @@ function AnalyticsPage() {
         <Kpi label="Orders" value={totalOrders.toString()} />
         <Kpi label="Avg order value" value={formatMoney(aov)} />
       </div>
+
+      {/* Online vs Catering channel split */}
+      <Card className="mb-6">
+        <CardHeader><CardTitle>Online vs Catering</CardTitle></CardHeader>
+        <CardContent>
+          <div className="grid grid-cols-2 divide-x">
+            <div className="pr-4">
+              <div className="text-xs uppercase tracking-wide text-muted-foreground">Online orders</div>
+              <div className="mt-1 text-3xl font-semibold tabular-nums">{totalOrders}</div>
+              <div className="text-sm text-muted-foreground">{formatMoney(totalRevenue)} revenue</div>
+            </div>
+            <div className="pl-4">
+              <div className="text-xs uppercase tracking-wide text-muted-foreground">Catering requests</div>
+              <div className="mt-1 text-3xl font-semibold tabular-nums">{cateringInRange.length}</div>
+              <div className="text-sm text-muted-foreground">Priced per custom quote</div>
+            </div>
+          </div>
+        </CardContent>
+      </Card>
 
       <div className="grid gap-4 lg:grid-cols-3">
         <Card className="lg:col-span-2">

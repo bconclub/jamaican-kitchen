@@ -12,7 +12,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Switch } from "@/components/ui/switch";
 import { ChannelBadge } from "@/components/ChannelBadge";
 import { STATUS_META } from "@/lib/mock-data";
-import { useLiveCateringRequests, updateCateringStatus, useLiveLocations } from "@/lib/live-data";
+import { useLiveCateringRequests, updateCateringStatus, useLiveLocations, useLiveMenu } from "@/lib/live-data";
 import { supabase } from "@/integrations/supabase/client";
 import { useEffect } from "react";
 import { useCurrentLocation } from "@/lib/store";
@@ -398,8 +398,15 @@ function Stat({
   );
 }
 
+interface LineItem {
+  name: string;
+  price: number;
+  qty: number;
+}
+
 function NewCateringDialog({ onCreated }: { onCreated: () => void }) {
   const locations = useLiveLocations();
+  const { items: menuItems } = useLiveMenu();
   const [client, setClient] = useState("");
   const [channel, setChannel] = useState<"web" | "app">("web");
   const [locationId, setLocationId] = useState("");
@@ -413,17 +420,48 @@ function NewCateringDialog({ onCreated }: { onCreated: () => void }) {
   const [phone, setPhone] = useState("");
   const [setup, setSetup] = useState(false);
   const [notes, setNotes] = useState("");
+  const [delivery, setDelivery] = useState(false);
+  const [address, setAddress] = useState("");
+  const [lineItems, setLineItems] = useState<LineItem[]>([]);
+
+  const itemsTotal = lineItems.reduce((s, it) => s + it.price * it.qty, 0);
+
+  const addItem = (name: string) => {
+    const m = menuItems.find((mi) => mi.name === name);
+    if (!m) return;
+    setLineItems((prev) =>
+      prev.some((it) => it.name === name)
+        ? prev.map((it) => (it.name === name ? { ...it, qty: it.qty + 1 } : it))
+        : [...prev, { name: m.name, price: m.basePrice, qty: 1 }],
+    );
+  };
+  const changeQty = (name: string, delta: number) =>
+    setLineItems((prev) =>
+      prev.flatMap((it) => (it.name === name ? (it.qty + delta <= 0 ? [] : [{ ...it, qty: it.qty + delta }]) : [it])),
+    );
 
   const submit = async () => {
     if (!client.trim()) return toast.error("Client name required");
     const locationName = locations.find((l) => l.id === locationId)?.name ?? null;
+    // Fold items + delivery into the message (catering_requests has no items/address columns yet).
+    const parts: string[] = [];
+    if (notes.trim()) parts.push(notes.trim());
+    if (lineItems.length) {
+      parts.push(
+        "Requested items:\n" +
+          lineItems.map((it) => `  - ${it.qty}x ${it.name} ($${(it.price * it.qty).toFixed(2)})`).join("\n") +
+          `\n  Estimated items total: $${itemsTotal.toFixed(2)}`,
+      );
+    }
+    if (delivery) parts.push(`Delivery to: ${address.trim() || "(address pending)"}`);
+    if (setup) parts.push("On-site setup required");
     const { error } = await supabase.from("catering_requests").insert({
       name: client,
       phone: phone || null,
       guest_count: guests,
       event_date: new Date(date).toISOString().slice(0, 10),
       location: locationName,
-      message: notes || (setup ? "On-site setup required" : null),
+      message: parts.join("\n\n") || null,
       status: "new",
     });
     if (error) {
@@ -472,6 +510,52 @@ function NewCateringDialog({ onCreated }: { onCreated: () => void }) {
         <Field label="Contact phone">
           <Input value={phone} onChange={(e) => setPhone(e.target.value)} placeholder="+1 …" />
         </Field>
+
+        {/* Menu item picker */}
+        <Field label="Menu items">
+          <Select value="" onValueChange={addItem}>
+            <SelectTrigger><SelectValue placeholder="Add an item…" /></SelectTrigger>
+            <SelectContent>
+              {menuItems.map((m) => (
+                <SelectItem key={m.id} value={m.name}>{m.name} — {formatMoney(m.basePrice)}</SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+        </Field>
+        {lineItems.length > 0 && (
+          <div className="rounded-lg border divide-y">
+            {lineItems.map((it) => (
+              <div key={it.name} className="flex items-center justify-between gap-2 p-2 text-sm">
+                <span className="flex-1 truncate">{it.name}</span>
+                <div className="flex items-center gap-1">
+                  <Button size="icon" variant="outline" className="h-6 w-6" onClick={() => changeQty(it.name, -1)}>-</Button>
+                  <span className="w-6 text-center tabular-nums">{it.qty}</span>
+                  <Button size="icon" variant="outline" className="h-6 w-6" onClick={() => changeQty(it.name, 1)}>+</Button>
+                </div>
+                <span className="w-16 text-right tabular-nums text-muted-foreground">{formatMoney(it.price * it.qty)}</span>
+              </div>
+            ))}
+            <div className="flex items-center justify-between p-2 text-sm font-medium">
+              <span>Estimated items total</span>
+              <span className="tabular-nums">{formatMoney(itemsTotal)}</span>
+            </div>
+          </div>
+        )}
+
+        {/* Delivery */}
+        <div className="flex items-center justify-between rounded-lg border p-3">
+          <div>
+            <div className="text-sm font-medium">Delivery</div>
+            <div className="text-xs text-muted-foreground">Deliver to the event venue</div>
+          </div>
+          <Switch checked={delivery} onCheckedChange={setDelivery} />
+        </div>
+        {delivery && (
+          <Field label="Delivery address">
+            <Textarea value={address} onChange={(e) => setAddress(e.target.value)} placeholder="Street, city, ZIP…" rows={2} />
+          </Field>
+        )}
+
         <div className="flex items-center justify-between rounded-lg border p-3">
           <div>
             <div className="text-sm font-medium">On-site setup</div>
