@@ -3,7 +3,6 @@ import { Link } from "react-router-dom";
 import { Sparkles, X, Send, Loader2, ArrowRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { ScrollArea } from "@/components/ui/scroll-area";
 import { cn } from "@/lib/utils";
 
 interface ProductCard {
@@ -151,7 +150,7 @@ export const Chatbot = () => {
             </Button>
           </div>
 
-          <ScrollArea className="flex-1 p-4" ref={scrollRef}>
+          <div ref={scrollRef} className="flex-1 overflow-y-auto overflow-x-hidden p-4">
             <div className="space-y-4">
               {messages.map((message, index) => (
                 <div key={index} className={cn("flex", message.role === "user" ? "justify-end" : "justify-start")}>
@@ -205,7 +204,7 @@ export const Chatbot = () => {
                 </div>
               )}
             </div>
-          </ScrollArea>
+          </div>
 
           {/* Quick-start chips — only before the customer starts chatting. */}
           {!isLoading && !messages.some((m) => m.role === "user") && (
