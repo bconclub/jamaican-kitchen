@@ -114,9 +114,9 @@ const Rewards = () => {
             <Loader2 className="h-6 w-6 animate-spin text-muted-foreground" />
           </div>
         ) : !loggedIn ? (
-          /* ---- Logged out: perks + magic-link sign in ---- */
-          <>
-            <div className="grid md:grid-cols-3 gap-6 mb-10">
+          /* ---- Logged out: sign-in on top, perks below ---- */
+          <div className="flex flex-col">
+            <div className="order-2 mt-10 grid md:grid-cols-3 gap-6">
               {perks.map((p) => (
                 <Card key={p.title} className="text-center">
                   <CardContent className="pt-6">
@@ -129,7 +129,7 @@ const Rewards = () => {
                 </Card>
               ))}
             </div>
-            <Card className="max-w-md mx-auto">
+            <Card className="order-1 max-w-md mx-auto">
               <CardContent className="pt-6">
                 {step === "email" ? (
                   <form onSubmit={handleSendCode} className="space-y-3">
@@ -197,7 +197,7 @@ const Rewards = () => {
                 )}
               </CardContent>
             </Card>
-          </>
+          </div>
         ) : (
           /* ---- Logged in: wallet + activity + past orders (lean) ---- */
           <div className="space-y-6">
