@@ -9,11 +9,11 @@ import { CheckoutDialog } from "./CheckoutDialog";
 
 // Global cart drawer, opened from the header cart icon, mounted once in App.
 export const CartSidebar = () => {
-  const { items, totalItems, totalPrice, updateQuantity, removeItem, clearCart, isCartOpen, setCartOpen } = useCart();
+  const { items, totalItems, totalPrice, updateQuantity, removeItem, clearCart, isCartOpen, setCartOpen, keepCartOpen } = useCart();
 
   return (
     <Sheet open={isCartOpen} onOpenChange={setCartOpen}>
-      <SheetContent side="right" className="w-full sm:w-[420px] p-0 flex flex-col">
+      <SheetContent side="right" onMouseEnter={keepCartOpen} className="w-full sm:w-[420px] p-0 flex flex-col">
         <SheetHeader className="p-4 border-b border-border">
           <SheetTitle className="flex items-center gap-2">
             <ShoppingBag className="h-5 w-5" />

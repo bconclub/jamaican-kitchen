@@ -9,6 +9,7 @@ import { AuthProvider } from "@/lib/auth";
 import { WalletAuthProvider } from "@/contexts/WalletAuthContext";
 import { Chatbot } from "@/components/Chatbot";
 import { CartSidebar } from "@/components/CartSidebar";
+import { MobileCartButton } from "@/components/MobileCartButton";
 import { CateringCartSidebar } from "@/components/CateringCartSidebar";
 import Index from "./pages/Index";
 import Order from "./pages/Order";
@@ -54,6 +55,7 @@ const App = () => (
           </Routes>
           <CartSidebar />
           <CateringCartSidebar />
+          <MobileCartButton />
           <Chatbot />
         </BrowserRouter>
       </TooltipProvider>

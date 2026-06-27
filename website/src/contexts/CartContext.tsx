@@ -40,6 +40,7 @@ interface CartContextType {
   isCartOpen: boolean;
   setCartOpen: (open: boolean) => void;
   openCart: () => void;
+  keepCartOpen: () => void;
   lastOrder: PlacedOrderSummary | null;
   setLastOrder: (order: PlacedOrderSummary | null) => void;
 }
@@ -77,10 +78,15 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
       }
       return [...prev, { ...newItem, quantity: 1 }];
     });
-    // Peek the order panel, then auto-close after ~1.8s (reset on each add).
-    setCartOpen(true);
-    clearAutoClose();
-    autoCloseRef.current = setTimeout(() => setCartOpen(false), 1800);
+    // On desktop, peek the order panel then auto-close after ~1.8s (hovering it
+    // cancels the close). On mobile, don't pop the slider — the floating cart
+    // button's count just increments instead.
+    const isDesktop = typeof window !== "undefined" && window.innerWidth >= 768;
+    if (isDesktop) {
+      setCartOpen(true);
+      clearAutoClose();
+      autoCloseRef.current = setTimeout(() => setCartOpen(false), 1800);
+    }
   };
 
   const removeItem = (id: string) => {
@@ -120,6 +126,7 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
         isCartOpen,
         setCartOpen,
         openCart,
+        keepCartOpen: clearAutoClose,
         lastOrder,
         setLastOrder,
       }}
