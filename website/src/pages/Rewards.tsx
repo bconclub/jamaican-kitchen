@@ -14,14 +14,19 @@ const perks = [
   { icon: Trophy, title: "Member perks", text: "Early access to specials and birthday treats." },
 ];
 
+// DEMO auth: until the email/OTP service is wired, we accept a fixed code and
+// create the real Supabase session under the hood with a deterministic password.
+// Swap handleVerify to supabase.auth.verifyOtp once email delivery is live.
+const DEMO_OTP = "123456";
+const demoPassword = (email: string) => `jkw_${email.trim().toLowerCase()}`;
+
 const Rewards = () => {
-  const { session, loading, signInWithEmail, signUpWithPassword, signInWithPassword, signOut } = useAuth();
-  const [mode, setMode] = useState<"signin" | "signup">("signin");
+  const { session, loading, signUpWithPassword, signOut } = useAuth();
+  const [step, setStep] = useState<"email" | "otp">("email");
   const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
   const [name, setName] = useState("");
+  const [otp, setOtp] = useState("");
   const [sending, setSending] = useState(false);
-  const [sent, setSent] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
   const [wallet, setWallet] = useState<WalletSummary | null>(null);
@@ -44,31 +49,28 @@ const Rewards = () => {
       .finally(() => setLoadingData(false));
   }, [session]);
 
-  const handlePassword = async (e: React.FormEvent) => {
+  const handleSendCode = (e: React.FormEvent) => {
     e.preventDefault();
-    if (!email.trim() || !password) return;
-    setSending(true);
+    if (!email.trim()) return;
     setError(null);
-    const { error } =
-      mode === "signup"
-        ? await signUpWithPassword(email, password, { name })
-        : await signInWithPassword(email, password);
-    setSending(false);
-    if (error) setError(error);
-    // On success the auth listener flips the page to the logged-in view.
+    setOtp("");
+    // DEMO: no real email sent yet. Move straight to the code screen.
+    setStep("otp");
   };
 
-  const handleMagicLink = async () => {
-    if (!email.trim()) {
-      setError("Enter your email first.");
+  const handleVerify = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (otp.trim() !== DEMO_OTP) {
+      setError("Incorrect code. Try again.");
       return;
     }
     setSending(true);
     setError(null);
-    const { error } = await signInWithEmail(email);
+    // Real Supabase session under the hood (deterministic password per email).
+    const { error } = await signUpWithPassword(email, demoPassword(email), { name });
     setSending(false);
     if (error) setError(error);
-    else setSent(true);
+    // On success the auth listener flips the page to the logged-in view.
   };
 
   const loggedIn = !!session;
@@ -101,43 +103,19 @@ const Rewards = () => {
             </div>
             <Card className="max-w-md mx-auto">
               <CardContent className="pt-6">
-                {sent ? (
-                  <div className="text-center py-4">
-                    <div className="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-full bg-primary/15">
-                      <Mail className="h-7 w-7 text-primary" />
-                    </div>
-                    <h3 className="font-bold text-lg mb-1">Check your email</h3>
-                    <p className="text-sm text-muted-foreground">
-                      We sent a sign-in link to <span className="font-medium">{email}</span>. Click it to
-                      open your wallet.
-                    </p>
-                    <button
-                      type="button"
-                      onClick={() => setSent(false)}
-                      className="mt-4 text-sm text-primary font-medium underline"
-                    >
-                      Use a password instead
-                    </button>
-                  </div>
-                ) : (
-                  <form onSubmit={handlePassword} className="space-y-3">
-                    <h3 className="font-bold text-lg text-center">
-                      {mode === "signup" ? "Create your wallet" : "Sign in to your wallet"}
-                    </h3>
+                {step === "email" ? (
+                  <form onSubmit={handleSendCode} className="space-y-3">
+                    <h3 className="font-bold text-lg text-center">Sign in to your wallet</h3>
                     <p className="text-sm text-muted-foreground text-center">
-                      {mode === "signup"
-                        ? "Set up your wallet with an email and password."
-                        : "Welcome back. Enter your email and password."}
+                      Enter your details and we'll send a one-time code to verify you.
                     </p>
-                    {mode === "signup" && (
-                      <Input
-                        type="text"
-                        value={name}
-                        onChange={(e) => setName(e.target.value)}
-                        placeholder="Your name"
-                        autoComplete="name"
-                      />
-                    )}
+                    <Input
+                      type="text"
+                      value={name}
+                      onChange={(e) => setName(e.target.value)}
+                      placeholder="Your name"
+                      autoComplete="name"
+                    />
                     <Input
                       type="email"
                       value={email}
@@ -146,46 +124,47 @@ const Rewards = () => {
                       autoComplete="email"
                       required
                     />
+                    {error && <p className="text-sm text-destructive text-center">{error}</p>}
+                    <Button type="submit" className="w-full bg-primary text-primary-foreground hover:bg-primary/90">
+                      Send code
+                    </Button>
+                  </form>
+                ) : (
+                  <form onSubmit={handleVerify} className="space-y-3">
+                    <div className="mx-auto mb-1 flex h-14 w-14 items-center justify-center rounded-full bg-primary/15">
+                      <Mail className="h-7 w-7 text-primary" />
+                    </div>
+                    <h3 className="font-bold text-lg text-center">Enter your code</h3>
+                    <p className="text-sm text-muted-foreground text-center">
+                      We sent a 6-digit code to <span className="font-medium">{email}</span>.
+                    </p>
                     <Input
-                      type="password"
-                      value={password}
-                      onChange={(e) => setPassword(e.target.value)}
-                      placeholder="Password"
-                      autoComplete={mode === "signup" ? "new-password" : "current-password"}
-                      minLength={6}
-                      required
+                      type="text"
+                      inputMode="numeric"
+                      value={otp}
+                      onChange={(e) => setOtp(e.target.value.replace(/\D/g, "").slice(0, 6))}
+                      placeholder="123456"
+                      className="text-center text-lg tracking-[0.5em]"
+                      autoFocus
                     />
+                    {/* DEMO hint — remove once real OTP email is wired */}
+                    <p className="text-center text-xs text-muted-foreground">
+                      Demo code: <span className="font-mono font-semibold">{DEMO_OTP}</span>
+                    </p>
                     {error && <p className="text-sm text-destructive text-center">{error}</p>}
                     <Button type="submit" className="w-full bg-primary text-primary-foreground hover:bg-primary/90" disabled={sending}>
-                      {sending ? <Loader2 className="h-4 w-4 animate-spin" /> : mode === "signup" ? "Create wallet" : "Sign in"}
+                      {sending ? <Loader2 className="h-4 w-4 animate-spin" /> : "Verify & open wallet"}
                     </Button>
-
-                    <p className="text-center text-sm text-muted-foreground">
-                      {mode === "signup" ? "Already have a wallet?" : "New here?"}{" "}
-                      <button
-                        type="button"
-                        onClick={() => {
-                          setMode(mode === "signup" ? "signin" : "signup");
-                          setError(null);
-                        }}
-                        className="text-primary font-medium underline"
-                      >
-                        {mode === "signup" ? "Sign in" : "Create a wallet"}
-                      </button>
-                    </p>
-
-                    <div className="relative py-1 text-center">
-                      <span className="bg-card px-2 text-xs uppercase tracking-wide text-muted-foreground">or</span>
-                    </div>
-                    <Button
+                    <button
                       type="button"
-                      variant="outline"
-                      className="w-full"
-                      disabled={sending}
-                      onClick={handleMagicLink}
+                      onClick={() => {
+                        setStep("email");
+                        setError(null);
+                      }}
+                      className="block w-full text-center text-sm text-primary font-medium underline"
                     >
-                      <Mail className="h-4 w-4 mr-2" /> Email me a sign-in link
-                    </Button>
+                      Use a different email
+                    </button>
                   </form>
                 )}
               </CardContent>
