@@ -148,8 +148,8 @@ export function AdminChatbot() {
             </div>
           </ScrollArea>
 
-          {/* Context chips — always visible so the conversation can keep going. */}
-          {!isLoading && (
+          {/* Quick-start chips — only before the conversation starts. */}
+          {!isLoading && !messages.some((m) => m.role === "user") && (
             <div className="flex flex-wrap gap-1.5 border-t px-3 pt-2">
               {SUGGESTIONS.map((s) => (
                 <button

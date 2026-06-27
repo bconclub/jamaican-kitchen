@@ -67,6 +67,16 @@ async function fetchMenuContext(url: string, anon: string): Promise<string> {
   return ctx.trim();
 }
 
+// Our 6 Connecticut locations (matches the storefront Locations page). All open
+// Mon-Sat 11am-9pm, Sun 12pm-8pm.
+const LOCATIONS_TEXT = `- Vernon: 123 Hartford Turnpike, Vernon, CT 06066 · (860) 555-0101
+- South Windsor: 456 Sullivan Ave, South Windsor, CT 06074 · (860) 555-0102
+- Windsor Locks: 789 Main St, Windsor Locks, CT 06096 · (860) 555-0103
+- Bristol: 321 Farmington Ave, Bristol, CT 06010 · (860) 555-0104
+- Rocky Hill: 654 Silas Deane Hwy, Rocky Hill, CT 06067 · (860) 555-0105
+- Enfield: 987 Enfield St, Enfield, CT 06082 · (860) 555-0106
+All locations open Mon-Sat 11am-9pm, Sun 12pm-8pm.`;
+
 const SYSTEM_PREAMBLE = `You are the friendly ordering assistant for Jamaican Kitchen, an authentic Jamaican restaurant chain in Connecticut.
 Your job: help customers explore the menu, recommend dishes, and guide them to add items to their order.
 
@@ -102,7 +112,7 @@ export async function storefrontChat(payload: unknown, env: ChatEnv): Promise<Ch
   }
 
   const bestSellers = "Oxtail, Curry Goat, Jerk Chicken, Pepper Steak, Escovitch Fish";
-  const system = `${SYSTEM_PREAMBLE}\n\nBEST SELLERS (our most popular dishes, in order): ${bestSellers}.\n\nCURRENT MENU:\n${menu || "(menu temporarily unavailable)"}`;
+  const system = `${SYSTEM_PREAMBLE}\n\nOUR LOCATIONS:\n${LOCATIONS_TEXT}\n\nBEST SELLERS (our most popular dishes, in order): ${bestSellers}.\n\nCURRENT MENU:\n${menu || "(menu temporarily unavailable)"}`;
   const tried = new Set<string>();
   const candidates = [env.OPENROUTER_MODEL, ...FREE_MODEL_FALLBACKS].filter(Boolean) as string[];
 

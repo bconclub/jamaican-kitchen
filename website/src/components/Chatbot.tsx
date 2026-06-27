@@ -157,7 +157,7 @@ export const Chatbot = () => {
                 <div key={index} className={cn("flex", message.role === "user" ? "justify-end" : "justify-start")}>
                   <div
                     className={cn(
-                      "max-w-[85%] rounded-2xl px-4 py-2 text-sm leading-relaxed [&_strong]:font-semibold",
+                      "max-w-[85%] min-w-0 break-words rounded-2xl px-4 py-2 text-sm leading-relaxed [&_strong]:font-semibold",
                       message.role === "user" ? "bg-primary text-primary-foreground rounded-br-md" : "bg-muted text-foreground rounded-bl-md",
                     )}
                   >
@@ -170,7 +170,7 @@ export const Chatbot = () => {
                             key={c.name}
                             to="/order"
                             onClick={() => setIsOpen(false)}
-                            className="flex items-center gap-3 rounded-xl border border-border bg-background p-2 transition-colors hover:border-primary"
+                            className="flex w-full items-center gap-3 rounded-xl border border-border bg-background p-2 transition-colors hover:border-primary"
                           >
                             <img src={c.image} alt={c.name} className="h-12 w-12 shrink-0 rounded-lg object-cover" loading="lazy" />
                             <div className="min-w-0 flex-1">
@@ -207,8 +207,8 @@ export const Chatbot = () => {
             </div>
           </ScrollArea>
 
-          {/* Context chips — always visible so the conversation can keep going. */}
-          {!isLoading && (
+          {/* Quick-start chips — only before the customer starts chatting. */}
+          {!isLoading && !messages.some((m) => m.role === "user") && (
             <div className="flex flex-wrap gap-1.5 border-t border-border px-3 pt-2">
               {CHIPS.map((chip) => (
                 <button
