@@ -15,8 +15,11 @@ const perks = [
 ];
 
 const Rewards = () => {
-  const { session, loading, signInWithEmail, signOut } = useAuth();
+  const { session, loading, signInWithEmail, signUpWithPassword, signInWithPassword, signOut } = useAuth();
+  const [mode, setMode] = useState<"signin" | "signup">("signin");
   const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [name, setName] = useState("");
   const [sending, setSending] = useState(false);
   const [sent, setSent] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -41,9 +44,25 @@ const Rewards = () => {
       .finally(() => setLoadingData(false));
   }, [session]);
 
-  const handleSend = async (e: React.FormEvent) => {
+  const handlePassword = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!email.trim()) return;
+    if (!email.trim() || !password) return;
+    setSending(true);
+    setError(null);
+    const { error } =
+      mode === "signup"
+        ? await signUpWithPassword(email, password, { name })
+        : await signInWithPassword(email, password);
+    setSending(false);
+    if (error) setError(error);
+    // On success the auth listener flips the page to the logged-in view.
+  };
+
+  const handleMagicLink = async () => {
+    if (!email.trim()) {
+      setError("Enter your email first.");
+      return;
+    }
     setSending(true);
     setError(null);
     const { error } = await signInWithEmail(email);
@@ -90,25 +109,82 @@ const Rewards = () => {
                     <h3 className="font-bold text-lg mb-1">Check your email</h3>
                     <p className="text-sm text-muted-foreground">
                       We sent a sign-in link to <span className="font-medium">{email}</span>. Click it to
-                      open your wallet, no password needed.
+                      open your wallet.
                     </p>
+                    <button
+                      type="button"
+                      onClick={() => setSent(false)}
+                      className="mt-4 text-sm text-primary font-medium underline"
+                    >
+                      Use a password instead
+                    </button>
                   </div>
                 ) : (
-                  <form onSubmit={handleSend} className="space-y-3">
-                    <h3 className="font-bold text-lg text-center">Sign in to your wallet</h3>
+                  <form onSubmit={handlePassword} className="space-y-3">
+                    <h3 className="font-bold text-lg text-center">
+                      {mode === "signup" ? "Create your wallet" : "Sign in to your wallet"}
+                    </h3>
                     <p className="text-sm text-muted-foreground text-center">
-                      Enter the email you order with and we'll send you a magic link.
+                      {mode === "signup"
+                        ? "Set up your wallet with an email and password."
+                        : "Welcome back. Enter your email and password."}
                     </p>
+                    {mode === "signup" && (
+                      <Input
+                        type="text"
+                        value={name}
+                        onChange={(e) => setName(e.target.value)}
+                        placeholder="Your name"
+                        autoComplete="name"
+                      />
+                    )}
                     <Input
                       type="email"
                       value={email}
                       onChange={(e) => setEmail(e.target.value)}
                       placeholder="you@email.com"
+                      autoComplete="email"
+                      required
+                    />
+                    <Input
+                      type="password"
+                      value={password}
+                      onChange={(e) => setPassword(e.target.value)}
+                      placeholder="Password"
+                      autoComplete={mode === "signup" ? "new-password" : "current-password"}
+                      minLength={6}
                       required
                     />
                     {error && <p className="text-sm text-destructive text-center">{error}</p>}
                     <Button type="submit" className="w-full bg-primary text-primary-foreground hover:bg-primary/90" disabled={sending}>
-                      {sending ? <Loader2 className="h-4 w-4 animate-spin" /> : "Email me a sign-in link"}
+                      {sending ? <Loader2 className="h-4 w-4 animate-spin" /> : mode === "signup" ? "Create wallet" : "Sign in"}
+                    </Button>
+
+                    <p className="text-center text-sm text-muted-foreground">
+                      {mode === "signup" ? "Already have a wallet?" : "New here?"}{" "}
+                      <button
+                        type="button"
+                        onClick={() => {
+                          setMode(mode === "signup" ? "signin" : "signup");
+                          setError(null);
+                        }}
+                        className="text-primary font-medium underline"
+                      >
+                        {mode === "signup" ? "Sign in" : "Create a wallet"}
+                      </button>
+                    </p>
+
+                    <div className="relative py-1 text-center">
+                      <span className="bg-card px-2 text-xs uppercase tracking-wide text-muted-foreground">or</span>
+                    </div>
+                    <Button
+                      type="button"
+                      variant="outline"
+                      className="w-full"
+                      disabled={sending}
+                      onClick={handleMagicLink}
+                    >
+                      <Mail className="h-4 w-4 mr-2" /> Email me a sign-in link
                     </Button>
                   </form>
                 )}
