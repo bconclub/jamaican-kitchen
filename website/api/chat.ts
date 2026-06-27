@@ -31,6 +31,7 @@ interface MenuItemRow {
   base_price: number | string | null;
   available: boolean | null;
   category_id: string | null;
+  featured: boolean | null;
 }
 interface CategoryRow {
   id: string;
@@ -40,7 +41,7 @@ interface CategoryRow {
 async function fetchMenuContext(url: string, anon: string): Promise<string> {
   const headers = { apikey: anon, Authorization: `Bearer ${anon}` };
   const [itemsRes, catsRes] = await Promise.all([
-    fetch(`${url}/rest/v1/menu_items?select=name,description,base_price,available,category_id&order=sort_order`, { headers }),
+    fetch(`${url}/rest/v1/menu_items?select=name,description,base_price,available,category_id,featured&order=sort_order`, { headers }),
     fetch(`${url}/rest/v1/menu_categories?select=id,name&order=sort_order`, { headers }),
   ]);
   const items: MenuItemRow[] = itemsRes.ok ? await itemsRes.json() : [];
@@ -58,8 +59,9 @@ async function fetchMenuContext(url: string, anon: string): Promise<string> {
     for (const it of list) {
       const price = it.base_price != null ? `$${Number(it.base_price).toFixed(2)}` : "";
       const avail = it.available === false ? " (currently unavailable)" : "";
+      const fav = it.featured ? " [BEST SELLER / customer favorite]" : "";
       const desc = it.description ? `: ${it.description}` : "";
-      ctx += `- ${it.name} — ${price}${avail}${desc}\n`;
+      ctx += `- ${it.name} - ${price}${fav}${avail}${desc}\n`;
     }
   }
   return ctx.trim();
@@ -71,8 +73,9 @@ Your job: help customers explore the menu, recommend dishes, and guide them to a
 Rules:
 - ONLY use the menu and information provided below. NEVER invent dishes, prices, ingredients, locations, or hours.
 - If something isn't in the data, say you don't have that detail and suggest they check the website or call the restaurant.
+- Items tagged [BEST SELLER / customer favorite] are our most popular dishes — recommend these when asked for best sellers or recommendations.
 - Keep answers short and well formatted: use **bold** for dish names, bullet lists for options, and always include the price when you mention a dish.
-- Be warm, concise, and encourage them to add items to their order.`;
+- Be warm and concise, and encourage them to add items to their order. Do not use em dashes.`;
 
 export interface ChatResult {
   status: number;
@@ -97,7 +100,8 @@ export async function storefrontChat(payload: unknown, env: ChatEnv): Promise<Ch
     }
   }
 
-  const system = `${SYSTEM_PREAMBLE}\n\nCURRENT MENU:\n${menu || "(menu temporarily unavailable)"}`;
+  const bestSellers = "Oxtail, Curry Goat, Jerk Chicken, Pepper Steak, Escovitch Fish";
+  const system = `${SYSTEM_PREAMBLE}\n\nBEST SELLERS (our most popular dishes, in order): ${bestSellers}.\n\nCURRENT MENU:\n${menu || "(menu temporarily unavailable)"}`;
   const tried = new Set<string>();
   const candidates = [env.OPENROUTER_MODEL, ...FREE_MODEL_FALLBACKS].filter(Boolean) as string[];
 
