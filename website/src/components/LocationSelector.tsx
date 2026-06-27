@@ -124,7 +124,7 @@ export const LocationSelector = ({
                 key={currentLocation.id}
                 title={`Map of ${currentLocation.name}`}
                 src={mapSrc(currentLocation.lat, currentLocation.lng)}
-                className="absolute left-0 top-0 h-[156px] w-full"
+                className="absolute left-0 top-0 h-[188px] w-full"
                 style={{ border: 0 }}
                 loading="lazy"
               />
