@@ -167,7 +167,7 @@ export const Chatbot = () => {
                         {message.cards.map((c) => (
                           <Link
                             key={c.name}
-                            to="/order"
+                            to={`/order#item-${c.name.toLowerCase().replace(/[^a-z0-9]+/g, "-")}`}
                             onClick={() => setIsOpen(false)}
                             className="flex w-full items-center gap-3 rounded-xl border border-border bg-background p-2 transition-colors hover:border-primary"
                           >

@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
 import { MenuItemCard } from "@/components/MenuItemCard";
@@ -18,6 +18,28 @@ const Order = () => {
     setActiveCategory(categoryId);
     document.getElementById(`category-${categoryId}`)?.scrollIntoView({ behavior: "smooth", block: "start" });
   };
+
+  // Deep-link from the chat: /order#item-<slug> scrolls to and highlights that dish.
+  // Matches by name-contains so curated names ("Oxtail") find DB items ("Oxtail Dinner").
+  useEffect(() => {
+    const scrollToHashItem = () => {
+      const m = window.location.hash.match(/^#item-(.+)$/);
+      if (!m) return;
+      const query = decodeURIComponent(m[1]).replace(/-/g, " ").toLowerCase();
+      const found = menuCategories.flatMap((c) => c.items).find((i) => i.name.toLowerCase().includes(query));
+      if (!found) return;
+      setTimeout(() => {
+        const el = document.getElementById(`item-${found.id}`);
+        if (!el) return;
+        el.scrollIntoView({ behavior: "smooth", block: "center" });
+        el.classList.add("ring-2", "ring-primary");
+        setTimeout(() => el.classList.remove("ring-2", "ring-primary"), 2500);
+      }, 350);
+    };
+    scrollToHashItem();
+    window.addEventListener("hashchange", scrollToHashItem);
+    return () => window.removeEventListener("hashchange", scrollToHashItem);
+  }, [menuCategories]);
   return <div className="min-h-screen bg-background">
       <Header />
       

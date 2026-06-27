@@ -26,7 +26,7 @@ export const MenuItemCard = ({ item }: MenuItemCardProps) => {
   };
 
   return (
-    <Card className="group overflow-hidden border-2 border-transparent hover:border-primary/50 transition-all duration-300 hover:shadow-lg">
+    <Card id={`item-${item.id}`} className="group scroll-mt-32 overflow-hidden border-2 border-transparent transition-all duration-300 hover:border-primary/50 hover:shadow-lg md:scroll-mt-36">
       <div className="relative overflow-hidden">
         <img
           src={item.image}
