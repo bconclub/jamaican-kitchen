@@ -71,46 +71,45 @@ export const CateringMenuCard = ({ item }: CateringMenuCardProps) => {
         </CardContent>
       </Card>
 
-      <DialogContent className="sm:max-w-md">
-        <DialogHeader>
-          <DialogTitle className="flex items-center gap-3">
-            <img
-              src={item.image}
-              alt={item.name}
-              className="w-16 h-16 object-cover rounded-lg"
-            />
-            <div>
-              <span className="block">{item.name}</span>
+      <DialogContent className="sm:max-w-lg p-0 overflow-hidden">
+        {/* Big hero image so the dish is clearly visible */}
+        <img
+          src={item.image}
+          alt={item.name}
+          className="h-48 w-full object-cover sm:h-56"
+        />
+        <div className="p-5 sm:p-6">
+          <DialogHeader>
+            <DialogTitle className="flex flex-wrap items-center gap-2 text-2xl">
+              {item.name}
               <SpiceLevelBadge level={item.spiceLevel} size="sm" />
-            </div>
-          </DialogTitle>
-        </DialogHeader>
-        <p className="text-sm text-muted-foreground">{item.description}</p>
-        <div className="space-y-2 mt-4">
-          <h4 className="font-semibold text-sm">Select Portion Size</h4>
-          {item.portions.map((portion) => (
-            <div
-              key={portion.id}
-              className="flex items-center justify-between p-3 rounded-lg border border-border hover:border-primary hover:bg-muted/50 transition-colors cursor-pointer"
-              onClick={() => handleAddToCart(portion)}
-            >
-              <div className="flex-1">
-                <span className="font-medium">{portion.name}</span>
-                <div className="flex items-center text-sm text-muted-foreground mt-0.5">
-                  <Users className="h-3.5 w-3.5 mr-1" />
-                  Serves {portion.serves}
+            </DialogTitle>
+          </DialogHeader>
+          <p className="mt-1 text-sm text-muted-foreground">{item.description}</p>
+          <div className="mt-5 space-y-2">
+            <h4 className="font-semibold">Select Portion Size</h4>
+            {item.portions.map((portion) => (
+              <div
+                key={portion.id}
+                className="flex items-center justify-between rounded-lg border border-border p-4 transition-colors hover:border-primary hover:bg-muted/50 cursor-pointer"
+                onClick={() => handleAddToCart(portion)}
+              >
+                <div className="flex-1">
+                  <span className="text-base font-semibold">{portion.name}</span>
+                  <div className="mt-0.5 flex items-center text-sm text-muted-foreground">
+                    <Users className="mr-1 h-4 w-4" />
+                    Serves {portion.serves}
+                  </div>
+                </div>
+                <div className="flex items-center gap-3">
+                  <span className="text-lg font-bold text-primary">${portion.price.toFixed(2)}</span>
+                  <Button size="icon" className="bg-primary text-primary-foreground hover:bg-primary/90">
+                    <Plus className="h-4 w-4" />
+                  </Button>
                 </div>
               </div>
-              <div className="flex items-center gap-3">
-                <span className="font-bold text-primary text-lg">
-                  ${portion.price.toFixed(2)}
-                </span>
-                <Button size="sm" variant="outline">
-                  <Plus className="h-4 w-4" />
-                </Button>
-              </div>
-            </div>
-          ))}
+            ))}
+          </div>
         </div>
       </DialogContent>
     </Dialog>
