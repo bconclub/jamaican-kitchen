@@ -90,10 +90,22 @@ const OrderConfirmation = () => {
                 <span className="text-muted-foreground">Tax</span>
                 <span>${o.tax.toFixed(2)}</span>
               </div>
+              {(o.walletRedeemed ?? 0) > 0 && (
+                <div className="flex justify-between text-secondary">
+                  <span className="flex items-center gap-1.5"><Wallet className="h-3.5 w-3.5" /> Wallet credit applied</span>
+                  <span>-${(o.walletRedeemed ?? 0).toFixed(2)}</span>
+                </div>
+              )}
               <div className="flex justify-between font-bold text-base pt-1">
                 <span>Total</span>
                 <span className="text-secondary">${o.total.toFixed(2)}</span>
               </div>
+              {(o.cashbackEarned ?? 0) > 0 && (
+                <div className="flex justify-between pt-1 text-primary">
+                  <span>Cashback earned</span>
+                  <span>+${(o.cashbackEarned ?? 0).toFixed(2)}</span>
+                </div>
+              )}
             </div>
           </div>
 

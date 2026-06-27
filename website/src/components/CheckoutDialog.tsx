@@ -137,8 +137,9 @@ export const CheckoutDialog = ({ trigger }: { trigger: React.ReactNode }) => {
         locationAddress: loc?.address ?? "",
         locationPhone: loc?.phone ?? "",
         walletRedeemed: redeem > 0 ? Number(redeem.toFixed(2)) : 0,
-        cashbackEarned: result.cashbackEarned,
-        walletBalance: result.walletBalance,
+        // Demo wallet has no Supabase result, so report the values we just applied.
+        cashbackEarned: session ? result.cashbackEarned : cashback,
+        walletBalance: session ? result.walletBalance : Number(Math.max(0, walletBalance - redeem + cashback).toFixed(2)),
       });
 
       setOpen(false);
