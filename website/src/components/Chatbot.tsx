@@ -13,6 +13,14 @@ type Message = {
 // Calls our own server endpoint — the OpenRouter key stays on the backend.
 const CHAT_URL = "/api/chat";
 
+// Quick-start prompts shown on the first screen to kick off the conversation.
+const SUGGESTIONS = [
+  "What's your best seller?",
+  "Show me the menu",
+  "Any vegetarian options?",
+  "How do I order online?",
+];
+
 // Minimal formatting: bold **text** + preserve line breaks/bullets.
 function renderFormatted(text: string) {
   return text.split("\n").map((line, i) => {
@@ -34,7 +42,7 @@ function renderFormatted(text: string) {
 export const Chatbot = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [messages, setMessages] = useState<Message[]>([
-    { role: "assistant", content: "Welcome to Jamaican Kitchen! How can I help you today?" }
+    { role: "assistant", content: "Welcome to Jamaican Kitchen! 🇯🇲 How can I help you today? Pick a question below or type your own." }
   ]);
   const [input, setInput] = useState("");
   const [isLoading, setIsLoading] = useState(false);
@@ -46,10 +54,11 @@ export const Chatbot = () => {
     }
   }, [messages]);
 
-  const sendMessage = async () => {
-    if (!input.trim() || isLoading) return;
+  const sendMessage = async (text?: string) => {
+    const content = (text ?? input).trim();
+    if (!content || isLoading) return;
 
-    const userMessage: Message = { role: "user", content: input.trim() };
+    const userMessage: Message = { role: "user", content };
     const history = [...messages, userMessage];
     setMessages(history);
     setInput("");
@@ -153,6 +162,20 @@ export const Chatbot = () => {
                   </div>
                 </div>
               )}
+              {messages.length === 1 && !isLoading && (
+                <div className="flex flex-wrap gap-2 pt-1">
+                  {SUGGESTIONS.map((s) => (
+                    <button
+                      key={s}
+                      type="button"
+                      onClick={() => sendMessage(s)}
+                      className="rounded-full border border-border bg-background px-3 py-1.5 text-xs font-medium text-foreground transition-colors hover:border-primary hover:bg-primary/5"
+                    >
+                      {s}
+                    </button>
+                  ))}
+                </div>
+              )}
             </div>
           </ScrollArea>
 
@@ -168,7 +191,7 @@ export const Chatbot = () => {
                 className="flex-1"
               />
               <Button
-                onClick={sendMessage}
+                onClick={() => sendMessage()}
                 disabled={!input.trim() || isLoading}
                 size="icon"
                 className="bg-primary hover:bg-primary/90"
