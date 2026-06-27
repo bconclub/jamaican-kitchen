@@ -54,7 +54,13 @@ function renderFormatted(text: string) {
   });
 }
 
-const SUGGESTIONS = ["What happened today?", "Which items are low on stock?", "Who are my top customers?"];
+const SUGGESTIONS = [
+  "What happened today?",
+  "Which items are low on stock?",
+  "Who are my top customers?",
+  "How's revenue looking?",
+  "Any orders need attention?",
+];
 
 export function AdminChatbot() {
   const { orders } = useLiveOrders();
@@ -139,23 +145,26 @@ export function AdminChatbot() {
                   </div>
                 </div>
               )}
-              {messages.length === 1 && (
-                <div className="flex flex-wrap gap-2 pt-1">
-                  {SUGGESTIONS.map((s) => (
-                    <button
-                      key={s}
-                      onClick={() => send(s)}
-                      className="rounded-full border px-2.5 py-1 text-xs text-muted-foreground hover:bg-muted"
-                    >
-                      {s}
-                    </button>
-                  ))}
-                </div>
-              )}
             </div>
           </ScrollArea>
 
-          <div className="border-t p-3">
+          {/* Context chips — always visible so the conversation can keep going. */}
+          {!isLoading && (
+            <div className="flex flex-wrap gap-1.5 border-t px-3 pt-2">
+              {SUGGESTIONS.map((s) => (
+                <button
+                  key={s}
+                  type="button"
+                  onClick={() => send(s)}
+                  className="rounded-full border px-2.5 py-1 text-xs text-muted-foreground transition-colors hover:border-primary hover:bg-muted"
+                >
+                  {s}
+                </button>
+              ))}
+            </div>
+          )}
+
+          <div className="p-3">
             <div className="flex gap-2">
               <Input
                 value={input}

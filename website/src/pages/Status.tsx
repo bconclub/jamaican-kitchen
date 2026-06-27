@@ -47,8 +47,8 @@ const SECTIONS: Section[] = [
       { title: "Full-height pages (footer below the fold)", status: "live" },
       { title: "Toasts repositioned clear of the header + CTAs", status: "live" },
       { title: "Brand Book v2.0 font system (Display / Heading / Body / UI)", status: "live" },
-      { title: "Per-location Best Sellers", status: "planned" },
-      { title: "Catering delivery option", status: "planned" },
+      { title: "Per-location Best Sellers", status: "building" },
+      { title: "Catering delivery option", status: "building" },
       { title: "Careers page", status: "addon", note: "Skipped for v1" },
     ],
   },
@@ -88,11 +88,11 @@ const SECTIONS: Section[] = [
       { title: "Analytics: custom date range", status: "live" },
       { title: "Admin login (demo)", status: "live" },
       { title: "Delivery: real map of our CT locations", status: "live" },
-      { title: "Order History view + retention rule", status: "planned" },
-      { title: "Admin catering order: item picker + delivery address", status: "planned" },
+      { title: "Order History view + retention rule", status: "building" },
+      { title: "Admin catering order: item picker + delivery address", status: "building" },
       { title: "Customer VIP rule", status: "blocked", note: "Need the threshold ($ spend or # orders)" },
-      { title: "Settings persistence", status: "planned" },
-      { title: "Online vs Catering channel split", status: "planned" },
+      { title: "Settings persistence", status: "building" },
+      { title: "Online vs Catering channel split", status: "building" },
       { title: "Modifiers system (size/sauce/add-ons)", status: "addon" },
       { title: "Master Menu / per-location stock", status: "addon" },
       { title: "Time-based availability (breakfast/lunch/dinner)", status: "addon" },
@@ -133,7 +133,7 @@ const Status = () => {
               </div>
               <div className="flex flex-wrap gap-3">
                 {STATUS_ORDER.map((st) => (
-                  <div key={st} className="flex items-center gap-2 text-sm">
+                  <div key={st} title={STATUS_META[st].explain} className="flex cursor-help items-center gap-2 text-sm">
                     <span className={`h-2.5 w-2.5 rounded-full ${STATUS_META[st].dot}`} />
                     <span className="text-muted-foreground">{STATUS_META[st].label}</span>
                     <span className="font-semibold tabular-nums">{counts(st)}</span>
@@ -143,19 +143,6 @@ const Status = () => {
             </div>
             <div className="mt-4 h-2.5 w-full overflow-hidden rounded-full bg-muted">
               <div className="h-full rounded-full bg-[#009B3A] transition-all" style={{ width: `${pct}%` }} />
-            </div>
-
-            {/* Plain-English key so the labels are never confusing */}
-            <div className="mt-5 grid gap-2 sm:grid-cols-2">
-              {STATUS_ORDER.map((st) => (
-                <div key={st} className="flex items-start gap-2 text-sm">
-                  <span className={`mt-1.5 h-2 w-2 shrink-0 rounded-full ${STATUS_META[st].dot}`} />
-                  <span>
-                    <span className="font-medium">{STATUS_META[st].label}</span>
-                    <span className="text-muted-foreground"> — {STATUS_META[st].explain}</span>
-                  </span>
-                </div>
-              ))}
             </div>
           </CardContent>
         </Card>
@@ -181,7 +168,10 @@ const Status = () => {
                           {item.note && <p className="text-xs text-muted-foreground">{item.note}</p>}
                         </div>
                       </div>
-                      <span className={`inline-flex shrink-0 items-center gap-1.5 rounded-full px-2.5 py-1 text-xs font-medium ${meta.chip}`}>
+                      <span
+                        title={meta.explain}
+                        className={`inline-flex shrink-0 cursor-help items-center gap-1.5 rounded-full px-2.5 py-1 text-xs font-medium ${meta.chip}`}
+                      >
                         <Icon className={`h-3.5 w-3.5 ${item.status === "building" ? "animate-spin" : ""}`} />
                         {meta.label}
                       </span>
