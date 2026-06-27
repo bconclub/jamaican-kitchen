@@ -6,6 +6,7 @@ import { useLiveOrders } from "@/lib/live-data";
 import { useCurrentLocation } from "@/lib/store";
 import { useMemo, useState } from "react";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import {
   AreaChart,
@@ -33,17 +34,24 @@ export const Route = createFileRoute("/_app/analytics")({
 function AnalyticsPage() {
   const loc = useCurrentLocation();
   const { orders: ALL_ORDERS } = useLiveOrders();
-  const [range, setRange] = useState<"7" | "14" | "30">("14");
-  const days = parseInt(range, 10);
+  const [range, setRange] = useState<"7" | "14" | "30" | "custom">("14");
+  const [from, setFrom] = useState("");
+  const [to, setTo] = useState("");
+  const days = range === "custom" ? 0 : parseInt(range, 10);
 
   const orders = useMemo(
     () =>
-      ALL_ORDERS.filter(
-        (o) =>
-          (loc === "all" || o.locationId === loc) &&
-          new Date(o.createdAt).getTime() >= Date.now() - days * 86400000,
-      ),
-    [ALL_ORDERS, loc, days],
+      ALL_ORDERS.filter((o) => {
+        if (loc !== "all" && o.locationId !== loc) return false;
+        const t = new Date(o.createdAt).getTime();
+        if (range === "custom") {
+          const fromOk = !from || t >= new Date(from).getTime();
+          const toOk = !to || t <= new Date(to).getTime() + 86400000; // include the 'to' day
+          return fromOk && toOk;
+        }
+        return t >= Date.now() - days * 86400000;
+      }),
+    [ALL_ORDERS, loc, days, range, from, to],
   );
 
   const revenue = useMemo(() => {
@@ -144,13 +152,23 @@ function AnalyticsPage() {
         title="Analytics"
         description="Revenue, channel mix, and top items across the chain."
         actions={
-          <Tabs value={range} onValueChange={(v) => setRange(v as "7" | "14" | "30")}>
-            <TabsList>
-              <TabsTrigger value="7">7d</TabsTrigger>
-              <TabsTrigger value="14">14d</TabsTrigger>
-              <TabsTrigger value="30">30d</TabsTrigger>
-            </TabsList>
-          </Tabs>
+          <div className="flex flex-wrap items-center gap-2">
+            <Tabs value={range} onValueChange={(v) => setRange(v as "7" | "14" | "30" | "custom")}>
+              <TabsList>
+                <TabsTrigger value="7">7d</TabsTrigger>
+                <TabsTrigger value="14">14d</TabsTrigger>
+                <TabsTrigger value="30">30d</TabsTrigger>
+                <TabsTrigger value="custom">Custom</TabsTrigger>
+              </TabsList>
+            </Tabs>
+            {range === "custom" && (
+              <div className="flex items-center gap-1">
+                <Input type="date" value={from} onChange={(e) => setFrom(e.target.value)} className="h-9 w-[140px]" />
+                <span className="text-xs text-muted-foreground">to</span>
+                <Input type="date" value={to} onChange={(e) => setTo(e.target.value)} className="h-9 w-[140px]" />
+              </div>
+            )}
+          </div>
         }
       />
 
