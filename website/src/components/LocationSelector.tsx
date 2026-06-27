@@ -115,16 +115,21 @@ export const LocationSelector = ({
 
       {currentLocation && (
         <div className="mt-3 space-y-3 text-sm">
-          {/* Small live map of the selected store */}
-          <div className="overflow-hidden rounded-lg border border-border">
-            <iframe
-              key={currentLocation.id}
-              title={`Map of ${currentLocation.name}`}
-              src={mapSrc(currentLocation.lat, currentLocation.lng)}
-              className="h-32 w-full"
-              style={{ border: 0 }}
-              loading="lazy"
-            />
+          {/* Small live map of the selected store. The iframe is taller than its
+              frame so OpenStreetMap's bottom attribution/donation bar is clipped;
+              we keep a tiny credit line below for compliance. */}
+          <div>
+            <div className="relative h-32 overflow-hidden rounded-lg border border-border">
+              <iframe
+                key={currentLocation.id}
+                title={`Map of ${currentLocation.name}`}
+                src={mapSrc(currentLocation.lat, currentLocation.lng)}
+                className="absolute left-0 top-0 h-[156px] w-full"
+                style={{ border: 0 }}
+                loading="lazy"
+              />
+            </div>
+            <p className="mt-1 text-[10px] text-muted-foreground/70">Map data © OpenStreetMap</p>
           </div>
           <div className="flex items-start gap-2">
             <MapPin className="mt-0.5 h-4 w-4 shrink-0 text-secondary" />
