@@ -199,7 +199,7 @@ export const Chatbot = () => {
           <button
             onClick={() => setIsOpen(true)}
             aria-label="Open assistant"
-            className="flex h-16 w-16 items-center justify-center overflow-hidden rounded-full border-2 border-primary bg-card shadow-xl transition-transform hover:scale-105"
+            className="h-16 w-16 overflow-hidden rounded-2xl shadow-xl transition-transform hover:scale-105"
           >
             <img src="/icon-192.png" alt="Jamaican Kitchen assistant" className="h-full w-full object-cover" />
           </button>
