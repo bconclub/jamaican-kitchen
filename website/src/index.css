@@ -9,11 +9,11 @@
 
 @layer base {
   :root {
-    /* Brand fonts (licensed fonts swap in here, see index.html) */
-    --font-display: "Fredoka", "Poppins", system-ui, sans-serif;       /* Tomato Ketchup */
-    --font-heading: "Poppins", system-ui, sans-serif;                  /* Geomanist */
-    --font-body: "Nunito Sans", system-ui, sans-serif;                 /* Avenir */
-    --font-ui: -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif; /* SF Pro */
+    /* Brand Book v2.0 4-font system. Licensed primary first, then spec fallbacks. */
+    --font-display: "Tomato Ketchup", "Bebas Neue", Impact, sans-serif;              /* Primary / Display */
+    --font-heading: "Geomanist", "Inter", system-ui, sans-serif;                    /* Secondary / Heading */
+    --font-body: "Avenir", "Avenir Next", "Nunito Sans", system-ui, sans-serif;     /* Tertiary / Body */
+    --font-ui: "SF Pro Display", -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif; /* UI / Buttons */
 
     --background: 60 9% 96%;
     --foreground: 0 0% 5%;
@@ -113,17 +113,22 @@
     font-family: var(--font-body);
   }
 
-  /* Geomanist stand-in for headings & section titles */
-  h1, h2, h3, h4, h5, h6 {
+  /* Display (Tomato Ketchup) — big hero / section titles */
+  h1, h2 {
+    font-family: var(--font-display);
+  }
+
+  /* Heading (Geomanist) — subheadings */
+  h3, h4, h5, h6 {
     font-family: var(--font-heading);
   }
 
-  /* SF Pro stand-in for all interface controls */
+  /* UI / Buttons (SF Pro Display) — all interface controls */
   button, input, select, textarea, label {
     font-family: var(--font-ui);
   }
 
-  /* Tomato Ketchup stand-in for display/hero type */
+  /* Explicit display utility (matches h1/h2) */
   .font-display {
     font-family: var(--font-display);
   }

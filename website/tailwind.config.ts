@@ -69,11 +69,12 @@ export default {
         sm: "calc(var(--radius) - 4px)",
       },
       fontFamily: {
-        sans: ["'Nunito Sans'", "system-ui", "sans-serif"],
-        body: ["'Nunito Sans'", "system-ui", "sans-serif"],
-        heading: ["'Poppins'", "system-ui", "sans-serif"],
-        display: ["'Fredoka'", "'Poppins'", "sans-serif"],
-        ui: ["-apple-system", "BlinkMacSystemFont", "'Segoe UI'", "system-ui", "sans-serif"],
+        // Single source of truth is the CSS vars in index.css (Brand Book v2.0).
+        sans: ["var(--font-body)"],
+        body: ["var(--font-body)"],
+        heading: ["var(--font-heading)"],
+        display: ["var(--font-display)"],
+        ui: ["var(--font-ui)"],
       },
       keyframes: {
         "accordion-down": {
