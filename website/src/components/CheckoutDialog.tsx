@@ -24,7 +24,7 @@ import { useCart } from "@/contexts/CartContext";
 import { useLocations } from "@/hooks/useMenu";
 import { placeOrder } from "@/lib/api";
 import { useAuth } from "@/lib/auth";
-import { useWalletAuth } from "@/contexts/WalletAuthContext";
+import { useWalletAuth, recordOrder } from "@/contexts/WalletAuthContext";
 import { fetchMyWalletBalance, CASHBACK_RATE } from "@/lib/loyalty";
 import { LogIn } from "lucide-react";
 import { toast } from "sonner";
@@ -35,7 +35,7 @@ export const CheckoutDialog = ({ trigger }: { trigger: React.ReactNode }) => {
   const { items, totalPrice, clearCart, pickupLocation, setCartOpen, setLastOrder } = useCart();
   const { data: locations } = useLocations();
   const { session } = useAuth();
-  const { user: walletUser, balance: walletAuthBalance, addOrder, earn, spend } = useWalletAuth();
+  const { user: walletUser, balance: walletAuthBalance, reload: reloadWallet } = useWalletAuth();
   const navigate = useNavigate();
 
   const [open, setOpen] = useState(false);
@@ -69,10 +69,11 @@ export const CheckoutDialog = ({ trigger }: { trigger: React.ReactNode }) => {
       fetchMyWalletBalance().then(setSessionBalance).catch(() => setSessionBalance(0));
       if (session.user.email) setEmail((e) => e || session.user.email!);
     } else if (walletUser) {
+      reloadWallet(); // refresh balance from storage in case a prior order changed it
       setEmail((e) => e || walletUser.email);
       setName((n) => n || walletUser.name);
     }
-  }, [open, session, walletUser]);
+  }, [open, session, walletUser, reloadWallet]);
 
   // Send checkout to the login page so they can come back and redeem.
   const goLogin = () => {
@@ -118,19 +119,26 @@ export const CheckoutDialog = ({ trigger }: { trigger: React.ReactNode }) => {
         walletRedeem: session && redeem > 0 ? Number(redeem.toFixed(2)) : 0,
       });
 
-      // Demo wallet (no Supabase session): record the order, spend redeemed credit, earn cashback.
-      if (!session && walletUser) {
-        addOrder({
-          id: result.shortId,
-          shortId: result.shortId,
-          createdAt: new Date().toISOString(),
-          status: "new",
-          total: Number(payable.toFixed(2)),
-          cashbackEarned: cashback,
-          items: items.map((it) => ({ name: it.name, qty: it.quantity, price: it.price })),
-        });
-        if (redeem > 0) spend(Number(redeem.toFixed(2)), `Redeemed on ${result.shortId}`);
-        earn(cashback, `Cashback on ${result.shortId}`);
+      // Demo wallet (no Supabase session): record the order against the customer's
+      // EMAIL so it shows whenever that email logs in. Works for guests too.
+      if (!session) {
+        const orderEmail = email.trim() || walletUser?.email || "";
+        if (orderEmail) {
+          recordOrder(orderEmail, {
+            order: {
+              id: result.shortId,
+              shortId: result.shortId,
+              createdAt: new Date().toISOString(),
+              status: "new",
+              total: Number(payable.toFixed(2)),
+              cashbackEarned: cashback,
+              items: items.map((it) => ({ name: it.name, qty: it.quantity, price: it.price })),
+            },
+            cashback,
+            redeem: redeem > 0 ? Number(redeem.toFixed(2)) : 0,
+          });
+          reloadWallet(); // reflect it in the header/wallet immediately
+        }
       }
 
       const loc = (locations ?? []).find((l) => l.id === effectiveLocation);

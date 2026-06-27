@@ -22,7 +22,11 @@ const perks = [
 
 const Rewards = () => {
   const { session, loading, signOut } = useAuth();
-  const { user: demoUser, balance: demoBalance, orders: demoOrders, transactions: demoTransactions, login, logout } = useWalletAuth();
+  const { user: demoUser, balance: demoBalance, orders: demoOrders, transactions: demoTransactions, login, logout, reload: reloadWallet } = useWalletAuth();
+  // Pick up any orders recorded at checkout.
+  useEffect(() => {
+    reloadWallet();
+  }, [reloadWallet]);
   const [step, setStep] = useState<"email" | "otp">("email");
   const [email, setEmail] = useState("");
   const [name, setName] = useState("");
