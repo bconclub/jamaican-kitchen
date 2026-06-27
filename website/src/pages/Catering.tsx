@@ -105,8 +105,8 @@ const Catering = () => {
               {cateringCategories.map((category) => (
                 <section key={category.id} id={`catering-${category.id}`} className="scroll-mt-32 md:scroll-mt-36">
                   <div className="mb-6">
-                    <h2 className="text-2xl font-bold mb-1">{category.name}</h2>
-                    <p className="text-muted-foreground">{category.description}</p>
+                    <h2 className="text-3xl md:text-4xl font-bold tracking-wide mb-2">{category.name}</h2>
+                    <p className="text-base md:text-lg text-muted-foreground">{category.description}</p>
                   </div>
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     {category.items.map((item) => (
