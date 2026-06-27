@@ -178,17 +178,20 @@ export const Chatbot = () => {
 
   return (
     <>
-      <Button
+      <button
         onClick={() => setIsOpen(true)}
         className={cn(
-          "fixed bottom-6 right-6 z-40 h-14 w-14 rounded-full shadow-lg",
-          "bg-primary hover:bg-primary/90 text-primary-foreground transition-transform hover:scale-105",
+          "fixed bottom-6 right-6 z-40 flex items-center gap-2 rounded-full py-2 pl-2 pr-4 shadow-lg",
+          "bg-primary text-primary-foreground transition-transform hover:scale-105 hover:bg-primary/90",
           isOpen && "hidden",
         )}
         aria-label="Open assistant"
       >
-        <Sparkles className="h-6 w-6" />
-      </Button>
+        <span className="flex h-10 w-10 items-center justify-center overflow-hidden rounded-full bg-primary-foreground/15">
+          <img src="/icon-192.png" alt="" className="h-8 w-8 rounded-full object-cover" />
+        </span>
+        <span className="text-sm font-semibold">How can I help you?</span>
+      </button>
 
       {isOpen && (
         <div className="fixed bottom-24 right-4 sm:bottom-6 sm:right-6 z-50 flex h-[min(70vh,520px)] w-[calc(100vw-2rem)] flex-col overflow-hidden rounded-2xl border border-border bg-background shadow-2xl sm:w-[380px] animate-in slide-in-from-bottom-4 duration-300">
