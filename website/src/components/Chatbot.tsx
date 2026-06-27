@@ -94,18 +94,11 @@ export const Chatbot = () => {
   const [messages, setMessages] = useState<Message[]>([WELCOME_MESSAGE]);
   const [input, setInput] = useState("");
   const [isLoading, setIsLoading] = useState(false);
-  const [showGreeting, setShowGreeting] = useState(true);
   const scrollRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     if (scrollRef.current) scrollRef.current.scrollTop = scrollRef.current.scrollHeight;
   }, [messages, isLoading]);
-
-  // The greeting bubble grabs attention, then fades so it doesn't linger.
-  useEffect(() => {
-    const t = setTimeout(() => setShowGreeting(false), 7000);
-    return () => clearTimeout(t);
-  }, []);
 
   const sendMessage = async (text?: string) => {
     const content = (text ?? input).trim();
@@ -187,21 +180,19 @@ export const Chatbot = () => {
     <>
       {!isOpen && (
         <div className="fixed bottom-6 right-6 z-40 flex flex-col items-end gap-2">
-          {showGreeting && (
-            <button
-              onClick={() => setIsOpen(true)}
-              className="relative mr-1 max-w-[220px] rounded-2xl rounded-br-md border border-border bg-card px-3.5 py-2 text-sm font-medium text-foreground shadow-xl animate-in fade-in slide-in-from-bottom-2"
-            >
-              How can I help you? 👋
-              <span className="absolute -bottom-1.5 right-3 h-3 w-3 rotate-45 border-b border-r border-border bg-card" />
-            </button>
-          )}
+          <button
+            onClick={() => setIsOpen(true)}
+            className="relative mr-1 max-w-[220px] rounded-2xl rounded-br-md border border-border bg-card px-3.5 py-2 text-sm font-medium text-foreground shadow-xl animate-in fade-in slide-in-from-bottom-2"
+          >
+            How can I help you? 👋
+            <span className="absolute -bottom-1.5 right-3 h-3 w-3 rotate-45 border-b border-r border-border bg-card" />
+          </button>
           <button
             onClick={() => setIsOpen(true)}
             aria-label="Open assistant"
-            className="h-16 w-16 overflow-hidden rounded-2xl shadow-xl transition-transform hover:scale-105"
+            className="flex h-14 w-14 items-center justify-center rounded-full bg-secondary shadow-xl ring-2 ring-secondary/20 transition-transform hover:scale-105"
           >
-            <img src="/icon-192.png" alt="Jamaican Kitchen assistant" className="h-full w-full object-cover" />
+            <span className="text-xl font-extrabold tracking-tight text-primary">JK</span>
           </button>
         </div>
       )}
