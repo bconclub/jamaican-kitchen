@@ -1,7 +1,7 @@
 import { defineConfig, loadEnv, type Plugin } from "vite";
 import react from "@vitejs/plugin-react-swc";
 import path from "path";
-import { storefrontChat, type ChatEnv } from "./api/_core";
+import { storefrontChat, type ChatEnv } from "./api/chat";
 
 // Dev-only middleware so /api/chat works under `vite` (no Vercel functions locally).
 // Production uses the matching Vercel function in api/chat.ts — same core logic.
