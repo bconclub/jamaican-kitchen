@@ -20,6 +20,7 @@ import About from "./pages/About";
 import OurStory from "./pages/OurStory";
 import Rewards from "./pages/Rewards";
 import MobileApp from "./pages/MobileApp";
+import Status from "./pages/Status";
 import NotFound from "./pages/NotFound";
 const queryClient = new QueryClient();
 
@@ -45,6 +46,7 @@ const App = () => (
             <Route path="/rewards" element={<Rewards />} />
             <Route path="/account" element={<Rewards />} />
             <Route path="/app" element={<MobileApp />} />
+            <Route path="/status" element={<Status />} />
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
             <Route path="*" element={<NotFound />} />
           </Routes>
