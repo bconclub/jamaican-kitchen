@@ -48,7 +48,7 @@ const Locations = () => {
     <div className="min-h-screen bg-background">
       <Header />
       
-      <main className="pt-20 md:pt-24 pb-16">
+      <main className="min-h-screen pt-20 md:pt-24 pb-16">
         <div className="container mx-auto px-4">
           {/* Hero Section */}
           <div className="text-center mb-12">
