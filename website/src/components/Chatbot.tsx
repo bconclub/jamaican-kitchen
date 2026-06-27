@@ -10,7 +10,26 @@ type Message = {
   content: string;
 };
 
-const CHAT_URL = `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/chat`;
+// Calls our own server endpoint — the OpenRouter key stays on the backend.
+const CHAT_URL = "/api/chat";
+
+// Minimal formatting: bold **text** + preserve line breaks/bullets.
+function renderFormatted(text: string) {
+  return text.split("\n").map((line, i) => {
+    const parts = line.split(/(\*\*[^*]+\*\*)/g).map((seg, j) =>
+      seg.startsWith("**") && seg.endsWith("**") ? (
+        <strong key={j}>{seg.slice(2, -2)}</strong>
+      ) : (
+        <span key={j}>{seg}</span>
+      ),
+    );
+    return (
+      <span key={i} className="block">
+        {parts}
+      </span>
+    );
+  });
+}
 
 export const Chatbot = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -31,72 +50,28 @@ export const Chatbot = () => {
     if (!input.trim() || isLoading) return;
 
     const userMessage: Message = { role: "user", content: input.trim() };
-    setMessages(prev => [...prev, userMessage]);
+    const history = [...messages, userMessage];
+    setMessages(history);
     setInput("");
     setIsLoading(true);
-
-    let assistantContent = "";
 
     try {
       const response = await fetch(CHAT_URL, {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY}`,
-        },
-        body: JSON.stringify({ 
-          messages: [...messages.filter(m => m.role !== "assistant" || messages.indexOf(m) > 0), userMessage]
-        }),
+        headers: { "Content-Type": "application/json" },
+        // Drop the canned greeting; send the real conversation.
+        body: JSON.stringify({ messages: history.slice(1) }),
       });
 
-      if (!response.ok || !response.body) {
-        throw new Error("Failed to get response");
+      const data = await response.json().catch(() => ({}));
+      if (!response.ok || !data.reply) {
+        throw new Error(data.error || "Failed to get response");
       }
-
-      const reader = response.body.getReader();
-      const decoder = new TextDecoder();
-      let buffer = "";
-
-      setMessages(prev => [...prev, { role: "assistant", content: "" }]);
-
-      while (true) {
-        const { done, value } = await reader.read();
-        if (done) break;
-
-        buffer += decoder.decode(value, { stream: true });
-
-        let newlineIndex: number;
-        while ((newlineIndex = buffer.indexOf("\n")) !== -1) {
-          let line = buffer.slice(0, newlineIndex);
-          buffer = buffer.slice(newlineIndex + 1);
-
-          if (line.endsWith("\r")) line = line.slice(0, -1);
-          if (line.startsWith(":") || line.trim() === "") continue;
-          if (!line.startsWith("data: ")) continue;
-
-          const jsonStr = line.slice(6).trim();
-          if (jsonStr === "[DONE]") break;
-
-          try {
-            const parsed = JSON.parse(jsonStr);
-            const content = parsed.choices?.[0]?.delta?.content as string | undefined;
-            if (content) {
-              assistantContent += content;
-              setMessages(prev => {
-                const updated = [...prev];
-                updated[updated.length - 1] = { role: "assistant", content: assistantContent };
-                return updated;
-              });
-            }
-          } catch {
-            // Incomplete JSON, will be handled in next chunk
-          }
-        }
-      }
+      setMessages(prev => [...prev, { role: "assistant", content: data.reply as string }]);
     } catch (error) {
       console.error("Chat error:", error);
       setMessages(prev => [
-        ...prev.slice(0, -1),
+        ...prev,
         { role: "assistant", content: "Sorry, I'm having trouble connecting right now. Please try again or call us directly!" }
       ]);
     } finally {
@@ -161,18 +136,23 @@ export const Chatbot = () => {
                 >
                   <div
                     className={cn(
-                      "max-w-[80%] rounded-2xl px-4 py-2 text-sm",
+                      "max-w-[80%] rounded-2xl px-4 py-2 text-sm leading-relaxed [&_strong]:font-semibold",
                       message.role === "user"
                         ? "bg-primary text-primary-foreground rounded-br-md"
                         : "bg-muted text-foreground rounded-bl-md"
                     )}
                   >
-                    {message.content || (isLoading && index === messages.length - 1 && (
-                      <Loader2 className="h-4 w-4 animate-spin" />
-                    ))}
+                    {message.role === "assistant" ? renderFormatted(message.content) : message.content}
                   </div>
                 </div>
               ))}
+              {isLoading && (
+                <div className="flex justify-start">
+                  <div className="rounded-2xl rounded-bl-md bg-muted px-4 py-2 text-foreground">
+                    <Loader2 className="h-4 w-4 animate-spin" />
+                  </div>
+                </div>
+              )}
             </div>
           </ScrollArea>
 
