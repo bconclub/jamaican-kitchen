@@ -72,7 +72,7 @@ const SECTIONS: Section[] = [
       { title: "Menu CRUD that persists (items, categories)", status: "live" },
       { title: "Analytics: custom date range", status: "live" },
       { title: "Admin login (demo)", status: "live" },
-      { title: "Delivery: real map of our CT locations", status: "building" },
+      { title: "Delivery: real map of our CT locations", status: "live" },
       { title: "Order History view + retention rule", status: "planned" },
       { title: "Admin catering order: item picker + delivery address", status: "planned" },
       { title: "Customer VIP rule", status: "blocked", note: "Need the threshold ($ spend or # orders)" },
