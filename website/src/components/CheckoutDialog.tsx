@@ -35,7 +35,7 @@ export const CheckoutDialog = ({ trigger }: { trigger: React.ReactNode }) => {
   const { items, totalPrice, clearCart, pickupLocation, setCartOpen, setLastOrder } = useCart();
   const { data: locations } = useLocations();
   const { session } = useAuth();
-  const { user: walletUser, balance: walletAuthBalance, redeem: redeemWallet, addCashback } = useWalletAuth();
+  const { user: walletUser, balance: walletAuthBalance, addOrder, earn, spend } = useWalletAuth();
   const navigate = useNavigate();
 
   const [open, setOpen] = useState(false);
@@ -118,10 +118,19 @@ export const CheckoutDialog = ({ trigger }: { trigger: React.ReactNode }) => {
         walletRedeem: session && redeem > 0 ? Number(redeem.toFixed(2)) : 0,
       });
 
-      // Demo wallet (no Supabase session): spend the redeemed credit, earn cashback.
+      // Demo wallet (no Supabase session): record the order, spend redeemed credit, earn cashback.
       if (!session && walletUser) {
-        if (redeem > 0) redeemWallet(Number(redeem.toFixed(2)));
-        addCashback(cashback);
+        addOrder({
+          id: result.shortId,
+          shortId: result.shortId,
+          createdAt: new Date().toISOString(),
+          status: "new",
+          total: Number(payable.toFixed(2)),
+          cashbackEarned: cashback,
+          items: items.map((it) => ({ name: it.name, qty: it.quantity, price: it.price })),
+        });
+        if (redeem > 0) spend(Number(redeem.toFixed(2)), `Redeemed on ${result.shortId}`);
+        earn(cashback, `Cashback on ${result.shortId}`);
       }
 
       const loc = (locations ?? []).find((l) => l.id === effectiveLocation);

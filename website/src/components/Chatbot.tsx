@@ -1,6 +1,6 @@
 import { useState, useRef, useEffect } from "react";
 import { Link } from "react-router-dom";
-import { Sparkles, X, Send, Loader2, ArrowRight, Plus } from "lucide-react";
+import { Sparkles, X, Send, Loader2, ArrowRight, Plus, MapPin, Phone, Clock, Navigation } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { cn } from "@/lib/utils";
@@ -9,12 +9,29 @@ import { useCart } from "@/contexts/CartContext";
 import type { MenuItem } from "@/data/menuData";
 import { toast } from "sonner";
 
+interface LocationInfo {
+  name: string;
+  address: string;
+  phone: string;
+  hours: string;
+}
 type Message = {
   role: "user" | "assistant";
   content: string;
   cards?: MenuItem[];
   link?: { label: string; href: string };
+  locations?: LocationInfo[];
 };
+
+// Our 6 Connecticut locations (matches the Locations page).
+const LOCATIONS: LocationInfo[] = [
+  { name: "Vernon", address: "123 Hartford Turnpike, Vernon, CT 06066", phone: "(860) 555-0101", hours: "Mon-Sat 11am-9pm, Sun 12pm-8pm" },
+  { name: "South Windsor", address: "456 Sullivan Ave, South Windsor, CT 06074", phone: "(860) 555-0102", hours: "Mon-Sat 11am-9pm, Sun 12pm-8pm" },
+  { name: "Windsor Locks", address: "789 Main St, Windsor Locks, CT 06096", phone: "(860) 555-0103", hours: "Mon-Sat 11am-9pm, Sun 12pm-8pm" },
+  { name: "Bristol", address: "321 Farmington Ave, Bristol, CT 06010", phone: "(860) 555-0104", hours: "Mon-Sat 11am-9pm, Sun 12pm-8pm" },
+  { name: "Rocky Hill", address: "654 Silas Deane Hwy, Rocky Hill, CT 06067", phone: "(860) 555-0105", hours: "Mon-Sat 11am-9pm, Sun 12pm-8pm" },
+  { name: "Enfield", address: "987 Enfield St, Enfield, CT 06082", phone: "(860) 555-0106", hours: "Mon-Sat 11am-9pm, Sun 12pm-8pm" },
+];
 
 // Calls our own server endpoint — the OpenRouter key stays on the backend.
 const CHAT_URL = "/api/chat";
@@ -25,12 +42,12 @@ const BEST_SELLER_NAMES = ["Oxtail", "Curry Goat", "Jerk Chicken", "Pepper Steak
 
 // Follow-up chips — always visible so the conversation can keep going.
 // `kind` controls behaviour: cards (best sellers), link (menu), or ask (send to AI).
-const CHIPS: { label: string; kind: "cards" | "link" | "ask" }[] = [
+const CHIPS: { label: string; kind: "cards" | "link" | "ask" | "locations" }[] = [
   { label: "What's your best seller?", kind: "cards" },
   { label: "Show me the menu", kind: "link" },
   { label: "Any vegetarian options?", kind: "ask" },
   { label: "How do I order online?", kind: "ask" },
-  { label: "Where are you located?", kind: "ask" },
+  { label: "Where are you located?", kind: "locations" },
 ];
 
 // Minimal formatting: bold **text** + preserve line breaks/bullets.
@@ -117,6 +134,14 @@ export const Chatbot = () => {
       ]);
       return;
     }
+    if (chip.kind === "locations") {
+      setMessages((prev) => [
+        ...prev,
+        { role: "user", content: chip.label },
+        { role: "assistant", content: "We have 6 locations across Connecticut 📍", locations: LOCATIONS },
+      ]);
+      return;
+    }
     sendMessage(chip.label);
   };
 
@@ -192,6 +217,38 @@ export const Chatbot = () => {
                               >
                                 <Plus className="h-3.5 w-3.5" /> Add
                               </Button>
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    )}
+
+                    {message.locations && (
+                      <div className="mt-2 space-y-2">
+                        {message.locations.map((l) => (
+                          <div key={l.name} className="w-full rounded-xl border border-border bg-background p-3">
+                            <div className="flex items-center gap-1.5 font-semibold">
+                              <MapPin className="h-4 w-4 shrink-0 text-secondary" /> {l.name}
+                            </div>
+                            <p className="mt-1 text-xs text-muted-foreground">{l.address}</p>
+                            <p className="mt-0.5 flex items-center gap-1.5 text-xs text-muted-foreground">
+                              <Clock className="h-3 w-3 shrink-0" /> {l.hours}
+                            </p>
+                            <div className="mt-2 flex gap-2">
+                              <a
+                                href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(l.address)}`}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="inline-flex items-center gap-1 rounded-full bg-primary px-2.5 py-1 text-xs font-medium text-primary-foreground hover:bg-primary/90"
+                              >
+                                <Navigation className="h-3 w-3" /> Directions
+                              </a>
+                              <a
+                                href={`tel:${l.phone.replace(/[^0-9+]/g, "")}`}
+                                className="inline-flex items-center gap-1 rounded-full border border-border px-2.5 py-1 text-xs font-medium hover:border-primary"
+                              >
+                                <Phone className="h-3 w-3" /> Call
+                              </a>
                             </div>
                           </div>
                         ))}

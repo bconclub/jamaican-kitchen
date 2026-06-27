@@ -16,31 +16,13 @@ const perks = [
 ];
 
 // DEMO auth: fully local, no backend. We generate a one-time code on screen,
-// verify it locally; login state + balance live in WalletAuthContext (shared with
-// the header + checkout). Swap for supabase OTP + live wallet when email is wired.
-
-// Sample wallet activity shown in demo mode so the rewards screen looks alive.
-const DEMO_TRANSACTIONS: WalletSummary["transactions"] = [
-  { id: "d-tx-1", amount: 3.05, kind: "earn", note: "Cashback on JK-DEMO1", created_at: new Date().toISOString() },
-];
-const DEMO_ORDERS: MyOrder[] = [
-  {
-    id: "d-ord-1",
-    shortId: "JK-DEMO1",
-    createdAt: new Date().toISOString(),
-    status: "completed",
-    total: 61.0,
-    cashbackEarned: 3.05,
-    items: [
-      { name: "Oxtail Dinner", qty: 1, price: 22.0 },
-      { name: "Jerk Chicken Dinner", qty: 2, price: 19.5 },
-    ],
-  },
-];
+// verify it locally; login state, balance, orders + activity live in
+// WalletAuthContext (shared with the header + checkout). Swap for supabase OTP
+// + live wallet when email is wired.
 
 const Rewards = () => {
   const { session, loading, signOut } = useAuth();
-  const { user: demoUser, balance: demoBalance, login, logout } = useWalletAuth();
+  const { user: demoUser, balance: demoBalance, orders: demoOrders, transactions: demoTransactions, login, logout } = useWalletAuth();
   const [step, setStep] = useState<"email" | "otp">("email");
   const [email, setEmail] = useState("");
   const [name, setName] = useState("");
@@ -98,8 +80,8 @@ const Rewards = () => {
 
   const loggedIn = !!session || !!demoUser;
   // In demo mode (no real session) show the sample wallet + orders.
-  const effWallet = session ? wallet : { balance: demoBalance, transactions: DEMO_TRANSACTIONS };
-  const effOrders = session ? orders : DEMO_ORDERS;
+  const effWallet = session ? wallet : { balance: demoBalance, transactions: demoTransactions };
+  const effOrders: MyOrder[] = session ? orders : (demoOrders as unknown as MyOrder[]);
   const effLoadingData = session ? loadingData : false;
   const effEmail = session ? session.user.email : demoUser?.email;
 
