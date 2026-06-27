@@ -5,6 +5,7 @@ import { SidebarProvider, SidebarInset } from "@/components/ui/sidebar";
 import { AppSidebar } from "@/components/AppSidebar";
 import { TopBar } from "@/components/TopBar";
 import { Toaster } from "@/components/ui/sonner";
+import { AdminChatbot } from "@/components/AdminChatbot";
 import { useAuth } from "@/lib/auth";
 
 export const Route = createFileRoute("/_app")({
@@ -38,6 +39,7 @@ function AppLayout() {
           </main>
         </SidebarInset>
       </div>
+      <AdminChatbot />
       <Toaster />
     </SidebarProvider>
   );
