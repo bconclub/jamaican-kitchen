@@ -1,4 +1,4 @@
-import { createContext, useContext, useState, ReactNode } from "react";
+import { createContext, useContext, useState, useRef, ReactNode } from "react";
 
 export interface CartItem {
   id: string;
@@ -51,7 +51,19 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
   const [pickupLocation, setPickupLocation] = useState<string>("vernon");
   const [isCartOpen, setCartOpen] = useState(false);
   const [lastOrder, setLastOrder] = useState<PlacedOrderSummary | null>(null);
-  const openCart = () => setCartOpen(true);
+  // Auto-close timer: after an add, the cart peeks open then closes itself.
+  const autoCloseRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const clearAutoClose = () => {
+    if (autoCloseRef.current) {
+      clearTimeout(autoCloseRef.current);
+      autoCloseRef.current = null;
+    }
+  };
+  // Manual open (cart icon) stays open — cancel any pending auto-close.
+  const openCart = () => {
+    clearAutoClose();
+    setCartOpen(true);
+  };
 
   const addItem = (newItem: Omit<CartItem, "quantity">) => {
     setItems((prev) => {
@@ -65,7 +77,10 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
       }
       return [...prev, { ...newItem, quantity: 1 }];
     });
-    setCartOpen(true); // open the order panel so you can see what was added
+    // Peek the order panel, then auto-close after ~1.8s (reset on each add).
+    setCartOpen(true);
+    clearAutoClose();
+    autoCloseRef.current = setTimeout(() => setCartOpen(false), 1800);
   };
 
   const removeItem = (id: string) => {

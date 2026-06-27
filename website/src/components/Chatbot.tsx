@@ -1,6 +1,6 @@
 import { useState, useRef, useEffect } from "react";
 import { Link } from "react-router-dom";
-import { Sparkles, X, Send, Loader2, ArrowRight, Plus, MapPin, Phone, Clock, Navigation } from "lucide-react";
+import { Sparkles, X, Send, Loader2, ArrowRight, Plus, MapPin, Phone, Clock, Navigation, RotateCcw } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { cn } from "@/lib/utils";
@@ -50,6 +50,11 @@ const CHIPS: { label: string; kind: "cards" | "link" | "ask" | "locations" }[] =
   { label: "Where are you located?", kind: "locations" },
 ];
 
+const WELCOME_MESSAGE: Message = {
+  role: "assistant",
+  content: "Welcome to Jamaican Kitchen! 🇯🇲 How can I help you today? Pick a question below or type your own.",
+};
+
 // Minimal formatting: bold **text** + preserve line breaks/bullets.
 function renderFormatted(text: string) {
   return text.split("\n").map((line, i) => {
@@ -79,9 +84,7 @@ export const Chatbot = () => {
   };
 
   const [isOpen, setIsOpen] = useState(false);
-  const [messages, setMessages] = useState<Message[]>([
-    { role: "assistant", content: "Welcome to Jamaican Kitchen! 🇯🇲 How can I help you today? Pick a question below or type your own." },
-  ]);
+  const [messages, setMessages] = useState<Message[]>([WELCOME_MESSAGE]);
   const [input, setInput] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const scrollRef = useRef<HTMLDivElement>(null);
@@ -145,6 +148,12 @@ export const Chatbot = () => {
     sendMessage(chip.label);
   };
 
+  const resetChat = () => {
+    setMessages([WELCOME_MESSAGE]);
+    setInput("");
+    setIsLoading(false);
+  };
+
   const handleKeyDown = (e: React.KeyboardEvent) => {
     if (e.key === "Enter" && !e.shiftKey) {
       e.preventDefault();
@@ -176,9 +185,21 @@ export const Chatbot = () => {
                 <p className="text-xs opacity-90">Ask us anything!</p>
               </div>
             </div>
-            <Button variant="ghost" size="icon" onClick={() => setIsOpen(false)} className="text-primary-foreground hover:bg-primary-foreground/20">
-              <X className="h-5 w-5" />
-            </Button>
+            <div className="flex items-center gap-1">
+              <Button
+                variant="ghost"
+                size="icon"
+                onClick={resetChat}
+                title="Reset chat"
+                aria-label="Reset chat"
+                className="text-primary-foreground hover:bg-primary-foreground/20"
+              >
+                <RotateCcw className="h-5 w-5" />
+              </Button>
+              <Button variant="ghost" size="icon" onClick={() => setIsOpen(false)} className="text-primary-foreground hover:bg-primary-foreground/20">
+                <X className="h-5 w-5" />
+              </Button>
+            </div>
           </div>
 
           <div ref={scrollRef} className="flex-1 overflow-y-auto overflow-x-hidden p-4">
