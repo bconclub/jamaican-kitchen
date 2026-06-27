@@ -1,4 +1,4 @@
-import { createFileRoute, Link } from "@tanstack/react-router";
+import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useEffect, useMemo, useState } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -86,6 +86,7 @@ const ALL_STATUSES = Object.keys(STATUS_META) as OrderStatus[];
 const ALL_CHANNELS = Object.keys(CHANNEL_META) as Channel[];
 
 function OrdersPage() {
+  const navigate = useNavigate();
   const loc = useCurrentLocation();
   const { orders: ORDERS } = useLiveOrders();
   const liveLocations = useLiveLocations();
@@ -222,9 +223,18 @@ function OrdersPage() {
                 {filtered.map((o) => {
                   const locationName = locName.get(o.locationId) ?? "-";
                   return (
-                    <tr key={o.id} className="border-b hover:bg-muted/50">
+                    <tr
+                      key={o.id}
+                      className="cursor-pointer border-b hover:bg-muted/50"
+                      onClick={() => navigate({ to: "/orders/$id", params: { id: o.id } })}
+                    >
                       <td className="py-2.5">
-                        <Link to="/orders/$id" params={{ id: o.id }} className="font-mono text-xs text-primary hover:underline">
+                        <Link
+                          to="/orders/$id"
+                          params={{ id: o.id }}
+                          onClick={(e) => e.stopPropagation()}
+                          className="font-mono text-xs text-primary hover:underline"
+                        >
                           {o.shortId}
                         </Link>
                       </td>
@@ -250,7 +260,7 @@ function OrdersPage() {
                       </td>
                       <td className="py-2.5"><StatusPill status={o.status} /></td>
                       <td className="py-2.5 text-right tabular-nums font-medium">{formatMoney(o.total)}</td>
-                      <td className="py-2.5">
+                      <td className="py-2.5" onClick={(e) => e.stopPropagation()}>
                         <div className="flex justify-end gap-1">
                           {o.status === "new" && (
                             <>

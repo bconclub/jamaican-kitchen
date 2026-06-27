@@ -1,33 +1,53 @@
-import { createFileRoute, Link, notFound } from "@tanstack/react-router";
+import { createFileRoute, Link } from "@tanstack/react-router";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import { ChannelBadge } from "@/components/ChannelBadge";
 import { StatusPill } from "@/components/StatusPill";
 import { PageHeader, formatMoney } from "@/components/PageHeader";
-import { CHANNEL_META, LOCATIONS, ORDERS } from "@/lib/mock-data";
-import type { Order } from "@/lib/types";
-import { ArrowLeft, MapPin, Phone, Truck, Clock, MessageSquare, Star, Send, Timer } from "lucide-react";
+import { CHANNEL_META } from "@/lib/mock-data";
+import { useLiveOrders, useLiveLocations } from "@/lib/live-data";
+import { ArrowLeft, MapPin, Phone, Truck, Clock, MessageSquare, Star, Send, Timer, Loader2 } from "lucide-react";
 import { format } from "date-fns";
 import { useState } from "react";
 import { Textarea } from "@/components/ui/textarea";
 import { Button as UIButton } from "@/components/ui/button";
 import { durationMinutes, isFinal, staffNoteFor, reviewFor } from "./orders";
+import type { Order, Location } from "@/lib/types";
 
 export const Route = createFileRoute("/_app/orders/$id")({
-  loader: ({ params }) => {
-    const order = ORDERS.find((o) => o.id === params.id);
-    if (!order) throw notFound();
-    return { order };
-  },
-  notFoundComponent: () => <div className="p-8">Order not found</div>,
-  errorComponent: ({ error }) => <div className="p-8">{error.message}</div>,
   component: OrderDetail,
 });
 
 function OrderDetail() {
-  const { order } = Route.useLoaderData() as { order: Order };
-  const location = LOCATIONS.find((l) => l.id === order.locationId);
+  // Load from live data (Supabase) so real orders resolve, not just mock seeds.
+  const { id } = Route.useParams();
+  const { orders, loading } = useLiveOrders();
+  const locations = useLiveLocations();
+  const order = orders.find((o) => o.id === id);
+  const location = locations.find((l) => l.id === order?.locationId);
+
+  if (loading && !order) {
+    return (
+      <div className="flex justify-center py-20">
+        <Loader2 className="h-6 w-6 animate-spin text-muted-foreground" />
+      </div>
+    );
+  }
+  if (!order) {
+    return (
+      <div className="p-8">
+        <Link to="/orders" className="mb-3 inline-flex items-center gap-1 text-sm text-muted-foreground hover:text-foreground">
+          <ArrowLeft className="h-4 w-4" /> Back to orders
+        </Link>
+        <p className="text-muted-foreground">Order not found.</p>
+      </div>
+    );
+  }
+  return <OrderDetailView order={order} location={location} />;
+}
+
+function OrderDetailView({ order, location }: { order: Order; location?: Location }) {
   const ch = CHANNEL_META[order.channel];
   const initialReview = isFinal(order.status) ? reviewFor(order.id) : null;
   const [comments, setComments] = useState<{ author: string; text: string; t: string }[]>([

@@ -64,6 +64,15 @@ function InventoryPage() {
     void supabase.from("menu_items").update({ stock: next }).eq("id", id);
   };
 
+  // Direct edit: update the field locally as the user types, persist on blur.
+  const setStockLocal = (id: string, value: number) =>
+    setItems((prev) => prev.map((i) => (i.id === id ? { ...i, stock: Math.max(0, value) } : i)));
+
+  const persistStock = (id: string, value: number) => {
+    const next = Math.max(0, value);
+    void supabase.from("menu_items").update({ stock: next }).eq("id", id);
+  };
+
   const adjustChannel = (id: string, ch: Channel, delta: number) =>
     setChannelStock((prev) => ({
       ...prev,
@@ -151,7 +160,16 @@ function InventoryPage() {
                       </div>
                     </TableCell>
                     <TableCell className="text-muted-foreground">{cat}</TableCell>
-                    <TableCell className="text-right tabular-nums font-medium">{i.stock}</TableCell>
+                    <TableCell className="text-right">
+                      <Input
+                        type="number"
+                        min={0}
+                        value={i.stock}
+                        onChange={(e) => setStockLocal(i.id, parseInt(e.target.value) || 0)}
+                        onBlur={(e) => persistStock(i.id, parseInt(e.target.value) || 0)}
+                        className="h-8 w-20 ml-auto text-right tabular-nums"
+                      />
+                    </TableCell>
                     <TableCell>
                       <Badge variant="secondary" className={status.className}>{status.label}</Badge>
                     </TableCell>
