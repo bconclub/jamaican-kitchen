@@ -94,11 +94,18 @@ export const Chatbot = () => {
   const [messages, setMessages] = useState<Message[]>([WELCOME_MESSAGE]);
   const [input, setInput] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+  const [showGreeting, setShowGreeting] = useState(true);
   const scrollRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     if (scrollRef.current) scrollRef.current.scrollTop = scrollRef.current.scrollHeight;
   }, [messages, isLoading]);
+
+  // The greeting bubble grabs attention, then fades so it doesn't linger.
+  useEffect(() => {
+    const t = setTimeout(() => setShowGreeting(false), 7000);
+    return () => clearTimeout(t);
+  }, []);
 
   const sendMessage = async (text?: string) => {
     const content = (text ?? input).trim();
@@ -178,20 +185,26 @@ export const Chatbot = () => {
 
   return (
     <>
-      <button
-        onClick={() => setIsOpen(true)}
-        className={cn(
-          "fixed bottom-6 right-6 z-40 flex items-center gap-2 rounded-full py-2 pl-2 pr-4 shadow-lg",
-          "bg-primary text-primary-foreground transition-transform hover:scale-105 hover:bg-primary/90",
-          isOpen && "hidden",
-        )}
-        aria-label="Open assistant"
-      >
-        <span className="flex h-10 w-10 items-center justify-center overflow-hidden rounded-full bg-primary-foreground/15">
-          <img src="/icon-192.png" alt="" className="h-8 w-8 rounded-full object-cover" />
-        </span>
-        <span className="text-sm font-semibold">How can I help you?</span>
-      </button>
+      {!isOpen && (
+        <div className="fixed bottom-6 right-6 z-40 flex flex-col items-end gap-2">
+          {showGreeting && (
+            <button
+              onClick={() => setIsOpen(true)}
+              className="relative mr-1 max-w-[220px] rounded-2xl rounded-br-md border border-border bg-card px-3.5 py-2 text-sm font-medium text-foreground shadow-xl animate-in fade-in slide-in-from-bottom-2"
+            >
+              How can I help you? 👋
+              <span className="absolute -bottom-1.5 right-3 h-3 w-3 rotate-45 border-b border-r border-border bg-card" />
+            </button>
+          )}
+          <button
+            onClick={() => setIsOpen(true)}
+            aria-label="Open assistant"
+            className="flex h-16 w-16 items-center justify-center overflow-hidden rounded-full border-2 border-primary bg-card shadow-xl transition-transform hover:scale-105"
+          >
+            <img src="/icon-192.png" alt="Jamaican Kitchen assistant" className="h-full w-full object-cover" />
+          </button>
+        </div>
+      )}
 
       {isOpen && (
         <div className="fixed bottom-24 right-4 sm:bottom-6 sm:right-6 z-50 flex h-[min(70vh,520px)] w-[calc(100vw-2rem)] flex-col overflow-hidden rounded-2xl border border-border bg-background shadow-2xl sm:w-[380px] animate-in slide-in-from-bottom-4 duration-300">
