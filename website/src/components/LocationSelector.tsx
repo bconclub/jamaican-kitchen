@@ -124,10 +124,12 @@ export const LocationSelector = ({
                 key={currentLocation.id}
                 title={`Map of ${currentLocation.name}`}
                 src={mapSrc(currentLocation.lat, currentLocation.lng)}
-                className="absolute left-0 top-0 h-[188px] w-full"
+                className="absolute inset-0 h-full w-full"
                 style={{ border: 0 }}
                 loading="lazy"
               />
+              {/* Mask OpenStreetMap's attribution/donation bar (can't style cross-origin) */}
+              <div className="pointer-events-none absolute inset-x-0 bottom-0 h-5 bg-card" />
             </div>
             <p className="mt-1 text-[10px] text-muted-foreground/70">Map data © OpenStreetMap</p>
           </div>
