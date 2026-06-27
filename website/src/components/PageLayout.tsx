@@ -11,7 +11,7 @@ interface PageLayoutProps {
 export const PageLayout = ({ title, subtitle, children }: PageLayoutProps) => (
   <div className="bg-background">
     <Header />
-    <main className="min-h-screen pt-20 md:pt-24 pb-16">
+    <main className="min-h-screen pt-16 md:pt-20 pb-16">
       <div className="bg-gradient-to-r from-secondary to-secondary/80 text-secondary-foreground py-10">
         <div className="container mx-auto px-4">
           <h1 className="text-3xl md:text-4xl font-bold mb-2">{title}</h1>

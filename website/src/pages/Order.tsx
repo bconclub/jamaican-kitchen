@@ -43,7 +43,7 @@ const Order = () => {
   return <div className="min-h-screen bg-background">
       <Header />
       
-      <main className="min-h-screen pt-20 md:pt-24">
+      <main className="min-h-screen pt-16 md:pt-20">
         {/* Hero Banner */}
         <div className="bg-gradient-to-r from-secondary to-secondary/80 text-secondary-foreground py-8">
           <div className="container mx-auto px-4">

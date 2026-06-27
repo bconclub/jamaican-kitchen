@@ -39,13 +39,21 @@ const CHAT_URL = "/api/chat";
 // Best sellers (mirrors the homepage). Resolved to real menu items at render so
 // cards carry valid prices/ids and can be added straight to the cart.
 const BEST_SELLER_NAMES = ["Oxtail", "Curry Goat", "Jerk Chicken", "Pepper Steak", "Escovitch Fish"];
+const VEGETARIAN_NAMES = ["Veggie Patty", "Rice & Peas", "Fried Plantains", "Steamed Cabbage", "Festival"];
+
+// Resolve display names to real menu items so cards carry valid id/price/spice.
+function resolveItems(names: string[], all: MenuItem[]): MenuItem[] {
+  return names
+    .map((n) => all.find((it) => it.name.toLowerCase().includes(n.toLowerCase())))
+    .filter((it): it is MenuItem => Boolean(it));
+}
 
 // Follow-up chips — always visible so the conversation can keep going.
 // `kind` controls behaviour: cards (best sellers), link (menu), or ask (send to AI).
-const CHIPS: { label: string; kind: "cards" | "link" | "ask" | "locations" }[] = [
+const CHIPS: { label: string; kind: "cards" | "vegetarian" | "link" | "ask" | "locations" }[] = [
   { label: "What's your best seller?", kind: "cards" },
+  { label: "Any vegetarian options?", kind: "vegetarian" },
   { label: "Show me the menu", kind: "link" },
-  { label: "Any vegetarian options?", kind: "ask" },
   { label: "How do I order online?", kind: "ask" },
   { label: "Where are you located?", kind: "locations" },
 ];
@@ -72,11 +80,10 @@ function renderFormatted(text: string) {
 export const Chatbot = () => {
   const { data: menu } = useMenu();
   const { addItem } = useCart();
-  // Resolve best-seller names to real menu items (valid id/price/spice for the cart).
+  // Resolve display names to real menu items (valid id/price/spice for the cart).
   const allItems: MenuItem[] = (menu ?? []).flatMap((c) => c.items);
-  const bestSellerItems: MenuItem[] = BEST_SELLER_NAMES.map((n) =>
-    allItems.find((it) => it.name.toLowerCase().includes(n.toLowerCase())),
-  ).filter((it): it is MenuItem => Boolean(it));
+  const bestSellerItems = resolveItems(BEST_SELLER_NAMES, allItems);
+  const vegetarianItems = resolveItems(VEGETARIAN_NAMES, allItems);
 
   const handleAdd = (item: MenuItem) => {
     addItem({ id: item.id, name: item.name, price: item.price, spiceLevel: item.spiceLevel, image: item.image });
@@ -126,6 +133,14 @@ export const Chatbot = () => {
         ...prev,
         { role: "user", content: chip.label },
         { role: "assistant", content: "Here are our most popular dishes 🔥 Tap Add to drop one in your order.", cards: bestSellerItems },
+      ]);
+      return;
+    }
+    if (chip.kind === "vegetarian") {
+      setMessages((prev) => [
+        ...prev,
+        { role: "user", content: chip.label },
+        { role: "assistant", content: "Here are our vegetarian picks 🌱 Tap Add to drop one in your order.", cards: vegetarianItems },
       ]);
       return;
     }
@@ -216,8 +231,12 @@ export const Chatbot = () => {
 
                     {message.cards && (
                       <div className="mt-2 space-y-2">
-                        {message.cards.map((c) => (
-                          <div key={c.id} className="flex w-full items-center gap-2 rounded-xl border border-border bg-background p-2">
+                        {message.cards.map((c, i) => (
+                          <div
+                            key={c.id}
+                            className="flex w-full items-center gap-2 rounded-xl border border-border bg-background p-2 animate-in fade-in slide-in-from-bottom-2"
+                            style={{ animationDelay: `${i * 160}ms`, animationFillMode: "backwards" }}
+                          >
                             <Link
                               to={`/order#item-${c.id}`}
                               onClick={() => setIsOpen(false)}
@@ -246,8 +265,12 @@ export const Chatbot = () => {
 
                     {message.locations && (
                       <div className="mt-2 space-y-2">
-                        {message.locations.map((l) => (
-                          <div key={l.name} className="w-full rounded-xl border border-border bg-background p-3">
+                        {message.locations.map((l, i) => (
+                          <div
+                            key={l.name}
+                            className="w-full rounded-xl border border-border bg-background p-3 animate-in fade-in slide-in-from-bottom-2"
+                            style={{ animationDelay: `${i * 160}ms`, animationFillMode: "backwards" }}
+                          >
                             <div className="flex items-center gap-1.5 font-semibold">
                               <MapPin className="h-4 w-4 shrink-0 text-secondary" /> {l.name}
                             </div>

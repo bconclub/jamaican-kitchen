@@ -121,8 +121,30 @@ export const Header = () => {
             </DropdownMenu>
           </nav>
 
-          {/* Right: Order Now + cart */}
-          <div className="flex items-center gap-2 shrink-0">
+          {/* Right: account + cart, then Order Now pinned far right */}
+          <div className="flex items-center gap-1 sm:gap-2 shrink-0">
+            {/* Wallet / account: shows initials when logged in, person icon otherwise. */}
+            <Link to="/account" aria-label={walletUser ? "Your wallet" : "Log in"}>
+              <Button variant="ghost" size="icon" className="relative" title={walletUser ? `${walletUser.name} — view wallet` : "Log in"}>
+                {walletUser ? (
+                  <span className="flex h-7 w-7 items-center justify-center rounded-full bg-secondary text-xs font-bold text-secondary-foreground">
+                    {initials}
+                  </span>
+                ) : (
+                  <User className="h-5 w-5" />
+                )}
+              </Button>
+            </Link>
+
+            <Button variant="ghost" size="icon" className="relative" onClick={openCart} aria-label="Open cart">
+              <ShoppingCart className="h-5 w-5" />
+              {totalItems > 0 && (
+                <span className="absolute -top-1 -right-1 h-5 w-5 bg-accent text-accent-foreground text-xs rounded-full flex items-center justify-center font-bold">
+                  {totalItems}
+                </span>
+              )}
+            </Button>
+
             <div className="flex items-center">
               <Link to="/order">
                 <Button className="bg-primary text-primary-foreground hover:bg-primary/90 font-semibold px-3 md:px-5 shadow-sm rounded-r-none border-r border-primary-foreground/20">
@@ -149,28 +171,6 @@ export const Header = () => {
                 </DropdownMenuContent>
               </DropdownMenu>
             </div>
-
-            {/* Wallet / account: shows initials when logged in, person icon otherwise. */}
-            <Link to="/account" aria-label={walletUser ? "Your wallet" : "Log in"}>
-              <Button variant="ghost" size="icon" className="relative" title={walletUser ? `${walletUser.name} — view wallet` : "Log in"}>
-                {walletUser ? (
-                  <span className="flex h-7 w-7 items-center justify-center rounded-full bg-secondary text-xs font-bold text-secondary-foreground">
-                    {initials}
-                  </span>
-                ) : (
-                  <User className="h-5 w-5" />
-                )}
-              </Button>
-            </Link>
-
-            <Button variant="ghost" size="icon" className="relative" onClick={openCart} aria-label="Open cart">
-              <ShoppingCart className="h-5 w-5" />
-              {totalItems > 0 && (
-                <span className="absolute -top-1 -right-1 h-5 w-5 bg-accent text-accent-foreground text-xs rounded-full flex items-center justify-center font-bold">
-                  {totalItems}
-                </span>
-              )}
-            </Button>
           </div>
         </div>
       </div>
