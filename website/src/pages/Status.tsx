@@ -22,13 +22,15 @@ interface Section {
   items: Item[];
 }
 
-const STATUS_META: Record<Status, { label: string; dot: string; chip: string; icon: typeof CheckCircle2 }> = {
-  live: { label: "In production", dot: "bg-[#009B3A]", chip: "bg-[#009B3A]/10 text-[#009B3A]", icon: CheckCircle2 },
-  building: { label: "In progress", dot: "bg-amber-500", chip: "bg-amber-500/10 text-amber-600", icon: Loader2 },
-  planned: { label: "Requested", dot: "bg-blue-500", chip: "bg-blue-500/10 text-blue-600", icon: CircleDot },
-  blocked: { label: "Blocked", dot: "bg-red-500", chip: "bg-red-500/10 text-red-600", icon: AlertCircle },
-  addon: { label: "Change order", dot: "bg-purple-500", chip: "bg-purple-500/10 text-purple-600", icon: Sparkles },
+const STATUS_META: Record<Status, { label: string; explain: string; dot: string; chip: string; icon: typeof CheckCircle2 }> = {
+  live: { label: "In production", explain: "Done and live on the site", dot: "bg-[#009B3A]", chip: "bg-[#009B3A]/10 text-[#009B3A]", icon: CheckCircle2 },
+  building: { label: "In progress", explain: "Being worked on right now", dot: "bg-amber-500", chip: "bg-amber-500/10 text-amber-600", icon: Loader2 },
+  planned: { label: "Requested", explain: "Agreed, still to do", dot: "bg-blue-500", chip: "bg-blue-500/10 text-blue-600", icon: CircleDot },
+  blocked: { label: "Blocked", explain: "Waiting on something (your input, a domain, etc.)", dot: "bg-red-500", chip: "bg-red-500/10 text-red-600", icon: AlertCircle },
+  addon: { label: "Out of scope", explain: "Beyond the agreement — needs your sign-off to build", dot: "bg-purple-500", chip: "bg-purple-500/10 text-purple-600", icon: Sparkles },
 };
+
+const STATUS_ORDER: Status[] = ["live", "building", "planned", "blocked", "addon"];
 
 const SECTIONS: Section[] = [
   {
@@ -129,8 +131,8 @@ const Status = () => {
                 <div className="text-4xl font-bold text-[#009B3A]">{live}<span className="text-xl text-muted-foreground">/{total}</span></div>
                 <p className="text-sm text-muted-foreground">features live in production</p>
               </div>
-              <div className="flex flex-wrap gap-4">
-                {(Object.keys(STATUS_META) as Status[]).map((st) => (
+              <div className="flex flex-wrap gap-3">
+                {STATUS_ORDER.map((st) => (
                   <div key={st} className="flex items-center gap-2 text-sm">
                     <span className={`h-2.5 w-2.5 rounded-full ${STATUS_META[st].dot}`} />
                     <span className="text-muted-foreground">{STATUS_META[st].label}</span>
@@ -141,6 +143,19 @@ const Status = () => {
             </div>
             <div className="mt-4 h-2.5 w-full overflow-hidden rounded-full bg-muted">
               <div className="h-full rounded-full bg-[#009B3A] transition-all" style={{ width: `${pct}%` }} />
+            </div>
+
+            {/* Plain-English key so the labels are never confusing */}
+            <div className="mt-5 grid gap-2 sm:grid-cols-2">
+              {STATUS_ORDER.map((st) => (
+                <div key={st} className="flex items-start gap-2 text-sm">
+                  <span className={`mt-1.5 h-2 w-2 shrink-0 rounded-full ${STATUS_META[st].dot}`} />
+                  <span>
+                    <span className="font-medium">{STATUS_META[st].label}</span>
+                    <span className="text-muted-foreground"> — {STATUS_META[st].explain}</span>
+                  </span>
+                </div>
+              ))}
             </div>
           </CardContent>
         </Card>
