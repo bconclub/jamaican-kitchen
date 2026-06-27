@@ -25,6 +25,7 @@ import { useLocations } from "@/hooks/useMenu";
 import { placeOrder } from "@/lib/api";
 import { useAuth } from "@/lib/auth";
 import { useWalletAuth, recordOrder } from "@/contexts/WalletAuthContext";
+import { WalletLoginDialog } from "@/components/WalletLoginDialog";
 import { fetchMyWalletBalance, CASHBACK_RATE } from "@/lib/loyalty";
 import { LogIn } from "lucide-react";
 import { toast } from "sonner";
@@ -49,6 +50,7 @@ export const CheckoutDialog = ({ trigger }: { trigger: React.ReactNode }) => {
 
   const [sessionBalance, setSessionBalance] = useState(0);
   const [useWallet, setUseWallet] = useState(false);
+  const [loginOpen, setLoginOpen] = useState(false);
 
   // Logged-in customer = real Supabase session OR the demo wallet user.
   const loggedIn = !!session || !!walletUser;
@@ -75,11 +77,8 @@ export const CheckoutDialog = ({ trigger }: { trigger: React.ReactNode }) => {
     }
   }, [open, session, walletUser, reloadWallet]);
 
-  // Send checkout to the login page so they can come back and redeem.
-  const goLogin = () => {
-    setOpen(false);
-    navigate("/account");
-  };
+  // Open the login popup in place — no redirect, so they stay in checkout.
+  const goLogin = () => setLoginOpen(true);
 
   const reset = () => {
     setName("");
@@ -173,6 +172,8 @@ export const CheckoutDialog = ({ trigger }: { trigger: React.ReactNode }) => {
   };
 
   return (
+    <>
+    <WalletLoginDialog open={loginOpen} onOpenChange={setLoginOpen} />
     <Dialog
       open={open}
       onOpenChange={(o) => {
@@ -308,5 +309,6 @@ export const CheckoutDialog = ({ trigger }: { trigger: React.ReactNode }) => {
         </DialogFooter>
       </DialogContent>
     </Dialog>
+    </>
   );
 };
