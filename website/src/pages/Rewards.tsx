@@ -14,20 +14,54 @@ const perks = [
   { icon: Trophy, title: "Member perks", text: "Early access to specials and birthday treats." },
 ];
 
-// DEMO auth: until the email/OTP service is wired, we accept a fixed code and
-// create the real Supabase session under the hood with a deterministic password.
-// Swap handleVerify to supabase.auth.verifyOtp once email delivery is live.
-const DEMO_OTP = "123456";
-const demoPassword = (email: string) => `jkw_${email.trim().toLowerCase()}`;
+// DEMO auth: fully local, no backend. We generate a one-time code on screen,
+// verify it locally, and show a sample wallet. Once the real email/OTP service
+// is wired, swap this for supabase OTP + the live wallet (already built behind useAuth).
+const DEMO_KEY = "jk_demo_wallet_user";
+interface DemoUser {
+  email: string;
+  name: string;
+}
+
+// Sample wallet shown in demo mode so the rewards screen looks alive.
+const DEMO_WALLET: WalletSummary = {
+  balance: 3.05,
+  transactions: [
+    { id: "d-tx-1", amount: 3.05, kind: "earn", note: "Cashback on JK-DEMO1", created_at: new Date().toISOString() },
+  ],
+};
+const DEMO_ORDERS: MyOrder[] = [
+  {
+    id: "d-ord-1",
+    shortId: "JK-DEMO1",
+    createdAt: new Date().toISOString(),
+    status: "completed",
+    total: 61.0,
+    cashbackEarned: 3.05,
+    items: [
+      { name: "Oxtail Dinner", qty: 1, price: 22.0 },
+      { name: "Jerk Chicken Dinner", qty: 2, price: 19.5 },
+    ],
+  },
+];
 
 const Rewards = () => {
-  const { session, loading, signUpWithPassword, signOut } = useAuth();
+  const { session, loading, signOut } = useAuth();
   const [step, setStep] = useState<"email" | "otp">("email");
   const [email, setEmail] = useState("");
   const [name, setName] = useState("");
   const [otp, setOtp] = useState("");
+  const [generatedOtp, setGeneratedOtp] = useState("");
   const [sending, setSending] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [demoUser, setDemoUser] = useState<DemoUser | null>(() => {
+    try {
+      const v = localStorage.getItem(DEMO_KEY);
+      return v ? (JSON.parse(v) as DemoUser) : null;
+    } catch {
+      return null;
+    }
+  });
 
   const [wallet, setWallet] = useState<WalletSummary | null>(null);
   const [orders, setOrders] = useState<MyOrder[]>([]);
@@ -54,26 +88,45 @@ const Rewards = () => {
     if (!email.trim()) return;
     setError(null);
     setOtp("");
-    // DEMO: no real email sent yet. Move straight to the code screen.
+    // DEMO: generate a random 6-digit code and show it on the next screen.
+    setGeneratedOtp(String(Math.floor(100000 + Math.random() * 900000)));
     setStep("otp");
   };
 
-  const handleVerify = async (e: React.FormEvent) => {
+  const handleVerify = (e: React.FormEvent) => {
     e.preventDefault();
-    if (otp.trim() !== DEMO_OTP) {
+    if (otp.trim() !== generatedOtp) {
       setError("Incorrect code. Try again.");
       return;
     }
-    setSending(true);
     setError(null);
-    // Real Supabase session under the hood (deterministic password per email).
-    const { error } = await signUpWithPassword(email, demoPassword(email), { name });
-    setSending(false);
-    if (error) setError(error);
-    // On success the auth listener flips the page to the logged-in view.
+    const u: DemoUser = { email: email.trim(), name: name.trim() || "Guest" };
+    try {
+      localStorage.setItem(DEMO_KEY, JSON.stringify(u));
+    } catch {
+      /* ignore */
+    }
+    setDemoUser(u);
   };
 
-  const loggedIn = !!session;
+  const handleSignOut = async () => {
+    try {
+      localStorage.removeItem(DEMO_KEY);
+    } catch {
+      /* ignore */
+    }
+    setDemoUser(null);
+    setStep("email");
+    setOtp("");
+    if (session) await signOut();
+  };
+
+  const loggedIn = !!session || !!demoUser;
+  // In demo mode (no real session) show the sample wallet + orders.
+  const effWallet = session ? wallet : DEMO_WALLET;
+  const effOrders = session ? orders : DEMO_ORDERS;
+  const effLoadingData = session ? loadingData : false;
+  const effEmail = session ? session.user.email : demoUser?.email;
 
   return (
     <PageLayout
@@ -149,7 +202,7 @@ const Rewards = () => {
                     />
                     {/* DEMO hint — remove once real OTP email is wired */}
                     <p className="text-center text-xs text-muted-foreground">
-                      Demo code: <span className="font-mono font-semibold">{DEMO_OTP}</span>
+                      Demo code: <span className="font-mono font-semibold">{generatedOtp}</span>
                     </p>
                     {error && <p className="text-sm text-destructive text-center">{error}</p>}
                     <Button type="submit" className="w-full bg-primary text-primary-foreground hover:bg-primary/90" disabled={sending}>
@@ -179,29 +232,29 @@ const Rewards = () => {
                   <div className="flex items-center gap-2 text-sm opacity-90">
                     <Wallet className="h-5 w-5" /> Wallet balance
                   </div>
-                  <Button variant="ghost" size="sm" className="text-secondary-foreground hover:bg-white/10" onClick={signOut}>
+                  <Button variant="ghost" size="sm" className="text-secondary-foreground hover:bg-white/10" onClick={handleSignOut}>
                     <LogOut className="h-4 w-4 mr-1" /> Sign out
                   </Button>
                 </div>
                 <div className="mt-2 text-4xl font-bold">
-                  {loadingData ? "…" : `$${(wallet?.balance ?? 0).toFixed(2)}`}
+                  {effLoadingData ? "…" : `$${(effWallet?.balance ?? 0).toFixed(2)}`}
                 </div>
-                <p className="mt-1 text-sm opacity-80">{session.user.email}</p>
+                <p className="mt-1 text-sm opacity-80">{effEmail}</p>
               </div>
             </Card>
 
             {/* Past orders */}
             <div>
               <h3 className="flex items-center gap-2 font-bold mb-3"><Receipt className="h-5 w-5 text-secondary" /> Your orders</h3>
-              {loadingData ? (
+              {effLoadingData ? (
                 <div className="flex justify-center py-6"><Loader2 className="h-5 w-5 animate-spin text-muted-foreground" /></div>
-              ) : orders.length === 0 ? (
+              ) : effOrders.length === 0 ? (
                 <p className="text-sm text-muted-foreground">
                   No orders yet. <Link to="/order" className="text-primary font-medium underline">Place your first order</Link> and earn {Math.round(CASHBACK_RATE * 100)}% back.
                 </p>
               ) : (
                 <div className="space-y-2">
-                  {orders.map((o) => {
+                  {effOrders.map((o) => {
                     const open = openOrder === o.id;
                     return (
                       <div key={o.id} className="rounded-lg border border-border overflow-hidden">
@@ -248,11 +301,11 @@ const Rewards = () => {
             {/* Wallet activity */}
             <div>
               <h3 className="font-bold mb-3">Wallet activity</h3>
-              {loadingData ? null : (wallet?.transactions.length ?? 0) === 0 ? (
+              {effLoadingData ? null : (effWallet?.transactions.length ?? 0) === 0 ? (
                 <p className="text-sm text-muted-foreground">No wallet activity yet.</p>
               ) : (
                 <div className="space-y-2">
-                  {wallet!.transactions.map((t) => (
+                  {effWallet!.transactions.map((t) => (
                     <div key={t.id} className="flex items-center justify-between rounded-lg border border-border p-3">
                       <div className="flex items-center gap-3">
                         <div className={`flex h-9 w-9 items-center justify-center rounded-full ${t.amount >= 0 ? "bg-primary/15 text-primary" : "bg-muted text-muted-foreground"}`}>

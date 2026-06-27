@@ -1,5 +1,13 @@
 # Changelog
 
+## 2026-06-27 · Wallet: fully-local demo OTP sign-in
+
+- Wallet sign-in is now a self-contained demo: enter name + email → a random 6-digit code is generated and shown on screen → verify → wallet opens. No Supabase, no email delivery.
+- Demo session persists in `localStorage`; sign-out clears it.
+- Logged-in view shows a sample wallet (balance + cashback transaction + one past order) so the rewards screen looks alive for demos.
+- Real-auth paths (password / magic link) stay in `useAuth` for when the email domain is wired; swap `handleVerify` to `supabase.auth.verifyOtp` then.
+- User-facing: testers log into the wallet with any email + the on-screen code, no inbox needed.
+
 ## 2026-06-24 04:30 IST · Admin wording: "Dine Central" (drop "Staff Operations Portal")
 
 - Admin login subtitle "Staff Operations Portal" → "Dine Central" (under the JK wordmark → reads "Jamaican Kitchen Dine Central").
