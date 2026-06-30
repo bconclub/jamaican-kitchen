@@ -1,17 +1,14 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Truck, MapPin } from "lucide-react";
 import { ChannelBadge } from "@/components/ChannelBadge";
 import { PageHeader } from "@/components/PageHeader";
 import { useLiveLocations, useLiveOrders } from "@/lib/live-data";
 import { useCurrentLocation } from "@/lib/store";
+import { useEffect, useMemo, useRef } from "react";
+import type { LayerGroup, Map as LeafletMap } from "leaflet";
+import "leaflet/dist/leaflet.css";
 
 export const Route = createFileRoute("/_app/delivery")({ component: DeliveryPage });
-
-// Connecticut bounding box used for both the embedded OSM map and marker projection,
-// so the pins line up with the real map underneath.
-const CT_BBOX = { lonMin: -73.75, lonMax: -71.78, latMin: 40.98, latMax: 42.06 };
-const OSM_SRC = `https://www.openstreetmap.org/export/embed.html?bbox=${CT_BBOX.lonMin},${CT_BBOX.latMin},${CT_BBOX.lonMax},${CT_BBOX.latMax}&layer=mapnik`;
 
 // Real CT coordinates for our six towns — fallback when a location row has no lat/lng.
 const TOWN_COORDS: Record<string, { lat: number; lng: number }> = {
@@ -32,10 +29,103 @@ function resolveCoords(loc: { name: string; city: string; lat: number; lng: numb
   return null;
 }
 
-function project(lat: number, lng: number) {
-  const x = ((lng - CT_BBOX.lonMin) / (CT_BBOX.lonMax - CT_BBOX.lonMin)) * 100;
-  const y = ((CT_BBOX.latMax - lat) / (CT_BBOX.latMax - CT_BBOX.latMin)) * 100;
-  return { x, y };
+type LocationPin = {
+  id: string;
+  name: string;
+  coords: { lat: number; lng: number };
+};
+
+function shortName(name: string) {
+  return name.replace("Jamaican Kitchen, ", "").replace("Jamaican Kitchen ", "");
+}
+
+function escapeHtml(value: string) {
+  return value
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#39;");
+}
+
+function LocationsMap({ pins }: { pins: LocationPin[] }) {
+  const elementRef = useRef<HTMLDivElement | null>(null);
+  const mapRef = useRef<LeafletMap | null>(null);
+  const markerLayerRef = useRef<LayerGroup | null>(null);
+
+  useEffect(() => {
+    let cancelled = false;
+
+    async function renderMap() {
+      if (!elementRef.current) return;
+
+      const L = await import("leaflet");
+      if (cancelled || !elementRef.current) return;
+
+      if (!mapRef.current) {
+        mapRef.current = L.map(elementRef.current, {
+          scrollWheelZoom: false,
+          zoomControl: true,
+        });
+
+        L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
+          attribution: "Map data © OpenStreetMap contributors",
+          maxZoom: 19,
+        }).addTo(mapRef.current);
+      }
+
+      markerLayerRef.current?.remove();
+      markerLayerRef.current = L.layerGroup().addTo(mapRef.current);
+
+      const markerIcon = (label: string) =>
+        L.divIcon({
+          className: "",
+          html: `
+            <div class="flex -translate-x-1/2 -translate-y-full flex-col items-center">
+              <div class="flex h-8 w-8 items-center justify-center rounded-full bg-primary text-primary-foreground shadow-lg ring-4 ring-primary/25">
+                <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                  <path d="M20 10c0 4.993-5.539 10.193-7.399 11.799a1 1 0 0 1-1.202 0C9.539 20.193 4 14.993 4 10a8 8 0 0 1 16 0"/>
+                  <circle cx="12" cy="10" r="3"/>
+                </svg>
+              </div>
+              <div class="mt-0.5 whitespace-nowrap rounded bg-background/95 px-1.5 py-0.5 text-[11px] font-medium shadow">
+                ${escapeHtml(label)}
+              </div>
+            </div>
+          `,
+          iconSize: [0, 0],
+          iconAnchor: [0, 0],
+        });
+
+      pins.forEach((pin) => {
+        L.marker([pin.coords.lat, pin.coords.lng], { icon: markerIcon(shortName(pin.name)) }).addTo(
+          markerLayerRef.current!,
+        );
+      });
+
+      if (pins.length > 0) {
+        const bounds = L.latLngBounds(pins.map((pin) => [pin.coords.lat, pin.coords.lng]));
+        mapRef.current.fitBounds(bounds.pad(0.25), { maxZoom: 10 });
+      } else {
+        mapRef.current.setView([41.6, -72.7], 8);
+      }
+    }
+
+    renderMap();
+
+    return () => {
+      cancelled = true;
+    };
+  }, [pins]);
+
+  useEffect(() => {
+    return () => {
+      mapRef.current?.remove();
+      mapRef.current = null;
+    };
+  }, []);
+
+  return <div ref={elementRef} className="h-[420px] rounded-lg border" />;
 }
 
 function DeliveryPage() {
@@ -49,10 +139,17 @@ function DeliveryPage() {
       (o.status === "out_for_delivery" || o.status === "ready" || o.status === "preparing"),
   );
 
-  const pins = locations
-    .filter((l) => loc === "all" || l.id === loc)
-    .map((l) => ({ ...l, coords: resolveCoords(l) }))
-    .filter((l) => l.coords);
+  const pins = useMemo(
+    () =>
+      locations
+        .filter((l) => loc === "all" || l.id === loc)
+        .map((l): LocationPin | null => {
+          const coords = resolveCoords(l);
+          return coords ? { id: l.id, name: l.name, coords } : null;
+        })
+        .filter((l): l is LocationPin => l !== null),
+    [locations, loc],
+  );
 
   return (
     <>
@@ -61,37 +158,7 @@ function DeliveryPage() {
         <Card className="lg:col-span-2">
           <CardHeader><CardTitle>Our locations</CardTitle></CardHeader>
           <CardContent>
-            <div className="relative h-[420px] overflow-hidden rounded-lg border">
-              <iframe
-                title="Jamaican Kitchen delivery locations"
-                src={OSM_SRC}
-                className="absolute inset-0 h-full w-full"
-                style={{ border: 0 }}
-                loading="lazy"
-              />
-              {/* Store markers projected onto the same CT bounding box as the map */}
-              <div className="pointer-events-none absolute inset-0">
-                {pins.map((l) => {
-                  const { x, y } = project(l.coords!.lat, l.coords!.lng);
-                  return (
-                    <div
-                      key={l.id}
-                      className="absolute -translate-x-1/2 -translate-y-full"
-                      style={{ left: `${x}%`, top: `${y}%` }}
-                    >
-                      <div className="flex flex-col items-center">
-                        <div className="flex h-8 w-8 items-center justify-center rounded-full bg-primary text-primary-foreground shadow-lg ring-4 ring-primary/25">
-                          <MapPin className="h-4 w-4" />
-                        </div>
-                        <div className="mt-0.5 whitespace-nowrap rounded bg-background/95 px-1.5 py-0.5 text-[11px] font-medium shadow">
-                          {l.name.replace("Jamaican Kitchen, ", "").replace("Jamaican Kitchen ", "")}
-                        </div>
-                      </div>
-                    </div>
-                  );
-                })}
-              </div>
-            </div>
+            <LocationsMap pins={pins} />
             <p className="mt-2 text-xs text-muted-foreground">
               Pins show our {pins.length} Connecticut locations. Live courier GPS can be layered on once a delivery
               integration is connected.

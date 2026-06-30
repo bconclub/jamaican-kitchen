@@ -1,4 +1,4 @@
-import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
+import { createFileRoute, Link } from "@tanstack/react-router";
 import { useEffect, useMemo, useState } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -9,8 +9,9 @@ import { PageHeader, formatMoney } from "@/components/PageHeader";
 import { CHANNEL_META, STATUS_META } from "@/lib/mock-data";
 import { useLiveOrders, useLiveLocations, updateOrderStatus } from "@/lib/live-data";
 import { useCurrentLocation } from "@/lib/store";
-import type { Channel, OrderStatus } from "@/lib/types";
-import { Check, X, ChefHat, CheckCheck, Search, ListFilter, Timer } from "lucide-react";
+import type { Channel, Order, OrderStatus } from "@/lib/types";
+import { Check, X, ChefHat, CheckCheck, Search, ListFilter, Timer, MapPin, ExternalLink } from "lucide-react";
+import { Sheet, SheetContent, SheetHeader, SheetTitle } from "@/components/ui/sheet";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -88,7 +89,6 @@ const RETENTION_MS = 24 * 60 * 60 * 1000;
 const ALL_CHANNELS = Object.keys(CHANNEL_META) as Channel[];
 
 function OrdersPage() {
-  const navigate = useNavigate();
   const loc = useCurrentLocation();
   const { orders: ORDERS } = useLiveOrders();
   const liveLocations = useLiveLocations();
@@ -99,6 +99,11 @@ function OrdersPage() {
   const [channelFilter, setChannelFilter] = useState<Channel | "all">("all");
   const [statusFilter, setStatusFilter] = useState<OrderStatus | "all">("all");
   const [q, setQ] = useState("");
+  const [selectedOrderId, setSelectedOrderId] = useState<string | null>(null);
+  const selectedOrder = useMemo(
+    () => ORDERS.find((o) => o.id === selectedOrderId) ?? null,
+    [ORDERS, selectedOrderId],
+  );
   // Tick once per second so live durations update in place.
   const [, setTick] = useState(0);
   useEffect(() => {
@@ -234,17 +239,19 @@ function OrdersPage() {
                     <tr
                       key={o.id}
                       className="cursor-pointer border-b hover:bg-muted/50"
-                      onClick={() => navigate({ to: "/orders/$id", params: { id: o.id } })}
+                      onClick={() => setSelectedOrderId(o.id)}
                     >
                       <td className="py-2.5">
-                        <Link
-                          to="/orders/$id"
-                          params={{ id: o.id }}
-                          onClick={(e) => e.stopPropagation()}
+                        <button
+                          type="button"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            setSelectedOrderId(o.id);
+                          }}
                           className="font-mono text-xs text-primary hover:underline"
                         >
                           {o.shortId}
-                        </Link>
+                        </button>
                       </td>
                       <td className="py-2.5"><ChannelBadge channel={o.channel} /></td>
                       <td className="py-2.5">{o.customerName}</td>
@@ -303,7 +310,145 @@ function OrdersPage() {
           </div>
         </CardContent>
       </Card>
+
+      <OrderDetailSheet
+        order={selectedOrder}
+        locationName={selectedOrder ? (locName.get(selectedOrder.locationId) ?? "-") : "-"}
+        onClose={() => setSelectedOrderId(null)}
+        onStatus={handleStatus}
+      />
     </>
+  );
+}
+
+function OrderDetailSheet({
+  order,
+  locationName,
+  onClose,
+  onStatus,
+}: {
+  order: Order | null;
+  locationName: string;
+  onClose: () => void;
+  onStatus: (id: string, status: OrderStatus, shortId: string, label: string) => Promise<void>;
+}) {
+  return (
+    <Sheet open={!!order} onOpenChange={(open) => !open && onClose()}>
+      <SheetContent side="right" className="w-full overflow-y-auto sm:max-w-md">
+        {order && (
+          <>
+            <SheetHeader>
+              <SheetTitle className="flex flex-wrap items-center gap-2 pr-6">
+                <span className="font-mono">{order.shortId}</span>
+                <ChannelBadge channel={order.channel} />
+                <StatusPill status={order.status} />
+              </SheetTitle>
+            </SheetHeader>
+
+            <div className="mt-4 space-y-4 text-sm">
+              <div className="space-y-1">
+                <div className="font-medium">{order.customerName}</div>
+                <div className="flex items-center gap-1 text-muted-foreground">
+                  <MapPin className="h-3.5 w-3.5" />
+                  {locationName} · {order.type.replace("_", " ")}
+                </div>
+                {order.address && <div className="text-xs text-muted-foreground">{order.address}</div>}
+                <div className="text-xs text-muted-foreground">
+                  {format(new Date(order.createdAt), "MMM d, h:mm a")}
+                </div>
+              </div>
+
+              <div>
+                <div className="mb-2 text-xs font-semibold uppercase text-muted-foreground">Order items</div>
+                <div className="rounded-lg border divide-y">
+                  {order.items.map((it) => (
+                    <div key={it.id} className="px-3 py-2">
+                      <div className="flex items-start justify-between gap-3">
+                        <div>
+                          <span className="text-muted-foreground">{it.qty}x</span> {it.name}
+                          {it.modifiers && it.modifiers.length > 0 && (
+                            <div className="mt-0.5 text-xs text-muted-foreground">
+                              {it.modifiers.join(", ")}
+                            </div>
+                          )}
+                        </div>
+                        <span className="shrink-0 tabular-nums">{formatMoney(it.price * it.qty)}</span>
+                      </div>
+                    </div>
+                  ))}
+                  {order.items.length === 0 && (
+                    <div className="px-3 py-2 text-muted-foreground">No line items</div>
+                  )}
+                </div>
+              </div>
+
+              <div className="space-y-1 rounded-lg border p-3">
+                <DetailRow label="Subtotal" value={formatMoney(order.subtotal)} />
+                <DetailRow label="Tax" value={formatMoney(order.tax)} />
+                {order.fees > 0 && <DetailRow label="Fees" value={formatMoney(order.fees)} />}
+                {order.tip > 0 && <DetailRow label="Tip" value={formatMoney(order.tip)} />}
+                <div className="flex justify-between border-t pt-2 font-semibold">
+                  <span>Total</span>
+                  <span className="tabular-nums">{formatMoney(order.total)}</span>
+                </div>
+              </div>
+
+              {order.notes && (
+                <div className="rounded-md bg-muted/50 p-3 text-xs">
+                  <span className="font-medium">Notes: </span>
+                  {order.notes}
+                </div>
+              )}
+
+              <div className="flex flex-wrap gap-2 pt-2">
+                {order.status === "new" && (
+                  <>
+                    <Button
+                      size="sm"
+                      className="gap-1"
+                      onClick={() => onStatus(order.id, "accepted", order.shortId, "accepted")}
+                    >
+                      <Check className="h-3.5 w-3.5" /> Accept
+                    </Button>
+                    <Button
+                      size="sm"
+                      variant="outline"
+                      className="gap-1"
+                      onClick={() => onStatus(order.id, "cancelled", order.shortId, "rejected")}
+                    >
+                      <X className="h-3.5 w-3.5" /> Reject
+                    </Button>
+                  </>
+                )}
+                {(order.status === "accepted" || order.status === "preparing") && (
+                  <Button
+                    size="sm"
+                    className="gap-1"
+                    onClick={() => onStatus(order.id, "ready", order.shortId, "marked ready")}
+                  >
+                    <CheckCheck className="h-3.5 w-3.5" /> Mark ready
+                  </Button>
+                )}
+                <Button size="sm" variant="ghost" className="gap-1" asChild>
+                  <Link to="/orders/$id" params={{ id: order.id }} onClick={onClose}>
+                    <ExternalLink className="h-3.5 w-3.5" /> Full page
+                  </Link>
+                </Button>
+              </div>
+            </div>
+          </>
+        )}
+      </SheetContent>
+    </Sheet>
+  );
+}
+
+function DetailRow({ label, value }: { label: string; value: string }) {
+  return (
+    <div className="flex justify-between text-sm">
+      <span className="text-muted-foreground">{label}</span>
+      <span className="tabular-nums">{value}</span>
+    </div>
   );
 }
 

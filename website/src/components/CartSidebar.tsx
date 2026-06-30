@@ -6,14 +6,35 @@ import { Separator } from "@/components/ui/separator";
 import { useCart } from "@/contexts/CartContext";
 import { SpiceLevelBadge } from "./SpiceLevelBadge";
 import { CheckoutDialog } from "./CheckoutDialog";
+import { useEffect, useState } from "react";
+
+function useIsMobile() {
+  const [isMobile, setIsMobile] = useState(false);
+
+  useEffect(() => {
+    const query = window.matchMedia("(max-width: 767px)");
+    const update = () => setIsMobile(query.matches);
+
+    update();
+    query.addEventListener("change", update);
+    return () => query.removeEventListener("change", update);
+  }, []);
+
+  return isMobile;
+}
 
 // Global cart drawer, opened from the header cart icon, mounted once in App.
 export const CartSidebar = () => {
   const { items, totalItems, totalPrice, updateQuantity, removeItem, clearCart, isCartOpen, setCartOpen, keepCartOpen } = useCart();
+  const isMobile = useIsMobile();
 
   return (
     <Sheet open={isCartOpen} onOpenChange={setCartOpen}>
-      <SheetContent side="right" onMouseEnter={keepCartOpen} className="w-full sm:w-[420px] p-0 flex flex-col">
+      <SheetContent
+        side={isMobile ? "bottom" : "right"}
+        onMouseEnter={keepCartOpen}
+        className="flex max-h-[88vh] w-full flex-col p-0 sm:h-full sm:w-[420px] sm:max-h-none"
+      >
         <SheetHeader className="p-4 border-b border-border">
           <SheetTitle className="flex items-center gap-2">
             <ShoppingBag className="h-5 w-5" />

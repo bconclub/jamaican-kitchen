@@ -115,21 +115,18 @@ export const LocationSelector = ({
 
       {currentLocation && (
         <div className="mt-3 space-y-3 text-sm">
-          {/* Small live map of the selected store. The iframe is taller than its
-              frame so OpenStreetMap's bottom attribution/donation bar is clipped;
-              we keep a tiny credit line below for compliance. */}
+          {/* Render the OSM iframe taller than its frame so its built-in footer
+              sits below the clipped viewport. */}
           <div>
             <div className="relative h-32 overflow-hidden rounded-lg border border-border">
               <iframe
                 key={currentLocation.id}
                 title={`Map of ${currentLocation.name}`}
                 src={mapSrc(currentLocation.lat, currentLocation.lng)}
-                className="absolute inset-0 h-full w-full"
+                className="absolute left-0 top-0 h-[calc(100%+44px)] w-full"
                 style={{ border: 0 }}
                 loading="lazy"
               />
-              {/* Mask OpenStreetMap's attribution/donation bar (can't style cross-origin) */}
-              <div className="pointer-events-none absolute inset-x-0 bottom-0 h-5 bg-card" />
             </div>
             <p className="mt-1 text-[10px] text-muted-foreground/70">Map data © OpenStreetMap</p>
           </div>
