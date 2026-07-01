@@ -26,7 +26,7 @@ import { useLiveMenu } from "@/lib/live-data";
 import { supabase } from "@/integrations/supabase/client";
 import type { Channel, MenuItem } from "@/lib/types";
 import { PageHeader, formatMoney } from "@/components/PageHeader";
-import { Plus, Search, Trash2, FolderPlus, Globe, PartyPopper, Info } from "lucide-react";
+import { Plus, Search, Trash2, FolderPlus, Globe, PartyPopper, Info, Star } from "lucide-react";
 import { toast } from "sonner";
 
 export const Route = createFileRoute("/_app/menu")({ component: MenuPage });
@@ -179,6 +179,7 @@ function MenuPage() {
                       <th className="px-4 py-3 text-right">Base price</th>
                       <th className="px-4 py-3 text-right">Stock</th>
                       <th className="px-4 py-3">Available</th>
+                      <th className="px-4 py-3">Best Seller</th>
                       <th className="px-4 py-3"></th>
                     </tr>
                   </thead>
@@ -247,6 +248,20 @@ function MenuPage() {
                               toast(v ? `${m.name} available` : `${m.name} 86'd`);
                             }}
                           />
+                        </td>
+                        <td className="px-4 py-3">
+                          <button
+                            type="button"
+                            title={m.featured ? "Remove from Best Sellers" : "Mark as Best Seller"}
+                            onClick={() => {
+                              const next = !m.featured;
+                              updateItem(m.id, { featured: next });
+                              persist(m.id, { featured: next });
+                              toast(next ? `${m.name} added to Best Sellers` : `${m.name} removed from Best Sellers`);
+                            }}
+                          >
+                            <Star className={`h-5 w-5 transition-colors ${m.featured ? "fill-primary text-primary" : "text-muted-foreground/40"}`} />
+                          </button>
                         </td>
                         <td className="px-4 py-3 text-right">
                           <Button variant="ghost" size="icon" className="h-8 w-8 text-destructive hover:text-destructive" onClick={() => deleteItem(m)}>

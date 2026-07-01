@@ -88,6 +88,7 @@ export interface MenuItem {
   stock: number;
   lowStockThreshold: number;
   imageEmoji: string;
+  featured: boolean; // "Best Seller" flag — drives the storefront homepage section
 }
 
 export interface StaffMember {

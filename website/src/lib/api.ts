@@ -32,7 +32,7 @@ export async function fetchMenu(): Promise<MenuCategory[]> {
 
   const { data: items, error: itemErr } = await supabase
     .from("menu_items")
-    .select("id, slug, category_id, name, description, base_price, image, spice_level, available, sort_order")
+    .select("id, slug, category_id, name, description, base_price, image, spice_level, available, sort_order, featured")
     .eq("available", true)
     .order("sort_order");
 
@@ -52,6 +52,7 @@ export async function fetchMenu(): Promise<MenuCategory[]> {
         image: it.image ?? "",
         spiceLevel: it.spice_level,
         category: c.slug,
+        featured: Boolean((it as unknown as { featured?: boolean }).featured),
       })),
   }));
 }
@@ -174,5 +175,23 @@ export async function submitContactMessage(input: ContactInput): Promise<void> {
     subject: input.subject || null,
     message: input.message,
   });
+  if (error) throw error;
+}
+
+export interface ReviewInput {
+  customerName: string;
+  rating: number; // 1-5
+  body: string;
+  orderShortId?: string;
+}
+
+/** Submit an order review. Goes in as "pending" — staff approve before it's public. */
+export async function submitReview(input: ReviewInput): Promise<void> {
+  const { error } = await supabase.from("reviews").insert({
+    customer_name: input.customerName,
+    rating: input.rating,
+    body: input.body.trim() || `Rated ${input.rating} star${input.rating === 1 ? "" : "s"}${input.orderShortId ? ` on order ${input.orderShortId}` : ""}.`,
+    source: "web",
+  } as never);
   if (error) throw error;
 }

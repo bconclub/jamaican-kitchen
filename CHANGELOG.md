@@ -1,5 +1,13 @@
 # Changelog
 
+## 2026-07-01 · Meeting follow-ups: catering tip, downloadable menu, order reviews, live Best Sellers
+
+- Catering checkout: added an open tip field (quick 10/15/20% picks + custom $ amount), included in the total and in the urgent-request message.
+- Storefront: "Download Menu" button back on the Order page — opens a printable snapshot with a disclaimer that prices/availability can change and may vary by location (previous version was removed for going stale; this one is explicit about that).
+- Order confirmation: new "How was your order?" star-rating + optional comment prompt, submits to the reviews table (goes in as pending for staff approval).
+- Best Sellers: homepage section now reads real items flagged "Best Seller" in the admin (via `menu_items.featured`) instead of a hardcoded list, falling back to the original 5 dishes until any are flagged. Admin Menu page got a star toggle per item to flag/unflag.
+- User-facing: customers can tip on catering orders, download a menu snapshot, and rate their order after checkout.
+
 ## 2026-07-01 · Real catering checkout (24h+ direct pay, <24h urgent request) + distance delivery fees
 
 - New CateringCheckoutDialog: same checkout pattern as online ordering, but with catering fields

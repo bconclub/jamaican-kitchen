@@ -49,13 +49,15 @@ export const CateringCheckoutDialog = ({ trigger }: { trigger: React.ReactNode }
   const [deliveryTierId, setDeliveryTierId] = useState(CATERING_DELIVERY_TIERS[0].id);
   const [address, setAddress] = useState("");
   const [notes, setNotes] = useState("");
+  const [tip, setTip] = useState(""); // open amount, customer's choice — no preset %
 
   const effectiveLocation = locationSlug || locations?.[0]?.id || "vernon";
   const deliveryTier = CATERING_DELIVERY_TIERS.find((t) => t.id === deliveryTierId) ?? CATERING_DELIVERY_TIERS[0];
   const deliveryFee = service === "delivery" ? deliveryTier.fee : 0;
+  const tipAmount = Math.max(0, Number(tip) || 0);
 
   const tax = totalPrice * TAX_RATE;
-  const total = totalPrice + tax + deliveryFee;
+  const total = totalPrice + tax + deliveryFee + tipAmount;
 
   const hoursUntilEvent = useMemo(() => {
     if (!eventDateTime) return null;
@@ -79,6 +81,7 @@ export const CateringCheckoutDialog = ({ trigger }: { trigger: React.ReactNode }
     setDeliveryTierId(CATERING_DELIVERY_TIERS[0].id);
     setAddress("");
     setNotes("");
+    setTip("");
     setResult(null);
   };
 
@@ -89,6 +92,7 @@ export const CateringCheckoutDialog = ({ trigger }: { trigger: React.ReactNode }
       `Event date/time: ${new Date(eventDateTime).toLocaleString([], { dateStyle: "medium", timeStyle: "short" })}`,
       guestCount && `Guests: ${guestCount}`,
       service === "delivery" ? `Delivery (${deliveryTier.label}): ${address.trim() || "(address pending)"}` : "Pickup",
+      tipAmount > 0 && `Tip: $${tipAmount.toFixed(2)}`,
       notes.trim(),
     ];
     return parts.filter(Boolean).join("\n");
@@ -130,6 +134,7 @@ export const CateringCheckoutDialog = ({ trigger }: { trigger: React.ReactNode }
         items: items.map((it) => ({ name: it.name, qty: it.quantity, price: it.price })),
         subtotal: Number(totalPrice.toFixed(2)),
         tax: Number(tax.toFixed(2)),
+        tip: Number(tipAmount.toFixed(2)),
         fees: Number(deliveryFee.toFixed(2)),
         address: service === "delivery" ? address.trim() : undefined,
         notes: buildNotes("🎉 CATERING ORDER"),
@@ -330,11 +335,48 @@ export const CateringCheckoutDialog = ({ trigger }: { trigger: React.ReactNode }
                 <Textarea id="cc-notes" value={notes} onChange={(e) => setNotes(e.target.value)} placeholder="Allergies, setup needs, special requests…" rows={2} />
               </div>
 
+              <div className="space-y-2">
+                <Label htmlFor="cc-tip">Add a tip (optional)</Label>
+                <div className="flex flex-wrap items-center gap-2">
+                  {[0.1, 0.15, 0.2].map((pct) => (
+                    <button
+                      key={pct}
+                      type="button"
+                      onClick={() => setTip((totalPrice * pct).toFixed(2))}
+                      className="rounded-full border px-3 py-1 text-xs font-medium transition-colors hover:border-primary"
+                    >
+                      {Math.round(pct * 100)}%
+                    </button>
+                  ))}
+                  <button
+                    type="button"
+                    onClick={() => setTip("")}
+                    className="rounded-full border px-3 py-1 text-xs font-medium text-muted-foreground transition-colors hover:border-primary"
+                  >
+                    No tip
+                  </button>
+                  <div className="relative w-28">
+                    <span className="absolute left-3 top-1/2 -translate-y-1/2 text-sm text-muted-foreground">$</span>
+                    <Input
+                      id="cc-tip"
+                      type="number"
+                      min="0"
+                      step="0.01"
+                      value={tip}
+                      onChange={(e) => setTip(e.target.value)}
+                      placeholder="0.00"
+                      className="pl-6"
+                    />
+                  </div>
+                </div>
+              </div>
+
               {/* Order summary */}
               <div className="space-y-1 rounded-lg border bg-muted/30 p-3 text-sm">
                 <Row label="Items subtotal" value={`$${totalPrice.toFixed(2)}`} />
                 <Row label="Tax" value={`$${tax.toFixed(2)}`} />
                 {service === "delivery" && <Row label={`Delivery (${deliveryTier.label})`} value={`$${deliveryFee.toFixed(2)}`} />}
+                {tipAmount > 0 && <Row label="Tip" value={`$${tipAmount.toFixed(2)}`} />}
                 <div className="flex justify-between border-t pt-1.5 font-semibold">
                   <span>Total</span>
                   <span className="text-secondary">${total.toFixed(2)}</span>

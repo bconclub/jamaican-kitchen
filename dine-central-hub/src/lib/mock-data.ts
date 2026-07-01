@@ -183,6 +183,7 @@ export const MENU: MenuItem[] = [
   stock: stock as number,
   lowStockThreshold: 10,
   imageEmoji: imageEmoji as string,
+  featured: false,
 }));
 
 export const CUSTOMERS: Customer[] = [

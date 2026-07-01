@@ -8,8 +8,62 @@ import { useMenu } from "@/hooks/useMenu";
 import { useCart } from "@/contexts/CartContext";
 import { Button } from "@/components/ui/button";
 import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
-import { Share2 } from "lucide-react";
+import { Share2, Download } from "lucide-react";
 import { toast } from "sonner";
+import type { MenuCategory } from "@/data/menuData";
+
+function escapeHtml(v: string) {
+  return v.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&#39;");
+}
+
+// Opens a printable, disclaimer'd copy of the current menu (prices/availability
+// change online, so this is clearly marked as a snapshot, not a live source).
+function printMenu(categories: MenuCategory[]) {
+  const win = window.open("", "_blank", "width=480,height=720");
+  if (!win) return;
+  const sections = categories
+    .map(
+      (c) => `<section>
+        <h2>${escapeHtml(c.name)}</h2>
+        ${c.items
+          .map(
+            (it) => `<div class="item">
+              <div class="row"><span class="name">${escapeHtml(it.name)}</span><span class="price">$${it.price.toFixed(2)}</span></div>
+              ${it.description ? `<div class="desc">${escapeHtml(it.description)}</div>` : ""}
+            </div>`,
+          )
+          .join("")}
+      </section>`,
+    )
+    .join("");
+  win.document.write(`<!doctype html><html><head><title>Jamaican Kitchen — Menu</title>
+    <meta charset="utf-8" />
+    <style>
+      body { font-family: -apple-system, Arial, sans-serif; padding: 24px; color: #111; max-width: 640px; margin: 0 auto; }
+      h1 { font-size: 24px; margin: 0 0 4px; }
+      .sub { font-size: 12px; color: #666; margin-bottom: 20px; }
+      h2 { font-size: 16px; margin: 20px 0 8px; border-bottom: 2px solid #eee; padding-bottom: 4px; }
+      .item { padding: 6px 0; border-bottom: 1px dashed #eee; }
+      .row { display: flex; justify-content: space-between; font-size: 14px; font-weight: 600; }
+      .desc { font-size: 12px; color: #666; margin-top: 2px; }
+      .disclaimer { margin-top: 28px; padding: 12px; background: #f5f5f5; border-radius: 8px; font-size: 11px; color: #555; }
+      @media print { .disclaimer { background: #fff; border: 1px solid #ccc; } }
+    </style></head>
+    <body>
+      <h1>Jamaican Kitchen</h1>
+      <div class="sub">Menu snapshot — ${new Date().toLocaleDateString([], { dateStyle: "medium" })}</div>
+      ${sections}
+      <div class="disclaimer">
+        <strong>Please note:</strong> prices, availability, and menu items are subject to change without notice
+        and may vary by location. This is a snapshot for reference only — please confirm current pricing and
+        availability at checkout or by calling your local Jamaican Kitchen.
+      </div>
+      <script>window.onload = () => window.print();</script>
+    </body></html>`);
+  win.document.close();
+  win.focus();
+}
+
 const Order = () => {
   const { data: menuCategories } = useMenu();
   const { pickupLocation: selectedLocation, setPickupLocation: setSelectedLocation } = useCart();
@@ -55,8 +109,12 @@ const Order = () => {
                 </p>
               </div>
               <div className="flex items-center gap-3">
-                {/* Download Menu removed: the menu is dynamic (prices/availability change),
-                    so a downloaded copy would go stale. Online menu stays the source of truth. */}
+                {/* Print/PDF snapshot with a disclaimer that prices/availability can change —
+                    the live Order page stays the source of truth. */}
+                <Button variant="outline" size="sm" className="bg-secondary-foreground/10 border-secondary-foreground/20 text-secondary-foreground hover:bg-secondary-foreground/20" onClick={() => printMenu(menuCategories)}>
+                  <Download className="h-4 w-4 mr-2" />
+                  Download Menu
+                </Button>
                 <Button variant="outline" size="sm" className="bg-secondary-foreground/10 border-secondary-foreground/20 text-secondary-foreground hover:bg-secondary-foreground/20" onClick={async () => {
                 if (navigator.share) {
                   try {

@@ -8,6 +8,7 @@ export interface MenuItem {
   image: string;
   spiceLevel: SpiceLevel;
   category: string;
+  featured?: boolean; // staff-flagged "Best Seller", drives the homepage section
 }
 
 export interface MenuCategory {

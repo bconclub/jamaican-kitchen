@@ -1,17 +1,39 @@
+import { useState } from "react";
 import { Link, Navigate } from "react-router-dom";
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
 import { Button } from "@/components/ui/button";
+import { Textarea } from "@/components/ui/textarea";
 import { useCart } from "@/contexts/CartContext";
-import { CheckCircle2, MapPin, Phone, Receipt, Clock, CreditCard, ShoppingBag, Wallet } from "lucide-react";
+import { CheckCircle2, MapPin, Phone, Receipt, Clock, CreditCard, ShoppingBag, Wallet, Star } from "lucide-react";
+import { submitReview } from "@/lib/api";
+import { toast } from "sonner";
 
 const OrderConfirmation = () => {
   const { lastOrder } = useCart();
+  const [rating, setRating] = useState(0);
+  const [hoverRating, setHoverRating] = useState(0);
+  const [reviewBody, setReviewBody] = useState("");
+  const [reviewSent, setReviewSent] = useState(false);
+  const [sendingReview, setSendingReview] = useState(false);
 
   // Direct visit with no recent order → send people back to the menu.
   if (!lastOrder) return <Navigate to="/order" replace />;
 
   const o = lastOrder;
+
+  const sendReview = async () => {
+    if (rating === 0) return;
+    setSendingReview(true);
+    try {
+      await submitReview({ customerName: o.customerName, rating, body: reviewBody, orderShortId: o.shortId });
+      setReviewSent(true);
+    } catch {
+      toast.error("Couldn't submit your review, please try again.");
+    } finally {
+      setSendingReview(false);
+    }
+  };
 
   return (
     <div className="min-h-screen bg-background">
@@ -151,6 +173,56 @@ const OrderConfirmation = () => {
                 </div>
               </li>
             </ol>
+          </div>
+
+          {/* Review prompt */}
+          <div className="rounded-2xl border-2 border-border bg-card p-5 md:p-6 mb-6">
+            {reviewSent ? (
+              <div className="text-center py-2">
+                <div className="mx-auto mb-2 flex h-10 w-10 items-center justify-center rounded-full bg-primary/15">
+                  <CheckCircle2 className="h-5 w-5 text-primary" />
+                </div>
+                <p className="font-medium">Thanks for the feedback!</p>
+                <p className="text-sm text-muted-foreground">Your review helps other customers and our team.</p>
+              </div>
+            ) : (
+              <>
+                <h2 className="font-bold text-lg mb-1">How was your order?</h2>
+                <p className="text-sm text-muted-foreground mb-3">Rate your experience with {o.shortId}.</p>
+                <div className="flex items-center gap-1 mb-3">
+                  {[1, 2, 3, 4, 5].map((n) => (
+                    <button
+                      key={n}
+                      type="button"
+                      onClick={() => setRating(n)}
+                      onMouseEnter={() => setHoverRating(n)}
+                      onMouseLeave={() => setHoverRating(0)}
+                      aria-label={`${n} star${n === 1 ? "" : "s"}`}
+                    >
+                      <Star
+                        className={`h-8 w-8 transition-colors ${
+                          n <= (hoverRating || rating) ? "fill-primary text-primary" : "text-muted-foreground/30"
+                        }`}
+                      />
+                    </button>
+                  ))}
+                </div>
+                {rating > 0 && (
+                  <>
+                    <Textarea
+                      value={reviewBody}
+                      onChange={(e) => setReviewBody(e.target.value)}
+                      placeholder="Tell us more (optional)…"
+                      rows={2}
+                      className="mb-3"
+                    />
+                    <Button onClick={sendReview} disabled={sendingReview} className="bg-primary text-primary-foreground hover:bg-primary/90">
+                      {sendingReview ? "Submitting…" : "Submit review"}
+                    </Button>
+                  </>
+                )}
+              </>
+            )}
           </div>
 
           {/* CTAs */}

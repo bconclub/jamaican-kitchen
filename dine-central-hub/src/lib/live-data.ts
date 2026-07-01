@@ -327,6 +327,7 @@ export function useLiveMenu() {
         stock: m.stock,
         lowStockThreshold: m.low_stock_threshold,
         imageEmoji: EMOJI_BY_CATEGORY[catSlugById.get(m.category_id ?? "") ?? ""] ?? "🍽️",
+        featured: Boolean((m as unknown as { featured?: boolean }).featured),
       })),
     );
     setLoading(false);

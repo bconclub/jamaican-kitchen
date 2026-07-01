@@ -1,69 +1,15 @@
 import { Link } from "react-router-dom";
-import { Star, Flame, Plus, Minus } from "lucide-react";
+import { Flame, Plus, Minus } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { useCart } from "@/contexts/CartContext";
+import { useMenu } from "@/hooks/useMenu";
+import type { MenuItem, SpiceLevel } from "@/data/menuData";
 import { toast } from "sonner";
 
-type SpiceLevel = "mild" | "medium" | "hot";
-
-interface Dish {
-  id: string;
-  name: string;
-  description: string;
-  price: string;
-  image: string;
-  spiceLevel: SpiceLevel;
-  rating: number;
-}
-
-const bestSellers: Dish[] = [
-  {
-    id: "oxtail",
-    name: "Oxtail",
-    description: "Tender, slow-cooked oxtail in rich brown gravy with butter beans",
-    price: "$18.99",
-    image: "https://images.unsplash.com/photo-1544025162-d76694265947?w=400&q=80",
-    spiceLevel: "mild",
-    rating: 4.9,
-  },
-  {
-    id: "curry-goat",
-    name: "Curry Goat",
-    description: "Traditional Jamaican curry goat, seasoned and slow-cooked to perfection",
-    price: "$17.99",
-    image: "https://images.unsplash.com/photo-1585937421612-70a008356fbe?w=400&q=80",
-    spiceLevel: "medium",
-    rating: 4.8,
-  },
-  {
-    id: "jerk-chicken",
-    name: "Jerk Chicken",
-    description: "Authentic jerk chicken marinated in our signature blend of Jamaican spices",
-    price: "$14.99",
-    image: "https://images.unsplash.com/photo-1532550907401-a500c9a57435?w=400&q=80",
-    spiceLevel: "hot",
-    rating: 4.9,
-  },
-  {
-    id: "pepper-steak",
-    name: "Pepper Steak",
-    description: "Tender steak strips with bell peppers in savory brown sauce",
-    price: "$16.99",
-    image: "https://images.unsplash.com/photo-1504674900247-0877df9cc836?w=400&q=80",
-    spiceLevel: "mild",
-    rating: 4.7,
-  },
-  {
-    id: "escovitch-fish",
-    name: "Escovitch Fish",
-    description: "Crispy fried fish topped with pickled vegetables and scotch bonnet peppers",
-    price: "$15.99",
-    image: "https://images.unsplash.com/photo-1580476262798-bddd9f4b7369?w=400&q=80",
-    spiceLevel: "hot",
-    rating: 4.8,
-  },
-];
+// Falls back to these names if no items are flagged "Best Seller" in the admin yet,
+// so the homepage section is never empty.
+const FALLBACK_NAMES = ["Oxtail", "Curry Goat", "Jerk Chicken", "Pepper Steak", "Escovitch Fish"];
 
 const SpiceLevelIndicator = ({ level }: { level: SpiceLevel }) => {
   const config = {
@@ -71,9 +17,7 @@ const SpiceLevelIndicator = ({ level }: { level: SpiceLevel }) => {
     medium: { label: "Medium", color: "bg-spice-medium", flames: 2 },
     hot: { label: "Spicy", color: "bg-spice-hot", flames: 3 },
   };
-
   const { label, color, flames } = config[level];
-
   return (
     <div className="flex items-center gap-1.5">
       <div className={`px-2 py-0.5 rounded-full ${color} text-white text-xs font-medium flex items-center gap-1`}>
@@ -87,19 +31,25 @@ const SpiceLevelIndicator = ({ level }: { level: SpiceLevel }) => {
 };
 
 export const BestSellers = () => {
-  const { items, addItem, updateQuantity } = useCart();
-  const qtyOf = (id: string) => items.find((i) => i.id === id)?.quantity ?? 0;
+  const { data: menuCategories } = useMenu();
+  const { items: cartItems, addItem, updateQuantity } = useCart();
+  const qtyOf = (id: string) => cartItems.find((i) => i.id === id)?.quantity ?? 0;
 
-  const handleAdd = (dish: Dish) => {
-    addItem({
-      id: dish.id,
-      name: dish.name,
-      price: parseFloat(dish.price.replace(/[^0-9.]/g, "")) || 0,
-      spiceLevel: dish.spiceLevel,
-      image: dish.image,
-    });
+  const allItems = menuCategories.flatMap((c) => c.items);
+  const featured = allItems.filter((it) => it.featured);
+  // Real staff-flagged best sellers once any exist; otherwise a sensible fallback.
+  const dishes: MenuItem[] = featured.length
+    ? featured
+    : FALLBACK_NAMES.map((n) => allItems.find((it) => it.name.toLowerCase().includes(n.toLowerCase()))).filter(
+        (it): it is MenuItem => Boolean(it),
+      );
+
+  const handleAdd = (dish: MenuItem) => {
+    addItem({ id: dish.id, name: dish.name, price: dish.price, spiceLevel: dish.spiceLevel, image: dish.image });
     toast.success(`${dish.name} added to your order!`);
   };
+
+  if (dishes.length === 0) return null;
 
   return (
     <section className="py-16 md:py-24 bg-muted/30">
@@ -117,9 +67,9 @@ export const BestSellers = () => {
 
         {/* Dishes Grid */}
         <div className="grid md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-6">
-          {bestSellers.map((dish, index) => (
-            <Card 
-              key={dish.id} 
+          {dishes.map((dish, index) => (
+            <Card
+              key={dish.id}
               className="group overflow-hidden border-2 border-transparent hover:border-primary transition-all duration-300 hover:shadow-xl animate-slide-up"
               style={{ animationDelay: `${index * 100}ms` }}
             >
@@ -132,10 +82,6 @@ export const BestSellers = () => {
                 <div className="absolute top-3 left-3">
                   <SpiceLevelIndicator level={dish.spiceLevel} />
                 </div>
-                <div className="absolute top-3 right-3 bg-foreground/80 text-background px-2 py-1 rounded-full text-sm flex items-center gap-1">
-                  <Star className="h-3.5 w-3.5 fill-primary text-primary" />
-                  <span className="font-semibold">{dish.rating}</span>
-                </div>
               </div>
               <CardContent className="p-4">
                 <h3 className="font-bold text-lg mb-1">{dish.name}</h3>
@@ -143,7 +89,7 @@ export const BestSellers = () => {
                   {dish.description}
                 </p>
                 <div className="flex items-center justify-between">
-                  <span className="text-xl font-bold text-secondary">{dish.price}</span>
+                  <span className="text-xl font-bold text-secondary">${dish.price.toFixed(2)}</span>
                   {qtyOf(dish.id) === 0 ? (
                     <Button
                       size="sm"
@@ -185,9 +131,9 @@ export const BestSellers = () => {
         {/* View Full Menu */}
         <div className="text-center mt-12">
           <Link to="/order">
-            <Button 
-              size="lg" 
-              variant="outline" 
+            <Button
+              size="lg"
+              variant="outline"
               className="border-2 border-secondary text-secondary hover:bg-secondary hover:text-secondary-foreground font-semibold px-8"
             >
               View Full Menu
