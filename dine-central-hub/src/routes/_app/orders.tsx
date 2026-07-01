@@ -10,7 +10,7 @@ import { CHANNEL_META, STATUS_META } from "@/lib/mock-data";
 import { useLiveOrders, useLiveLocations, updateOrderStatus } from "@/lib/live-data";
 import { useCurrentLocation } from "@/lib/store";
 import type { Channel, Order, OrderStatus } from "@/lib/types";
-import { Check, X, ChefHat, CheckCheck, Search, ListFilter, Timer, MapPin, ExternalLink, Truck, PackageCheck, Printer } from "lucide-react";
+import { Check, X, ChefHat, CheckCheck, Search, ListFilter, Timer, MapPin, ExternalLink, Truck, PackageCheck, Printer, Bell, ChevronRight, Ban, LayoutGrid } from "lucide-react";
 import { Sheet, SheetContent, SheetHeader, SheetTitle } from "@/components/ui/sheet";
 import {
   DropdownMenu,
@@ -171,6 +171,30 @@ export const Route = createFileRoute("/_app/orders")({
 const ALL_STATUSES = Object.keys(STATUS_META) as OrderStatus[];
 // Completed/cancelled orders stay on the live board for 24h, then archive to history.
 const RETENTION_MS = 24 * 60 * 60 * 1000;
+
+// The main pipeline, in the order an order actually flows through it.
+// Cancelled is a branch off this flow, not a stage in it, so it's excluded here
+// and rendered separately.
+const FUNNEL_STATUSES: OrderStatus[] = ["new", "accepted", "preparing", "ready", "out_for_delivery", "completed"];
+
+const STATUS_ICON: Record<OrderStatus, typeof Bell> = {
+  new: Bell,
+  accepted: Check,
+  preparing: ChefHat,
+  ready: CheckCheck,
+  out_for_delivery: Truck,
+  completed: PackageCheck,
+  cancelled: Ban,
+};
+
+// Same tone system as StatusPill, but as solid card styling for the funnel.
+const FUNNEL_TONE: Record<string, { card: string; active: string; icon: string }> = {
+  info: { card: "border-info/30 bg-info/5", active: "border-info bg-info/10 ring-1 ring-info/30", icon: "bg-info/15 text-info" },
+  warning: { card: "border-warning/40 bg-warning/5", active: "border-warning bg-warning/15 ring-1 ring-warning/40", icon: "bg-warning/20 text-warning-foreground" },
+  success: { card: "border-success/30 bg-success/5", active: "border-success bg-success/10 ring-1 ring-success/30", icon: "bg-success/15 text-success" },
+  muted: { card: "border-border bg-muted/40", active: "border-foreground/30 bg-muted ring-1 ring-foreground/10", icon: "bg-muted text-muted-foreground" },
+  danger: { card: "border-destructive/30 bg-destructive/5", active: "border-destructive bg-destructive/10 ring-1 ring-destructive/30", icon: "bg-destructive/15 text-destructive" },
+};
 const ALL_CHANNELS = Object.keys(CHANNEL_META) as Channel[];
 
 function OrdersPage() {
@@ -226,10 +250,9 @@ function OrdersPage() {
     });
   }, [ORDERS, loc, channelFilter, statusFilter, q]);
 
-  const counts = ALL_STATUSES.map((s) => ({
-    status: s,
-    count: ORDERS.filter((o) => (loc === "all" || o.locationId === loc) && o.status === s).length,
-  }));
+  const countFor = (s: OrderStatus) =>
+    ORDERS.filter((o) => (loc === "all" || o.locationId === loc) && o.status === s).length;
+  const totalCount = ORDERS.filter((o) => loc === "all" || o.locationId === loc).length;
 
   return (
     <>
@@ -241,24 +264,64 @@ function OrdersPage() {
         }
       />
 
-      <div className="grid grid-cols-2 gap-3 md:grid-cols-4 xl:grid-cols-7 mb-4">
+      {/* Status funnel: New -> Accepted -> Preparing -> Ready -> Out for delivery
+          -> Completed, connected by arrows so it reads as a flow. Cancelled is a
+          branch off that flow, not a stage in it, so it sits apart with a dashed
+          border instead of a connector. */}
+      <div className="mb-4 flex flex-wrap items-stretch gap-2">
         <button
           onClick={() => setStatusFilter("all")}
-          className={`rounded-lg border bg-card p-3 text-left transition hover:border-primary ${statusFilter === "all" ? "border-primary" : ""}`}
+          className={`flex min-w-[108px] flex-col items-center justify-center gap-1 rounded-xl border p-3 text-center transition hover:shadow-sm ${
+            statusFilter === "all" ? "border-primary bg-primary/5 ring-1 ring-primary/30" : "border-border bg-card"
+          }`}
         >
-          <div className="text-xs text-muted-foreground">All</div>
-          <div className="text-2xl font-semibold">{ORDERS.filter((o) => loc === "all" || o.locationId === loc).length}</div>
+          <span className="flex h-8 w-8 items-center justify-center rounded-full bg-primary/10 text-primary">
+            <LayoutGrid className="h-4 w-4" />
+          </span>
+          <span className="text-2xl font-semibold tabular-nums">{totalCount}</span>
+          <span className="text-[11px] text-muted-foreground">All</span>
         </button>
-        {counts.map((c) => (
-          <button
-            key={c.status}
-            onClick={() => setStatusFilter(c.status)}
-            className={`rounded-lg border bg-card p-3 text-left transition hover:border-primary ${statusFilter === c.status ? "border-primary" : ""}`}
-          >
-            <div className="text-xs text-muted-foreground">{STATUS_META[c.status].label}</div>
-            <div className="text-2xl font-semibold tabular-nums">{c.count}</div>
-          </button>
-        ))}
+
+        <div className="flex flex-1 flex-wrap items-center gap-1">
+          {FUNNEL_STATUSES.map((s, i) => {
+            const meta = STATUS_META[s];
+            const tone = FUNNEL_TONE[meta.tone];
+            const Icon = STATUS_ICON[s];
+            const active = statusFilter === s;
+            return (
+              <div key={s} className="flex items-center gap-1">
+                <button
+                  onClick={() => setStatusFilter(s)}
+                  className={`flex min-w-[108px] flex-col items-center justify-center gap-1 rounded-xl border p-3 text-center transition hover:shadow-sm ${
+                    active ? tone.active : tone.card
+                  }`}
+                >
+                  <span className={`flex h-8 w-8 items-center justify-center rounded-full ${tone.icon}`}>
+                    <Icon className="h-4 w-4" />
+                  </span>
+                  <span className="text-2xl font-semibold tabular-nums">{countFor(s)}</span>
+                  <span className="text-[11px] text-muted-foreground">{meta.label}</span>
+                </button>
+                {i < FUNNEL_STATUSES.length - 1 && (
+                  <ChevronRight className="h-4 w-4 shrink-0 text-muted-foreground/40" />
+                )}
+              </div>
+            );
+          })}
+        </div>
+
+        <button
+          onClick={() => setStatusFilter("cancelled")}
+          className={`flex min-w-[108px] flex-col items-center justify-center gap-1 rounded-xl border border-dashed p-3 text-center transition hover:shadow-sm ${
+            statusFilter === "cancelled" ? FUNNEL_TONE.danger.active : FUNNEL_TONE.danger.card
+          }`}
+        >
+          <span className={`flex h-8 w-8 items-center justify-center rounded-full ${FUNNEL_TONE.danger.icon}`}>
+            <Ban className="h-4 w-4" />
+          </span>
+          <span className="text-2xl font-semibold tabular-nums">{countFor("cancelled")}</span>
+          <span className="text-[11px] text-muted-foreground">Cancelled</span>
+        </button>
       </div>
 
       <Card>

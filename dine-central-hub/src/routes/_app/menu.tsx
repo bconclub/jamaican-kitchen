@@ -26,7 +26,7 @@ import { useLiveMenu } from "@/lib/live-data";
 import { supabase } from "@/integrations/supabase/client";
 import type { Channel, MenuItem } from "@/lib/types";
 import { PageHeader, formatMoney } from "@/components/PageHeader";
-import { Plus, Search, Trash2, FolderPlus } from "lucide-react";
+import { Plus, Search, Trash2, FolderPlus, Globe, PartyPopper, Info } from "lucide-react";
 import { toast } from "sonner";
 
 export const Route = createFileRoute("/_app/menu")({ component: MenuPage });
@@ -58,6 +58,10 @@ function MenuPage() {
   const [newOpen, setNewOpen] = useState(false);
   const [saving, setSaving] = useState(false);
   const [form, setForm] = useState({ name: "", description: "", basePrice: "", categoryId: "", spice: "mild", image: "" });
+  // Online ordering and catering are two separate menus/ordering systems — this
+  // just picks which one a new item is for. Catering isn't database-backed yet
+  // (it's a static file in the storefront), so that path is disabled for now.
+  const [menuType, setMenuType] = useState<"online" | "catering">("online");
 
   useEffect(() => {
     setItems(liveItems.map((m) => ({ ...m, channelOverrides: ensureOverrides(m) })));
@@ -305,52 +309,88 @@ function MenuPage() {
       </Tabs>
 
       {/* New item dialog */}
-      <Dialog open={newOpen} onOpenChange={setNewOpen}>
+      <Dialog open={newOpen} onOpenChange={(o) => { setNewOpen(o); if (!o) setMenuType("online"); }}>
         <DialogContent className="sm:max-w-md">
           <DialogHeader>
             <DialogTitle>New menu item</DialogTitle>
           </DialogHeader>
           <div className="space-y-3">
+            {/* Online and catering are two separate menus/ordering systems. */}
             <div className="space-y-1.5">
-              <Label>Name *</Label>
-              <Input value={form.name} onChange={(e) => setForm((f) => ({ ...f, name: e.target.value }))} placeholder="e.g. Jerk Chicken" />
-            </div>
-            <div className="space-y-1.5">
-              <Label>Description</Label>
-              <Textarea value={form.description} onChange={(e) => setForm((f) => ({ ...f, description: e.target.value }))} rows={2} placeholder="Short description" />
-            </div>
-            <div className="grid grid-cols-2 gap-3">
-              <div className="space-y-1.5">
-                <Label>Base price</Label>
-                <Input type="number" step="0.01" min={0} value={form.basePrice} onChange={(e) => setForm((f) => ({ ...f, basePrice: e.target.value }))} placeholder="0.00" />
+              <Label>Which menu?</Label>
+              <div className="grid grid-cols-2 gap-2">
+                <button
+                  type="button"
+                  onClick={() => setMenuType("online")}
+                  className={`flex items-center justify-center gap-1.5 rounded-lg border-2 p-2 text-sm font-medium transition-colors ${
+                    menuType === "online" ? "border-primary bg-primary/5" : "border-border"
+                  }`}
+                >
+                  <Globe className="h-4 w-4" /> Online menu
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setMenuType("catering")}
+                  className={`flex items-center justify-center gap-1.5 rounded-lg border-2 p-2 text-sm font-medium transition-colors ${
+                    menuType === "catering" ? "border-primary bg-primary/5" : "border-border"
+                  }`}
+                >
+                  <PartyPopper className="h-4 w-4" /> Catering menu
+                </button>
               </div>
-              <div className="space-y-1.5">
-                <Label>Spice level</Label>
-                <Select value={form.spice} onValueChange={(v) => setForm((f) => ({ ...f, spice: v }))}>
-                  <SelectTrigger><SelectValue /></SelectTrigger>
-                  <SelectContent>
-                    {SPICE.map((s) => <SelectItem key={s} value={s} className="capitalize">{s}</SelectItem>)}
-                  </SelectContent>
-                </Select>
+            </div>
+
+            {menuType === "catering" ? (
+              <div className="flex items-start gap-2 rounded-lg border bg-muted/40 p-3 text-xs text-muted-foreground">
+                <Info className="mt-0.5 h-3.5 w-3.5 shrink-0" />
+                The catering menu isn't database-backed yet (it's a static file in the storefront today), so it
+                can't be edited from here yet. This needs a quick schema update — flagged, and it's next once
+                that's in place. Switch back to Online menu to add an item now.
               </div>
-            </div>
-            <div className="space-y-1.5">
-              <Label>Category *</Label>
-              <Select value={form.categoryId} onValueChange={(v) => setForm((f) => ({ ...f, categoryId: v }))}>
-                <SelectTrigger><SelectValue placeholder="Assign a category" /></SelectTrigger>
-                <SelectContent>
-                  {CATEGORIES.map((c) => <SelectItem key={c.id} value={c.id}>{c.name}</SelectItem>)}
-                </SelectContent>
-              </Select>
-            </div>
-            <div className="space-y-1.5">
-              <Label>Image URL (optional)</Label>
-              <Input value={form.image} onChange={(e) => setForm((f) => ({ ...f, image: e.target.value }))} placeholder="https://…" />
-            </div>
+            ) : (
+              <>
+                <div className="space-y-1.5">
+                  <Label>Name *</Label>
+                  <Input value={form.name} onChange={(e) => setForm((f) => ({ ...f, name: e.target.value }))} placeholder="e.g. Jerk Chicken" />
+                </div>
+                <div className="space-y-1.5">
+                  <Label>Description</Label>
+                  <Textarea value={form.description} onChange={(e) => setForm((f) => ({ ...f, description: e.target.value }))} rows={2} placeholder="Short description" />
+                </div>
+                <div className="grid grid-cols-2 gap-3">
+                  <div className="space-y-1.5">
+                    <Label>Base price</Label>
+                    <Input type="number" step="0.01" min={0} value={form.basePrice} onChange={(e) => setForm((f) => ({ ...f, basePrice: e.target.value }))} placeholder="0.00" />
+                  </div>
+                  <div className="space-y-1.5">
+                    <Label>Spice level</Label>
+                    <Select value={form.spice} onValueChange={(v) => setForm((f) => ({ ...f, spice: v }))}>
+                      <SelectTrigger><SelectValue /></SelectTrigger>
+                      <SelectContent>
+                        {SPICE.map((s) => <SelectItem key={s} value={s} className="capitalize">{s}</SelectItem>)}
+                      </SelectContent>
+                    </Select>
+                  </div>
+                </div>
+                <div className="space-y-1.5">
+                  <Label>Category *</Label>
+                  <Select value={form.categoryId} onValueChange={(v) => setForm((f) => ({ ...f, categoryId: v }))}>
+                    <SelectTrigger><SelectValue placeholder="Assign a category" /></SelectTrigger>
+                    <SelectContent>
+                      {CATEGORIES.map((c) => <SelectItem key={c.id} value={c.id}>{c.name}</SelectItem>)}
+                    </SelectContent>
+                  </Select>
+                </div>
+                <div className="space-y-1.5">
+                  <Label>Image URL (optional)</Label>
+                  <Input value={form.image} onChange={(e) => setForm((f) => ({ ...f, image: e.target.value }))} placeholder="https://…" />
+                </div>
+              </>
+            )}
           </div>
           <DialogFooter>
-            <Button onClick={createItem} disabled={saving} className="w-full">
-              {saving ? "Adding…" : "Add item"}
+            <Button onClick={createItem} disabled={saving || menuType === "catering"} className="w-full">
+              {menuType === "catering" ? "Not available yet" : saving ? "Adding…" : "Add item"}
             </Button>
           </DialogFooter>
         </DialogContent>
