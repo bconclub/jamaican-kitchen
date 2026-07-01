@@ -49,6 +49,8 @@ const SECTIONS: Section[] = [
       { title: "Brand Book v2.0 font system (Display / Heading / Body / UI)", status: "live" },
       { title: "Per-location Best Sellers", status: "live" },
       { title: "Catering delivery option", status: "live" },
+      { title: "Catering real checkout (24h+ direct pay) + urgent request (<24h)", status: "live" },
+      { title: "Catering delivery pricing by distance tier", status: "live", note: "Manual tiers for now: $15 / $30 / $50" },
       { title: "Careers page", status: "addon", note: "Skipped for v1" },
     ],
   },
