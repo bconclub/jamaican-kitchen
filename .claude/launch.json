@@ -7,6 +7,13 @@
       "runtimeArgs": ["run", "dev"],
       "cwd": "dine-central-hub",
       "port": 8080
+    },
+    {
+      "name": "website",
+      "runtimeExecutable": "npm",
+      "runtimeArgs": ["run", "dev"],
+      "cwd": "website",
+      "port": 8080
     }
   ]
 }

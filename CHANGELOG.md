@@ -1,5 +1,23 @@
 # Changelog
 
+## 2026-07-01 · Real catering checkout (24h+ direct pay, <24h urgent request) + distance delivery fees
+
+- New CateringCheckoutDialog: same checkout pattern as online ordering, but with catering fields
+  (event type, event date/time, guest count, pickup/delivery, delivery distance tier).
+- If the event is 24+ hours out, checkout is instant and priced — goes through the same
+  place_order RPC as online orders (real order, real total, "pay at pickup/delivery, cash or card").
+- If the event is under 24 hours out, self-checkout is blocked; instead it submits an urgent
+  request (flagged in the message) and tells the customer the catering team will call within the hour.
+- New delivery-distance fee tiers for catering (Within 10 mi $15 / 10-20 mi $30 / 20+ mi $50) —
+  manual tier selection for now, easy to retune or wire to an admin-editable version later.
+- Fixed `placeOrder()` silently dropping the `fees` param (RPC always supported it).
+- Fixed a real bug caught in testing: the confirmation screen never showed because clearing the
+  cart on success unmounted the whole dialog (same root cause as an earlier online-checkout bug).
+  Cart now clears only when the user dismisses the confirmation.
+- User-facing: catering checkout is live and tested end-to-end (verified against the real DB —
+  both the priced order and the urgent request paths actually write real rows).
+- (pending — SHA added below after commit)
+
 ## 2026-06-30 · Mobile cart FAB raised clear of chat launcher
 
 - Mobile cart button moved from `bottom-24` to `bottom-40` so it no longer sits under the chat launcher's greeting bubble.

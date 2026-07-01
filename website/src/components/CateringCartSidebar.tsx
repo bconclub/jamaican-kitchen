@@ -3,18 +3,14 @@ import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetHeader, SheetTitle } from "@/components/ui/sheet";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { useCateringCart } from "@/contexts/CateringCartContext";
+import { CateringCheckoutDialog } from "@/components/CateringCheckoutDialog";
 
 // The catering selection drawer. Separate from the online-ordering cart.
-// "Continue" takes the customer to the quote request form (catering is a quote flow).
+// Events 24h+ out check out directly (real order via place_order); under 24h
+// goes to the catering team as an urgent request instead — see
+// CateringCheckoutDialog for the branching logic.
 export const CateringCartSidebar = () => {
   const { items, totalItems, totalPrice, updateQuantity, removeItem, clearCart, isOpen, setOpen } = useCateringCart();
-
-  const goToQuote = () => {
-    setOpen(false);
-    setTimeout(() => {
-      document.getElementById("catering-quote")?.scrollIntoView({ behavior: "smooth", block: "start" });
-    }, 100);
-  };
 
   return (
     <Sheet open={isOpen} onOpenChange={setOpen}>
@@ -64,13 +60,17 @@ export const CateringCartSidebar = () => {
 
             <div className="p-4 border-t border-border bg-muted/30">
               <div className="flex justify-between font-bold text-lg">
-                <span>Estimated total</span>
+                <span>Items subtotal</span>
                 <span className="text-secondary">${totalPrice.toFixed(2)}</span>
               </div>
-              <p className="text-xs text-muted-foreground mt-1 mb-4">Final pricing is confirmed in your custom catering quote.</p>
-              <Button className="w-full bg-secondary text-secondary-foreground hover:bg-secondary/90 font-semibold text-lg h-12" onClick={goToQuote}>
-                Continue to quote request
-              </Button>
+              <p className="text-xs text-muted-foreground mt-1 mb-4">Tax and any delivery fee are added at checkout.</p>
+              <CateringCheckoutDialog
+                trigger={
+                  <Button className="w-full bg-secondary text-secondary-foreground hover:bg-secondary/90 font-semibold text-lg h-12">
+                    Checkout
+                  </Button>
+                }
+              />
               <Button variant="ghost" className="w-full mt-2 text-muted-foreground" onClick={clearCart}>
                 Clear selection
               </Button>

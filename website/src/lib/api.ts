@@ -87,6 +87,7 @@ export interface PlaceOrderInput {
   subtotal: number;
   tax: number;
   tip?: number;
+  fees?: number; // e.g. a catering delivery-distance fee
   notes?: string;
   address?: string;
   walletRedeem?: number; // amount of wallet balance to apply
@@ -109,6 +110,7 @@ export async function placeOrder(input: PlaceOrderInput): Promise<PlacedOrder> {
     p_subtotal: input.subtotal,
     p_tax: input.tax,
     p_tip: input.tip ?? 0,
+    p_fees: input.fees ?? 0,
     p_notes: input.notes ?? null,
     p_address: input.address ?? null,
     p_wallet_redeem: input.walletRedeem ?? 0,
