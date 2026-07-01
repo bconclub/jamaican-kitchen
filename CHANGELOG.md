@@ -16,7 +16,7 @@
   Cart now clears only when the user dismisses the confirmation.
 - User-facing: catering checkout is live and tested end-to-end (verified against the real DB —
   both the priced order and the urgent request paths actually write real rows).
-- (pending — SHA added below after commit)
+- (aea9032)
 
 ## 2026-06-30 · Mobile cart FAB raised clear of chat launcher
 
