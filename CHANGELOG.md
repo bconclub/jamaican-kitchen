@@ -1,5 +1,10 @@
 # Changelog
 
+## 2026-06-30 · Mobile cart FAB raised clear of chat launcher
+
+- Mobile cart button moved from `bottom-24` to `bottom-40` so it no longer sits under the chat launcher's greeting bubble.
+- (a3f723d..484a32a)
+
 ## 2026-06-27 · Finish all in-progress (requested) features
 
 - Admin Settings now persist (localStorage): brand, taxes, notifications, integration keys.

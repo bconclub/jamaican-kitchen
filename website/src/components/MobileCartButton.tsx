@@ -13,7 +13,7 @@ export const MobileCartButton = () => {
     <button
       onClick={openCart}
       aria-label="Open cart"
-      className="md:hidden fixed bottom-24 right-6 z-[60] flex h-14 w-14 items-center justify-center rounded-full bg-primary text-primary-foreground shadow-lg ring-4 ring-background transition-transform hover:scale-105 animate-in zoom-in"
+      className="md:hidden fixed bottom-40 right-6 z-[60] flex h-14 w-14 items-center justify-center rounded-full bg-primary text-primary-foreground shadow-lg ring-4 ring-background transition-transform hover:scale-105 animate-in zoom-in"
     >
       <UtensilsCrossed className="h-6 w-6" />
       <span className="absolute -top-1 -right-1 flex h-6 w-6 items-center justify-center rounded-full bg-secondary text-xs font-bold text-secondary-foreground">
