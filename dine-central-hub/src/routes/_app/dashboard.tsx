@@ -1,12 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { useEffect, useMemo, useState } from "react";
+import { useMemo, useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import {
-  Popover, PopoverContent, PopoverTrigger,
-} from "@/components/ui/popover";
 import {
   Bar,
   BarChart,
@@ -21,58 +16,56 @@ import {
   XAxis,
   YAxis,
 } from "recharts";
-import { ArrowDownRight, ArrowUpRight, DollarSign, ShoppingBag, Users, Receipt, CalendarRange, CreditCard, Banknote, Smartphone, Wallet, Bike, ShoppingBasket, X } from "lucide-react";
-import { useLiveOrders, useLiveLocations } from "@/lib/live-data";
+import {
+  ArrowDownRight,
+  ArrowUpRight,
+  DollarSign,
+  ShoppingBag,
+  Users,
+  Receipt,
+  CreditCard,
+  Banknote,
+  Smartphone,
+  Wallet,
+  Bike,
+  ShoppingBasket,
+  PartyPopper,
+  CalendarClock,
+  Info,
+} from "lucide-react";
+import { useLiveOrders, useLiveLocations, useLiveCateringRequests } from "@/lib/live-data";
 import { useCurrentLocation } from "@/lib/store";
+import { useScope, RANGE_PRESET_LABEL } from "@/lib/scope-store";
 import { StatusPill } from "@/components/StatusPill";
 import { PageHeader, formatMoney } from "@/components/PageHeader";
-import type { Order } from "@/lib/types";
 
 export const Route = createFileRoute("/_app/dashboard")({
   component: Dashboard,
 });
 
-type RangeKey = "today" | "week" | "month" | "ytd" | "custom";
+function Dashboard() {
+  const scope = useScope();
+  const rangeLabel = scope.preset === "custom" ? `${fmtShort(scope.from)} - ${fmtShort(scope.to)}` : RANGE_PRESET_LABEL[scope.preset];
 
-interface TrendBucket {
-  key: string; // stable sort key
-  label: string; // display label
-  total: number;
-  orders: Order[];
+  return scope.channel === "catering" ? (
+    <CateringDashboard rangeLabel={rangeLabel} />
+  ) : (
+    <OnlineDashboard rangeLabel={rangeLabel} />
+  );
 }
 
-const RANGES: { key: RangeKey; label: string; days: number }[] = [
-  { key: "today", label: "Today", days: 1 },
-  { key: "week", label: "This week", days: 7 },
-  { key: "month", label: "This month", days: 30 },
-  { key: "ytd", label: "Year to date", days: 365 },
-];
-
-function Dashboard() {
+// =====================================================================
+// Online (website) sales — pickup & delivery, real order revenue.
+// =====================================================================
+function OnlineDashboard({ rangeLabel }: { rangeLabel: string }) {
   const loc = useCurrentLocation();
+  const scope = useScope();
   const { orders: ALL_ORDERS } = useLiveOrders();
   const liveLocations = useLiveLocations();
-  const [range, setRange] = useState<RangeKey>("today");
-  const [customStart, setCustomStart] = useState(() => isoDateTime(daysAgo(7)));
-  const [customEnd, setCustomEnd] = useState(() => isoDateTime(new Date()));
   const [fulfillment, setFulfillment] = useState<"all" | "pickup" | "delivery">("all");
 
-  const days = useMemo(() => {
-    if (range === "custom") {
-      const ms = new Date(customEnd).getTime() - new Date(customStart).getTime();
-      return Math.max(1 / 24, ms / 86400000);
-    }
-    return RANGES.find((r) => r.key === range)!.days;
-  }, [range, customStart, customEnd]);
-
-  // Date window for the selected range
-  const { start, end } = useMemo(() => {
-    if (range === "custom") {
-      return { start: new Date(customStart).getTime(), end: new Date(customEnd).getTime() };
-    }
-    const endMs = Date.now();
-    return { start: endMs - days * 86400000, end: endMs };
-  }, [range, customStart, customEnd, days]);
+  const start = useMemo(() => new Date(scope.from).getTime(), [scope.from]);
+  const end = useMemo(() => new Date(scope.to).getTime(), [scope.to]);
 
   // Website-only dashboard: web channel + pickup/delivery, within location + date window.
   const channelOrders = useMemo(
@@ -96,55 +89,32 @@ function Dashboard() {
 
   // Comparison ("vs previous period") deltas, deterministic per range
   const deltas = useMemo(() => {
-    const seed = days * 7;
+    const seed = Math.round((end - start) / 3_600_000) || 1;
     return {
       revenue: ((seed * 13) % 25) - 5,
       orders: ((seed * 19) % 22) - 4,
       aov: ((seed * 7) % 14) - 6,
       customers: ((seed * 23) % 18) - 8,
     };
-  }, [days]);
+  }, [start, end]);
 
-  // "Today" (and any sub-36h custom range) shows an hourly trend so you can see
-  // exactly when orders came in; longer ranges bucket by full calendar date
-  // (not just month/day — mixing years on the same label was the bug that made
-  // the "Today" chart render a whole year's worth of points as one smooth line).
-  const isHourlyRange = range === "today" || (range === "custom" && end - start <= 36 * 3600_000);
+  const isHourlyRange = scope.preset === "today" || end - start <= 36 * 3600_000;
 
-  const trend = useMemo<TrendBucket[]>(() => {
+  const trend = useMemo(() => {
     if (isHourlyRange) {
-      const buckets: TrendBucket[] = Array.from({ length: 24 }, (_, h) => ({
-        key: String(h).padStart(2, "0"),
-        label: h === 0 ? "12 AM" : h < 12 ? `${h} AM` : h === 12 ? "12 PM" : `${h - 12} PM`,
-        total: 0,
-        orders: [],
-      }));
-      for (const o of channelOrders) {
-        const h = new Date(o.createdAt).getHours();
-        buckets[h].total += o.total;
-        buckets[h].orders.push(o);
-      }
+      const buckets = Array.from({ length: 24 }, (_, h) => ({ key: String(h), day: h === 0 ? "12 AM" : h < 12 ? `${h} AM` : h === 12 ? "12 PM" : `${h - 12} PM`, total: 0 }));
+      for (const o of channelOrders) buckets[new Date(o.createdAt).getHours()].total += o.total;
       return buckets;
     }
-    const byDay = new Map<string, TrendBucket>();
+    const byDay = new Map<string, number>();
     for (const o of channelOrders) {
-      const d = new Date(o.createdAt);
-      const key = isoDate(d); // yyyy-mm-dd — sortable, never collides across years
-      const existing = byDay.get(key);
-      if (existing) {
-        existing.total += o.total;
-        existing.orders.push(o);
-      } else {
-        byDay.set(key, { key, label: fmtShort(key), total: o.total, orders: [o] });
-      }
+      const key = isoDate(o.createdAt);
+      byDay.set(key, (byDay.get(key) ?? 0) + o.total);
     }
-    const arr = Array.from(byDay.values()).sort((a, b) => a.key.localeCompare(b.key));
-    return arr.length ? arr : [{ key: "-", label: "-", total: 0, orders: [] }];
+    const arr = Array.from(byDay, ([key, total]) => ({ key, day: fmtShort(key), total })).sort((a, b) => a.key.localeCompare(b.key));
+    return arr.length ? arr : [{ key: "-", day: "-", total: 0 }];
   }, [channelOrders, isHourlyRange]);
 
-  const [selectedBucket, setSelectedBucket] = useState<TrendBucket | null>(null);
-  // Selecting a new range invalidates whatever bucket was drilled into.
-  useEffect(() => setSelectedBucket(null), [range, customStart, customEnd, fulfillment, loc]);
   const fulfillmentMix = (["pickup", "delivery"] as const).map((t) => ({
     key: t,
     name: t === "pickup" ? "Pickup" : "Delivery",
@@ -152,10 +122,6 @@ function Dashboard() {
     color: t === "pickup" ? "oklch(0.62 0.18 145)" : "oklch(0.58 0.2 35)",
   }));
 
-  const rangeLabel =
-    range === "custom"
-      ? `${fmtShortDT(customStart)} - ${fmtShortDT(customEnd)}`
-      : RANGES.find((r) => r.key === range)!.label;
   const fulfillmentLabel =
     fulfillment === "all" ? "pickup & delivery" : fulfillment === "pickup" ? "pickup only" : "delivery only";
 
@@ -163,50 +129,18 @@ function Dashboard() {
     <>
       <PageHeader
         title="Website Sales"
-        description={`${rangeLabel} · ${fulfillmentLabel}`}
+        description={`${rangeLabel} · ${fulfillmentLabel} · date range set in the top bar`}
         actions={
-          <div className="flex flex-wrap items-center gap-2">
-            <div className="flex flex-wrap items-center gap-1 rounded-lg border bg-card p-1">
-              <Button size="sm" variant={fulfillment === "all" ? "default" : "ghost"} onClick={() => setFulfillment("all")}>
-                All
-              </Button>
-              <Button size="sm" variant={fulfillment === "pickup" ? "default" : "ghost"} onClick={() => setFulfillment("pickup")} className="gap-1">
-                <ShoppingBasket className="h-3.5 w-3.5" /> Pickup
-              </Button>
-              <Button size="sm" variant={fulfillment === "delivery" ? "default" : "ghost"} onClick={() => setFulfillment("delivery")} className="gap-1">
-                <Bike className="h-3.5 w-3.5" /> Delivery
-              </Button>
-            </div>
-            <div className="flex flex-wrap items-center gap-1 rounded-lg border bg-card p-1">
-            {RANGES.map((r) => (
-              <Button
-                key={r.key}
-                size="sm"
-                variant={range === r.key ? "default" : "ghost"}
-                onClick={() => setRange(r.key)}
-              >
-                {r.label}
-              </Button>
-            ))}
-            <Popover>
-              <PopoverTrigger asChild>
-                <Button size="sm" variant={range === "custom" ? "default" : "ghost"} className="gap-1">
-                  <CalendarRange className="h-3.5 w-3.5" /> Custom
-                </Button>
-              </PopoverTrigger>
-              <PopoverContent className="w-72 space-y-3" align="end">
-                <div className="space-y-1.5">
-                  <Label className="text-xs">From</Label>
-                  <Input type="datetime-local" value={customStart} max={customEnd} onChange={(e) => setCustomStart(e.target.value)} />
-                </div>
-                <div className="space-y-1.5">
-                  <Label className="text-xs">To</Label>
-                  <Input type="datetime-local" value={customEnd} min={customStart} max={isoDateTime(new Date())} onChange={(e) => setCustomEnd(e.target.value)} />
-                </div>
-                <Button className="w-full" size="sm" onClick={() => setRange("custom")}>Apply range</Button>
-              </PopoverContent>
-            </Popover>
-            </div>
+          <div className="flex flex-wrap items-center gap-1 rounded-lg border bg-card p-1">
+            <Button size="sm" variant={fulfillment === "all" ? "default" : "ghost"} onClick={() => setFulfillment("all")}>
+              All
+            </Button>
+            <Button size="sm" variant={fulfillment === "pickup" ? "default" : "ghost"} onClick={() => setFulfillment("pickup")} className="gap-1">
+              <ShoppingBasket className="h-3.5 w-3.5" /> Pickup
+            </Button>
+            <Button size="sm" variant={fulfillment === "delivery" ? "default" : "ghost"} onClick={() => setFulfillment("delivery")} className="gap-1">
+              <Bike className="h-3.5 w-3.5" /> Delivery
+            </Button>
           </div>
         }
       />
@@ -220,72 +154,20 @@ function Dashboard() {
       <div className="mt-6 grid grid-cols-1 gap-4 lg:grid-cols-3">
         <Card className="lg:col-span-2">
           <CardHeader>
-            <CardTitle>
-              Revenue trend · {rangeLabel} {isHourlyRange ? "(by hour)" : ""}
-            </CardTitle>
+            <CardTitle>Revenue trend · {rangeLabel} {isHourlyRange ? "(by hour)" : ""}</CardTitle>
           </CardHeader>
           <CardContent>
             <div className="h-72">
               <ResponsiveContainer>
                 <LineChart data={trend}>
                   <CartesianGrid stroke="oklch(0.92 0.01 255)" strokeDasharray="3 3" />
-                  <XAxis dataKey="label" tick={{ fontSize: 11 }} interval={isHourlyRange ? 2 : "preserveStartEnd"} />
+                  <XAxis dataKey="day" tick={{ fontSize: 11 }} interval={isHourlyRange ? 2 : "preserveStartEnd"} />
                   <YAxis tick={{ fontSize: 11 }} />
                   <Tooltip formatter={(v: number) => formatMoney(v)} />
-                  <Line
-                    type="monotone"
-                    dataKey="total"
-                    stroke="oklch(0.55 0.2 265)"
-                    strokeWidth={2.5}
-                    dot={(props: { cx: number; cy: number; index: number; payload: TrendBucket }) => {
-                      const bucket = props.payload;
-                      const active = selectedBucket?.key === bucket.key;
-                      return (
-                        <circle
-                          key={props.index}
-                          cx={props.cx}
-                          cy={props.cy}
-                          r={active ? 5 : bucket.orders.length ? 3.5 : 2}
-                          fill={bucket.orders.length ? "oklch(0.55 0.2 265)" : "oklch(0.85 0.01 255)"}
-                          stroke={active ? "oklch(0.55 0.2 265)" : "none"}
-                          strokeWidth={2}
-                          style={{ cursor: bucket.orders.length ? "pointer" : "default" }}
-                          onClick={() => bucket.orders.length > 0 && setSelectedBucket(bucket)}
-                        />
-                      );
-                    }}
-                  />
+                  <Line type="monotone" dataKey="total" stroke="oklch(0.55 0.2 265)" strokeWidth={2.5} dot={false} />
                 </LineChart>
               </ResponsiveContainer>
             </div>
-            <p className="mt-1 text-xs text-muted-foreground">
-              {isHourlyRange ? "Click a point to see the orders placed in that hour." : "Click a point to see the orders placed that day."}
-            </p>
-
-            {selectedBucket && (
-              <div className="mt-3 rounded-lg border bg-muted/30 p-3">
-                <div className="mb-2 flex items-center justify-between">
-                  <span className="text-sm font-medium">
-                    {selectedBucket.orders.length} order{selectedBucket.orders.length === 1 ? "" : "s"} · {selectedBucket.label}
-                  </span>
-                  <Button size="icon" variant="ghost" className="h-6 w-6" onClick={() => setSelectedBucket(null)}>
-                    <X className="h-3.5 w-3.5" />
-                  </Button>
-                </div>
-                <div className="max-h-48 space-y-1 overflow-y-auto">
-                  {selectedBucket.orders.map((o) => (
-                    <div key={o.id} className="flex items-center justify-between rounded-md bg-background px-2 py-1.5 text-sm">
-                      <span className="flex items-center gap-2">
-                        <span className="font-mono text-xs text-muted-foreground">{o.shortId}</span>
-                        <FulfillmentBadge type={o.type} />
-                        <span>{o.customerName}</span>
-                      </span>
-                      <span className="tabular-nums font-medium">{formatMoney(o.total)}</span>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            )}
           </CardContent>
         </Card>
         <Card>
@@ -387,8 +269,139 @@ function Dashboard() {
   );
 }
 
-function KPI({ label, value, delta, icon, compare }: { label: string; value: string; delta: number; icon: React.ReactNode; compare?: string }) {
-  const up = delta >= 0;
+// =====================================================================
+// Catering — request volume within the shared scope. Catering requests have
+// no priced total yet (that needs a DB migration adding an estimated_total
+// column), so this shows real counts/guests rather than invented dollars.
+// =====================================================================
+function CateringDashboard({ rangeLabel }: { rangeLabel: string }) {
+  const scope = useScope();
+  const { orders: REQUESTS } = useLiveCateringRequests();
+
+  const start = useMemo(() => new Date(scope.from).getTime(), [scope.from]);
+  const end = useMemo(() => new Date(scope.to).getTime(), [scope.to]);
+
+  const windowRequests = useMemo(
+    () => REQUESTS.filter((r) => new Date(r.createdAt).getTime() >= start && new Date(r.createdAt).getTime() <= end),
+    [REQUESTS, start, end],
+  );
+
+  const totalGuests = windowRequests.reduce((s, r) => s + (r.catering?.guests ?? 0), 0);
+  const avgGuests = windowRequests.length ? Math.round(totalGuests / windowRequests.length) : 0;
+  const pending = windowRequests.filter((r) => r.status === "new").length;
+
+  const trend = useMemo(() => {
+    const byDay = new Map<string, number>();
+    for (const r of windowRequests) {
+      const key = isoDate(r.createdAt);
+      byDay.set(key, (byDay.get(key) ?? 0) + 1);
+    }
+    const arr = Array.from(byDay, ([key, count]) => ({ key, day: fmtShort(key), count })).sort((a, b) => a.key.localeCompare(b.key));
+    return arr.length ? arr : [{ key: "-", day: "-", count: 0 }];
+  }, [windowRequests]);
+
+  const byStatus = useMemo(() => {
+    const counts = new Map<string, number>();
+    for (const r of windowRequests) counts.set(r.status, (counts.get(r.status) ?? 0) + 1);
+    return Array.from(counts, ([status, count]) => ({ status, count }));
+  }, [windowRequests]);
+
+  return (
+    <>
+      <PageHeader
+        title="Catering Sales"
+        description={`${rangeLabel} · request volume · date range set in the top bar`}
+      />
+
+      <div className="mb-4 flex items-start gap-2 rounded-lg border bg-muted/40 p-3 text-xs text-muted-foreground">
+        <Info className="mt-0.5 h-3.5 w-3.5 shrink-0" />
+        Catering pricing isn't tracked as a number yet (quotes are still text), so this shows real request/guest
+        volume rather than dollar revenue. Once catering orders carry a priced total, this view can show revenue too.
+      </div>
+
+      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-4">
+        <KPI label="Requests" value={windowRequests.length.toString()} icon={<PartyPopper className="h-4 w-4" />} compare={rangeLabel} />
+        <KPI label="Total guests" value={totalGuests.toString()} icon={<Users className="h-4 w-4" />} compare={rangeLabel} />
+        <KPI label="Avg. guests / request" value={avgGuests.toString()} icon={<Receipt className="h-4 w-4" />} compare={rangeLabel} />
+        <KPI label="Awaiting review" value={pending.toString()} icon={<CalendarClock className="h-4 w-4" />} compare={rangeLabel} />
+      </div>
+
+      <div className="mt-6 grid grid-cols-1 gap-4 lg:grid-cols-3">
+        <Card className="lg:col-span-2">
+          <CardHeader><CardTitle>Catering requests · {rangeLabel}</CardTitle></CardHeader>
+          <CardContent>
+            <div className="h-72">
+              <ResponsiveContainer>
+                <LineChart data={trend}>
+                  <CartesianGrid stroke="oklch(0.92 0.01 255)" strokeDasharray="3 3" />
+                  <XAxis dataKey="day" tick={{ fontSize: 11 }} interval="preserveStartEnd" />
+                  <YAxis tick={{ fontSize: 11 }} allowDecimals={false} />
+                  <Tooltip />
+                  <Line type="monotone" dataKey="count" name="Requests" stroke="oklch(0.55 0.2 265)" strokeWidth={2.5} dot={false} />
+                </LineChart>
+              </ResponsiveContainer>
+            </div>
+          </CardContent>
+        </Card>
+        <Card>
+          <CardHeader><CardTitle>By status</CardTitle></CardHeader>
+          <CardContent>
+            <div className="h-72">
+              <ResponsiveContainer>
+                <BarChart data={byStatus}>
+                  <CartesianGrid stroke="oklch(0.92 0.01 255)" strokeDasharray="3 3" />
+                  <XAxis dataKey="status" tick={{ fontSize: 11 }} />
+                  <YAxis tick={{ fontSize: 11 }} allowDecimals={false} />
+                  <Tooltip />
+                  <Bar dataKey="count" fill="oklch(0.38 0.12 150)" radius={[6, 6, 0, 0]} />
+                </BarChart>
+              </ResponsiveContainer>
+            </div>
+          </CardContent>
+        </Card>
+      </div>
+
+      <div className="mt-6">
+        <Card>
+          <CardHeader><CardTitle>Recent catering requests</CardTitle></CardHeader>
+          <CardContent>
+            <div className="overflow-x-auto">
+              <table className="w-full text-sm">
+                <thead className="text-left text-xs uppercase text-muted-foreground">
+                  <tr>
+                    <th className="pb-2">Request</th>
+                    <th className="pb-2">Client</th>
+                    <th className="pb-2">Guests</th>
+                    <th className="pb-2">Event date</th>
+                    <th className="pb-2">Status</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {windowRequests.slice(0, 8).map((r) => (
+                    <tr key={r.id} className="border-t">
+                      <td className="py-2 font-mono text-xs">{r.shortId}</td>
+                      <td className="py-2">{r.customerName}</td>
+                      <td className="py-2 tabular-nums">{r.catering?.guests ?? "-"}</td>
+                      <td className="py-2 text-xs text-muted-foreground">{r.catering ? fmtShort(r.catering.eventDate) : "-"}</td>
+                      <td className="py-2"><StatusPill status={r.status} /></td>
+                    </tr>
+                  ))}
+                  {windowRequests.length === 0 && (
+                    <tr><td colSpan={5} className="py-8 text-center text-sm text-muted-foreground">No catering requests in this range.</td></tr>
+                  )}
+                </tbody>
+              </table>
+            </div>
+          </CardContent>
+        </Card>
+      </div>
+    </>
+  );
+}
+
+function KPI({ label, value, delta, icon, compare }: { label: string; value: string; delta?: number; icon: React.ReactNode; compare?: string }) {
+  const hasDelta = typeof delta === "number";
+  const up = (delta ?? 0) >= 0;
   return (
     <Card>
       <CardContent className="p-5">
@@ -397,10 +410,12 @@ function KPI({ label, value, delta, icon, compare }: { label: string; value: str
           <span className="flex h-8 w-8 items-center justify-center rounded-md bg-primary/10 text-primary">{icon}</span>
         </div>
         <div className="mt-2 text-2xl font-semibold tabular-nums">{value}</div>
-        <div className={`mt-1 flex items-center gap-1 text-xs ${up ? "text-success" : "text-destructive"}`}>
-          {up ? <ArrowUpRight className="h-3 w-3" /> : <ArrowDownRight className="h-3 w-3" />}
-          {Math.abs(delta).toFixed(1)}% vs previous {compare?.toLowerCase() ?? "period"}
-        </div>
+        {hasDelta && (
+          <div className={`mt-1 flex items-center gap-1 text-xs ${up ? "text-success" : "text-destructive"}`}>
+            {up ? <ArrowUpRight className="h-3 w-3" /> : <ArrowDownRight className="h-3 w-3" />}
+            {Math.abs(delta as number).toFixed(1)}% vs previous {compare?.toLowerCase() ?? "period"}
+          </div>
+        )}
       </CardContent>
     </Card>
   );
@@ -453,23 +468,10 @@ function FulfillmentBadge({ type }: { type: "delivery" | "pickup" | "dine_in" })
   );
 }
 
-function daysAgo(n: number) {
-  const d = new Date();
-  d.setDate(d.getDate() - n);
-  return d;
-}
 function isoDate(d: Date | string) {
   const x = typeof d === "string" ? new Date(d) : d;
   return x.toISOString().slice(0, 10);
 }
-function isoDateTime(d: Date | string) {
-  const x = typeof d === "string" ? new Date(d) : d;
-  const pad = (n: number) => String(n).padStart(2, "0");
-  return `${x.getFullYear()}-${pad(x.getMonth() + 1)}-${pad(x.getDate())}T${pad(x.getHours())}:${pad(x.getMinutes())}`;
-}
 function fmtShort(iso: string) {
   return new Date(iso).toLocaleDateString([], { month: "short", day: "numeric" });
-}
-function fmtShortDT(iso: string) {
-  return new Date(iso).toLocaleString([], { month: "short", day: "numeric", hour: "numeric", minute: "2-digit" });
 }

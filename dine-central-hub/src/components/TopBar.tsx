@@ -17,6 +17,9 @@ import { ChannelBadge } from "@/components/ChannelBadge";
 import { formatMoney } from "@/components/PageHeader";
 import { useLiveLocations, useLiveOrders, useLiveCustomers, useLiveMenu, updateOrderStatus } from "@/lib/live-data";
 import { useCurrentLocation, setCurrentLocation } from "@/lib/store";
+import { useScope, setChannelScope, setRangePreset, setCustomRange, RANGE_PRESET_LABEL, type RangePreset } from "@/lib/scope-store";
+import { CalendarRange, PartyPopper, Globe } from "lucide-react";
+import { Label } from "@/components/ui/label";
 import { useAuth } from "@/lib/auth";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { LogOut } from "lucide-react";
@@ -27,6 +30,9 @@ import { toast } from "sonner";
 
 export function TopBar() {
   const loc = useCurrentLocation();
+  const scope = useScope();
+  const [customFrom, setCustomFrom] = useState(scope.from.slice(0, 10));
+  const [customTo, setCustomTo] = useState(scope.to.slice(0, 10));
   const LOCATIONS = useLiveLocations();
   const { orders: ORDERS } = useLiveOrders();
   const { customers: CUSTOMERS } = useLiveCustomers();
@@ -113,6 +119,66 @@ export function TopBar() {
           </SelectContent>
         </Select>
       </div>
+
+      {/* Persistent Online/Catering + date range scope — stays set as you move
+          between Operate/Manage pages instead of resetting per page. */}
+      <div className="hidden items-center gap-1 rounded-lg border bg-card p-1 lg:flex">
+        <Button
+          size="sm"
+          variant={scope.channel === "online" ? "default" : "ghost"}
+          className="h-7 gap-1 px-2 text-xs"
+          onClick={() => setChannelScope("online")}
+        >
+          <Globe className="h-3.5 w-3.5" /> Online
+        </Button>
+        <Button
+          size="sm"
+          variant={scope.channel === "catering" ? "default" : "ghost"}
+          className="h-7 gap-1 px-2 text-xs"
+          onClick={() => setChannelScope("catering")}
+        >
+          <PartyPopper className="h-3.5 w-3.5" /> Catering
+        </Button>
+      </div>
+
+      <Popover>
+        <PopoverTrigger asChild>
+          <Button size="sm" variant="outline" className="hidden h-9 gap-1.5 lg:flex">
+            <CalendarRange className="h-3.5 w-3.5" />
+            {RANGE_PRESET_LABEL[scope.preset]}
+          </Button>
+        </PopoverTrigger>
+        <PopoverContent className="w-72" align="start">
+          <div className="mb-3 grid grid-cols-2 gap-1">
+            {(["today", "7", "30", "90"] as RangePreset[]).map((p) => (
+              <Button
+                key={p}
+                size="sm"
+                variant={scope.preset === p ? "default" : "outline"}
+                onClick={() => setRangePreset(p)}
+              >
+                {RANGE_PRESET_LABEL[p]}
+              </Button>
+            ))}
+          </div>
+          <div className="space-y-2 border-t pt-3">
+            <Label className="text-xs text-muted-foreground">Custom range</Label>
+            <div className="flex items-center gap-2">
+              <Input type="date" value={customFrom} max={customTo} onChange={(e) => setCustomFrom(e.target.value)} className="h-8" />
+              <span className="text-xs text-muted-foreground">to</span>
+              <Input type="date" value={customTo} min={customFrom} onChange={(e) => setCustomTo(e.target.value)} className="h-8" />
+            </div>
+            <Button
+              size="sm"
+              className="w-full"
+              onClick={() => setCustomRange(new Date(customFrom).toISOString(), new Date(`${customTo}T23:59:59`).toISOString())}
+            >
+              Apply
+            </Button>
+          </div>
+        </PopoverContent>
+      </Popover>
+
       <div className="relative flex-1 max-w-md" ref={wrapRef}>
         <Search className="pointer-events-none absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
         <Input
