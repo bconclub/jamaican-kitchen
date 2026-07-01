@@ -10,7 +10,7 @@ import { CHANNEL_META, STATUS_META } from "@/lib/mock-data";
 import { useLiveOrders, useLiveLocations, updateOrderStatus } from "@/lib/live-data";
 import { useCurrentLocation } from "@/lib/store";
 import type { Channel, Order, OrderStatus } from "@/lib/types";
-import { Check, X, ChefHat, CheckCheck, Search, ListFilter, Timer, MapPin, ExternalLink } from "lucide-react";
+import { Check, X, ChefHat, CheckCheck, Search, ListFilter, Timer, MapPin, ExternalLink, Truck, PackageCheck, Printer } from "lucide-react";
 import { Sheet, SheetContent, SheetHeader, SheetTitle } from "@/components/ui/sheet";
 import {
   DropdownMenu,
@@ -77,7 +77,92 @@ function reviewFor(id: string) {
   const seed = [...id].reduce((a, c) => a + c.charCodeAt(0), 0);
   return REVIEWS[seed % REVIEWS.length];
 }
-export { durationMinutes, isFinal, staffNoteFor, reviewFor, liveElapsedSeconds, formatHMS };
+export { durationMinutes, isFinal, staffNoteFor, reviewFor, liveElapsedSeconds, formatHMS, nextStatusAction, OrderStepper, printOrderTicket };
+
+// The one real next step for an in-flight order. Delivery orders get an extra
+// "Dispatch" stage between Ready and Completed; pickup/dine-in skip straight
+// to Complete from Ready. Returns null once the order is in a final state.
+function nextStatusAction(status: OrderStatus, type: Order["type"]) {
+  switch (status) {
+    case "accepted":
+      return { status: "preparing" as OrderStatus, label: "Start preparing", Icon: ChefHat };
+    case "preparing":
+      return { status: "ready" as OrderStatus, label: "Mark ready", Icon: CheckCheck };
+    case "ready":
+      return type === "delivery"
+        ? { status: "out_for_delivery" as OrderStatus, label: "Dispatch", Icon: Truck }
+        : { status: "completed" as OrderStatus, label: "Complete", Icon: PackageCheck };
+    case "out_for_delivery":
+      return { status: "completed" as OrderStatus, label: "Mark delivered", Icon: PackageCheck };
+    default:
+      return null;
+  }
+}
+
+// Full order-lifecycle stages, so staff can see at a glance how far an order
+// has progressed (not just its current label).
+const ORDER_FLOW: OrderStatus[] = ["new", "accepted", "preparing", "ready", "out_for_delivery", "completed"];
+
+function OrderStepper({ status, type }: { status: OrderStatus; type: Order["type"] }) {
+  if (status === "cancelled") {
+    return <div className="mt-1 text-[10px] font-medium text-destructive">Cancelled</div>;
+  }
+  const steps = type === "delivery" ? ORDER_FLOW : ORDER_FLOW.filter((s) => s !== "out_for_delivery");
+  const idx = steps.indexOf(status);
+  return (
+    <div className="mt-1 flex items-center gap-0.5">
+      {steps.map((s, i) => (
+        <span
+          key={s}
+          title={STATUS_META[s].label}
+          className={`h-1.5 w-3 rounded-full ${i <= idx ? "bg-primary" : "bg-muted"}`}
+        />
+      ))}
+    </div>
+  );
+}
+
+function escapeHtml(v: string) {
+  return v.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&#39;");
+}
+
+// Opens a real, printable kitchen ticket in a new tab and triggers the
+// browser's print dialog — replaces the old placeholder that just showed a toast.
+function printOrderTicket(order: Order, locationName: string) {
+  const win = window.open("", "_blank", "width=380,height=640");
+  if (!win) return;
+  const itemsHtml = order.items
+    .map(
+      (it) =>
+        `<tr><td>${it.qty}&times; ${escapeHtml(it.name)}${
+          it.modifiers && it.modifiers.length
+            ? `<div style="font-size:11px;color:#666">${escapeHtml(it.modifiers.join(", "))}</div>`
+            : ""
+        }</td><td style="text-align:right;white-space:nowrap">$${(it.price * it.qty).toFixed(2)}</td></tr>`,
+    )
+    .join("");
+  win.document.write(`<!doctype html><html><head><title>Ticket ${escapeHtml(order.shortId)}</title>
+    <meta charset="utf-8" />
+    <style>
+      body { font-family: -apple-system, Arial, sans-serif; padding: 16px; color: #111; }
+      h1 { font-size: 20px; margin: 0 0 2px; }
+      .meta { font-size: 12px; color: #555; margin-bottom: 12px; }
+      table { width: 100%; border-collapse: collapse; font-size: 13px; }
+      td { padding: 5px 0; border-bottom: 1px dashed #ccc; vertical-align: top; }
+      .total { display: flex; justify-content: space-between; font-weight: 700; margin-top: 10px; font-size: 15px; }
+      .notes { margin-top: 10px; font-size: 12px; background: #f5f5f5; padding: 8px; border-radius: 6px; }
+    </style></head>
+    <body>
+      <h1>${escapeHtml(order.shortId)}</h1>
+      <div class="meta">${escapeHtml(locationName)} &middot; ${escapeHtml(order.type.replace("_", " "))} &middot; ${escapeHtml(order.customerName)}</div>
+      <table>${itemsHtml}</table>
+      <div class="total"><span>Total</span><span>$${order.total.toFixed(2)}</span></div>
+      ${order.notes ? `<div class="notes"><strong>Notes:</strong> ${escapeHtml(order.notes)}</div>` : ""}
+      <script>window.onload = () => window.print();</script>
+    </body></html>`);
+  win.document.close();
+  win.focus();
+}
 
 export const Route = createFileRoute("/_app/orders")({
   component: OrdersPage,
@@ -118,6 +203,11 @@ function OrdersPage() {
     } catch {
       toast.error(`Could not update ${shortId}`);
     }
+  };
+
+  const printTicket = (order: Order, locationName: string) => {
+    printOrderTicket(order, locationName);
+    toast.success(`Printing ${order.shortId}`);
   };
 
   const filtered = useMemo(() => {
@@ -273,28 +363,47 @@ function OrdersPage() {
                           {isTicking(o.status) && <span className="opacity-60">· live</span>}
                         </span>
                       </td>
-                      <td className="py-2.5"><StatusPill status={o.status} /></td>
+                      <td className="py-2.5">
+                        <StatusPill status={o.status} />
+                        <OrderStepper status={o.status} type={o.type} />
+                      </td>
                       <td className="py-2.5 text-right tabular-nums font-medium">{formatMoney(o.total)}</td>
                       <td className="py-2.5" onClick={(e) => e.stopPropagation()}>
                         <div className="flex justify-end gap-1">
                           {o.status === "new" && (
                             <>
-                              <Button size="sm" className="h-7 px-2" onClick={() => handleStatus(o.id, "accepted", o.shortId, "accepted")}>
-                                <Check className="h-3.5 w-3.5" />
+                              <Button size="sm" className="h-7 gap-1 px-2" onClick={() => handleStatus(o.id, "accepted", o.shortId, "accepted")}>
+                                <Check className="h-3.5 w-3.5" /> Accept
                               </Button>
                               <Button size="sm" variant="outline" className="h-7 px-2" onClick={() => handleStatus(o.id, "cancelled", o.shortId, "rejected")}>
                                 <X className="h-3.5 w-3.5" />
                               </Button>
                             </>
                           )}
-                          {(o.status === "accepted" || o.status === "preparing") && (
-                            <Button size="sm" variant="outline" className="h-7 px-2" onClick={() => handleStatus(o.id, "ready", o.shortId, "marked ready")}>
-                              <CheckCheck className="h-3.5 w-3.5" />
-                            </Button>
-                          )}
-                          {o.status === "ready" && (
-                            <Button size="sm" variant="outline" className="h-7 px-2" onClick={() => toast(`Print ticket ${o.shortId}`)}>
-                              <ChefHat className="h-3.5 w-3.5" />
+                          {(() => {
+                            const next = nextStatusAction(o.status, o.type);
+                            if (!next) return null;
+                            const Icon = next.Icon;
+                            return (
+                              <Button
+                                size="sm"
+                                variant="outline"
+                                className="h-7 gap-1 px-2"
+                                onClick={() => handleStatus(o.id, next.status, o.shortId, next.label.toLowerCase())}
+                              >
+                                <Icon className="h-3.5 w-3.5" /> {next.label}
+                              </Button>
+                            );
+                          })()}
+                          {!isFinal(o.status) && o.status !== "new" && (
+                            <Button
+                              size="sm"
+                              variant="ghost"
+                              className="h-7 px-2"
+                              title="Print ticket"
+                              onClick={() => printTicket(o, locationName)}
+                            >
+                              <Printer className="h-3.5 w-3.5" />
                             </Button>
                           )}
                         </div>
@@ -316,6 +425,7 @@ function OrdersPage() {
         locationName={selectedOrder ? (locName.get(selectedOrder.locationId) ?? "-") : "-"}
         onClose={() => setSelectedOrderId(null)}
         onStatus={handleStatus}
+        onPrint={printTicket}
       />
     </>
   );
@@ -326,11 +436,13 @@ function OrderDetailSheet({
   locationName,
   onClose,
   onStatus,
+  onPrint,
 }: {
   order: Order | null;
   locationName: string;
   onClose: () => void;
   onStatus: (id: string, status: OrderStatus, shortId: string, label: string) => Promise<void>;
+  onPrint: (order: Order, locationName: string) => void;
 }) {
   return (
     <Sheet open={!!order} onOpenChange={(open) => !open && onClose()}>
@@ -343,6 +455,7 @@ function OrderDetailSheet({
                 <ChannelBadge channel={order.channel} />
                 <StatusPill status={order.status} />
               </SheetTitle>
+              <OrderStepper status={order.status} type={order.type} />
             </SheetHeader>
 
             <div className="mt-4 space-y-4 text-sm">
@@ -420,13 +533,23 @@ function OrderDetailSheet({
                     </Button>
                   </>
                 )}
-                {(order.status === "accepted" || order.status === "preparing") && (
-                  <Button
-                    size="sm"
-                    className="gap-1"
-                    onClick={() => onStatus(order.id, "ready", order.shortId, "marked ready")}
-                  >
-                    <CheckCheck className="h-3.5 w-3.5" /> Mark ready
+                {(() => {
+                  const next = nextStatusAction(order.status, order.type);
+                  if (!next) return null;
+                  const Icon = next.Icon;
+                  return (
+                    <Button
+                      size="sm"
+                      className="gap-1"
+                      onClick={() => onStatus(order.id, next.status, order.shortId, next.label.toLowerCase())}
+                    >
+                      <Icon className="h-3.5 w-3.5" /> {next.label}
+                    </Button>
+                  );
+                })()}
+                {!isFinal(order.status) && order.status !== "new" && (
+                  <Button size="sm" variant="outline" className="gap-1" onClick={() => onPrint(order, locationName)}>
+                    <Printer className="h-3.5 w-3.5" /> Print ticket
                   </Button>
                 )}
                 <Button size="sm" variant="ghost" className="gap-1" asChild>

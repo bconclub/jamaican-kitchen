@@ -6,14 +6,15 @@ import { ChannelBadge } from "@/components/ChannelBadge";
 import { StatusPill } from "@/components/StatusPill";
 import { PageHeader, formatMoney } from "@/components/PageHeader";
 import { CHANNEL_META } from "@/lib/mock-data";
-import { useLiveOrders, useLiveLocations } from "@/lib/live-data";
-import { ArrowLeft, MapPin, Phone, Truck, Clock, MessageSquare, Star, Send, Timer, Loader2 } from "lucide-react";
+import { useLiveOrders, useLiveLocations, updateOrderStatus } from "@/lib/live-data";
+import { ArrowLeft, MapPin, Phone, Truck, Clock, MessageSquare, Star, Send, Timer, Loader2, Printer } from "lucide-react";
 import { format } from "date-fns";
 import { useState } from "react";
 import { Textarea } from "@/components/ui/textarea";
 import { Button as UIButton } from "@/components/ui/button";
-import { durationMinutes, isFinal, staffNoteFor, reviewFor } from "./orders";
-import type { Order, Location } from "@/lib/types";
+import { durationMinutes, isFinal, staffNoteFor, reviewFor, nextStatusAction, OrderStepper, printOrderTicket } from "./orders";
+import type { Order, Location, OrderStatus } from "@/lib/types";
+import { toast } from "sonner";
 
 export const Route = createFileRoute("/_app/orders/$id")({
   component: OrderDetail,
@@ -55,12 +56,17 @@ function OrderDetailView({ order, location }: { order: Order; location?: Locatio
   ]);
   const [draft, setDraft] = useState("");
   const dur = durationMinutes(order);
-  const timeline = [
-    { label: "Order received", t: order.createdAt },
-    { label: "Accepted", t: new Date(new Date(order.createdAt).getTime() + 60_000).toISOString() },
-    { label: "Preparing", t: new Date(new Date(order.createdAt).getTime() + 5 * 60_000).toISOString() },
-    { label: "Ready", t: new Date(new Date(order.createdAt).getTime() + 15 * 60_000).toISOString() },
-  ];
+
+  const handleStatus = async (status: OrderStatus, label: string) => {
+    try {
+      await updateOrderStatus(order.id, status);
+      toast.success(`${order.shortId} ${label}`);
+    } catch {
+      toast.error(`Could not update ${order.shortId}`);
+    }
+  };
+  const next = nextStatusAction(order.status, order.type);
+
   return (
     <>
       <Link to="/orders" className="mb-3 inline-flex items-center gap-1 text-sm text-muted-foreground hover:text-foreground">
@@ -69,7 +75,20 @@ function OrderDetailView({ order, location }: { order: Order; location?: Locatio
       <PageHeader
         title={`Order ${order.shortId}`}
         description={`From ${ch.brand} · ${format(new Date(order.createdAt), "MMM d, h:mm a")} · ${dur}m ${isFinal(order.status) ? "total" : "elapsed"}`}
-        actions={<><Button variant="outline">Print ticket</Button><Button>Update status</Button></>}
+        actions={
+          <>
+            {!isFinal(order.status) && order.status !== "new" && (
+              <Button variant="outline" onClick={() => printOrderTicket(order, location?.name ?? "")}>
+                <Printer className="h-4 w-4 mr-1.5" /> Print ticket
+              </Button>
+            )}
+            {next && (
+              <Button onClick={() => handleStatus(next.status, next.label.toLowerCase())}>
+                <next.Icon className="h-4 w-4 mr-1.5" /> {next.label}
+              </Button>
+            )}
+          </>
+        }
       />
       <div className="grid gap-4 lg:grid-cols-3">
         <div className="lg:col-span-2 space-y-4">
@@ -167,19 +186,9 @@ function OrderDetailView({ order, location }: { order: Order; location?: Locatio
             </CardContent>
           </Card>
           <Card>
-            <CardHeader><CardTitle className="text-base">Status timeline</CardTitle></CardHeader>
+            <CardHeader><CardTitle className="text-base flex items-center gap-2"><Clock className="h-4 w-4" /> Status progress</CardTitle></CardHeader>
             <CardContent>
-              <ol className="space-y-3">
-                {timeline.map((t, i) => (
-                  <li key={i} className="flex items-center gap-3">
-                    <div className="flex h-7 w-7 items-center justify-center rounded-full bg-primary/10 text-primary"><Clock className="h-3.5 w-3.5" /></div>
-                    <div className="flex-1">
-                      <div className="text-sm font-medium">{t.label}</div>
-                      <div className="text-xs text-muted-foreground">{format(new Date(t.t), "h:mm a")}</div>
-                    </div>
-                  </li>
-                ))}
-              </ol>
+              <OrderStepper status={order.status} type={order.type} />
             </CardContent>
           </Card>
         </div>
