@@ -1,5 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -21,17 +21,25 @@ import {
   XAxis,
   YAxis,
 } from "recharts";
-import { ArrowDownRight, ArrowUpRight, DollarSign, ShoppingBag, Users, Receipt, CalendarRange, CreditCard, Banknote, Smartphone, Wallet, Bike, ShoppingBasket } from "lucide-react";
+import { ArrowDownRight, ArrowUpRight, DollarSign, ShoppingBag, Users, Receipt, CalendarRange, CreditCard, Banknote, Smartphone, Wallet, Bike, ShoppingBasket, X } from "lucide-react";
 import { useLiveOrders, useLiveLocations } from "@/lib/live-data";
 import { useCurrentLocation } from "@/lib/store";
 import { StatusPill } from "@/components/StatusPill";
 import { PageHeader, formatMoney } from "@/components/PageHeader";
+import type { Order } from "@/lib/types";
 
 export const Route = createFileRoute("/_app/dashboard")({
   component: Dashboard,
 });
 
 type RangeKey = "today" | "week" | "month" | "ytd" | "custom";
+
+interface TrendBucket {
+  key: string; // stable sort key
+  label: string; // display label
+  total: number;
+  orders: Order[];
+}
 
 const RANGES: { key: RangeKey; label: string; days: number }[] = [
   { key: "today", label: "Today", days: 1 },
@@ -97,15 +105,46 @@ function Dashboard() {
     };
   }, [days]);
 
-  const trend = useMemo(() => {
-    const byDay = new Map<string, number>();
-    for (const o of channelOrders) {
-      const key = new Date(o.createdAt).toLocaleDateString("en", { month: "short", day: "numeric" });
-      byDay.set(key, (byDay.get(key) ?? 0) + o.total);
+  // "Today" (and any sub-36h custom range) shows an hourly trend so you can see
+  // exactly when orders came in; longer ranges bucket by full calendar date
+  // (not just month/day — mixing years on the same label was the bug that made
+  // the "Today" chart render a whole year's worth of points as one smooth line).
+  const isHourlyRange = range === "today" || (range === "custom" && end - start <= 36 * 3600_000);
+
+  const trend = useMemo<TrendBucket[]>(() => {
+    if (isHourlyRange) {
+      const buckets: TrendBucket[] = Array.from({ length: 24 }, (_, h) => ({
+        key: String(h).padStart(2, "0"),
+        label: h === 0 ? "12 AM" : h < 12 ? `${h} AM` : h === 12 ? "12 PM" : `${h - 12} PM`,
+        total: 0,
+        orders: [],
+      }));
+      for (const o of channelOrders) {
+        const h = new Date(o.createdAt).getHours();
+        buckets[h].total += o.total;
+        buckets[h].orders.push(o);
+      }
+      return buckets;
     }
-    const arr = Array.from(byDay, ([day, total]) => ({ day, total }));
-    return arr.length ? arr : [{ day: "-", total: 0 }];
-  }, [channelOrders]);
+    const byDay = new Map<string, TrendBucket>();
+    for (const o of channelOrders) {
+      const d = new Date(o.createdAt);
+      const key = isoDate(d); // yyyy-mm-dd — sortable, never collides across years
+      const existing = byDay.get(key);
+      if (existing) {
+        existing.total += o.total;
+        existing.orders.push(o);
+      } else {
+        byDay.set(key, { key, label: fmtShort(key), total: o.total, orders: [o] });
+      }
+    }
+    const arr = Array.from(byDay.values()).sort((a, b) => a.key.localeCompare(b.key));
+    return arr.length ? arr : [{ key: "-", label: "-", total: 0, orders: [] }];
+  }, [channelOrders, isHourlyRange]);
+
+  const [selectedBucket, setSelectedBucket] = useState<TrendBucket | null>(null);
+  // Selecting a new range invalidates whatever bucket was drilled into.
+  useEffect(() => setSelectedBucket(null), [range, customStart, customEnd, fulfillment, loc]);
   const fulfillmentMix = (["pickup", "delivery"] as const).map((t) => ({
     key: t,
     name: t === "pickup" ? "Pickup" : "Delivery",
@@ -181,20 +220,72 @@ function Dashboard() {
       <div className="mt-6 grid grid-cols-1 gap-4 lg:grid-cols-3">
         <Card className="lg:col-span-2">
           <CardHeader>
-            <CardTitle>Revenue trend · {rangeLabel}</CardTitle>
+            <CardTitle>
+              Revenue trend · {rangeLabel} {isHourlyRange ? "(by hour)" : ""}
+            </CardTitle>
           </CardHeader>
           <CardContent>
             <div className="h-72">
               <ResponsiveContainer>
                 <LineChart data={trend}>
                   <CartesianGrid stroke="oklch(0.92 0.01 255)" strokeDasharray="3 3" />
-                  <XAxis dataKey="day" tick={{ fontSize: 11 }} />
+                  <XAxis dataKey="label" tick={{ fontSize: 11 }} interval={isHourlyRange ? 2 : "preserveStartEnd"} />
                   <YAxis tick={{ fontSize: 11 }} />
-                  <Tooltip />
-                  <Line type="monotone" dataKey="total" stroke="oklch(0.55 0.2 265)" strokeWidth={2.5} dot={false} />
+                  <Tooltip formatter={(v: number) => formatMoney(v)} />
+                  <Line
+                    type="monotone"
+                    dataKey="total"
+                    stroke="oklch(0.55 0.2 265)"
+                    strokeWidth={2.5}
+                    dot={(props: { cx: number; cy: number; index: number; payload: TrendBucket }) => {
+                      const bucket = props.payload;
+                      const active = selectedBucket?.key === bucket.key;
+                      return (
+                        <circle
+                          key={props.index}
+                          cx={props.cx}
+                          cy={props.cy}
+                          r={active ? 5 : bucket.orders.length ? 3.5 : 2}
+                          fill={bucket.orders.length ? "oklch(0.55 0.2 265)" : "oklch(0.85 0.01 255)"}
+                          stroke={active ? "oklch(0.55 0.2 265)" : "none"}
+                          strokeWidth={2}
+                          style={{ cursor: bucket.orders.length ? "pointer" : "default" }}
+                          onClick={() => bucket.orders.length > 0 && setSelectedBucket(bucket)}
+                        />
+                      );
+                    }}
+                  />
                 </LineChart>
               </ResponsiveContainer>
             </div>
+            <p className="mt-1 text-xs text-muted-foreground">
+              {isHourlyRange ? "Click a point to see the orders placed in that hour." : "Click a point to see the orders placed that day."}
+            </p>
+
+            {selectedBucket && (
+              <div className="mt-3 rounded-lg border bg-muted/30 p-3">
+                <div className="mb-2 flex items-center justify-between">
+                  <span className="text-sm font-medium">
+                    {selectedBucket.orders.length} order{selectedBucket.orders.length === 1 ? "" : "s"} · {selectedBucket.label}
+                  </span>
+                  <Button size="icon" variant="ghost" className="h-6 w-6" onClick={() => setSelectedBucket(null)}>
+                    <X className="h-3.5 w-3.5" />
+                  </Button>
+                </div>
+                <div className="max-h-48 space-y-1 overflow-y-auto">
+                  {selectedBucket.orders.map((o) => (
+                    <div key={o.id} className="flex items-center justify-between rounded-md bg-background px-2 py-1.5 text-sm">
+                      <span className="flex items-center gap-2">
+                        <span className="font-mono text-xs text-muted-foreground">{o.shortId}</span>
+                        <FulfillmentBadge type={o.type} />
+                        <span>{o.customerName}</span>
+                      </span>
+                      <span className="tabular-nums font-medium">{formatMoney(o.total)}</span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
           </CardContent>
         </Card>
         <Card>
