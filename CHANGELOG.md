@@ -1,5 +1,25 @@
 # Changelog
 
+## 2026-07-04 · Full menu import from the online-menu spreadsheet (variations + modifiers) — both apps
+
+- Imported the complete online menu from `Jamaican_Kitchen_Online_Menu.xlsx`: 15 categories, 142 items
+  (with size variations — SM/MED/LG and ½ lb / 1 lb — as their own items), full descriptions and prices.
+- New modifier system: 19 modifier groups (sauce choices, side selection, drink choice, flavors, add-ons…)
+  with 69 options, and each item linked to the groups it offers. Required groups enforce a choice.
+- Storefront: items with options open an ItemCustomizeDialog that enforces each group's required/min/max
+  rules and adds option upcharges (e.g. +$0.99 sauce) into the line price, cart, and tax total. A distinct
+  cart line is kept per option combination; the cart and order payload carry the chosen modifiers.
+- Items with no options keep the one-tap add/stepper. Reused existing photos for 134/142 items by dish
+  match; the rest show a branded placeholder until real photos are added.
+- Admin (dine-central-hub): the full menu appears automatically (reads the DB), plus a read-only "Options"
+  column showing how many modifier groups each item carries.
+- DB: migration `0003_full_menu.sql` adds `modifier_groups` / `modifier_options` tables (+ RLS mirroring
+  menu_items), an `menu_items.modifier_groups` array, and reseeds all categories/items/modifiers. Legacy
+  starter items/categories are marked unavailable (rows kept for order-history FKs). Idempotent upserts.
+- Local preview: `VITE_USE_STATIC_MENU=true` renders the new menu in both apps from bundled data so it can
+  be reviewed before the migration touches the shared Supabase. Flip off once the migration is applied.
+- (pending — migration + deploy on approval)
+
 ## 2026-07-01 · Meeting follow-ups: catering tip, downloadable menu, order reviews, live Best Sellers
 
 - Catering checkout: added an open tip field (quick 10/15/20% picks + custom $ amount), included in the total and in the urgent-request message.

@@ -1,0 +1,2057 @@
+{
+ "categories": [
+  {
+   "id": "chicken",
+   "name": "Chicken"
+  },
+  {
+   "id": "oxtails",
+   "name": "Oxtails"
+  },
+  {
+   "id": "goat-curry",
+   "name": "Goat Curry"
+  },
+  {
+   "id": "pork",
+   "name": "Pork"
+  },
+  {
+   "id": "seafood",
+   "name": "Seafood"
+  },
+  {
+   "id": "steak",
+   "name": "Steak"
+  },
+  {
+   "id": "vegetarian-meals",
+   "name": "Vegetarian Meals"
+  },
+  {
+   "id": "patties",
+   "name": "Patties"
+  },
+  {
+   "id": "side-orders",
+   "name": "Side Orders"
+  },
+  {
+   "id": "sandwiches-wraps",
+   "name": "Sandwiches & Wraps"
+  },
+  {
+   "id": "breakfast",
+   "name": "Breakfast"
+  },
+  {
+   "id": "soups",
+   "name": "Soups"
+  },
+  {
+   "id": "drinks",
+   "name": "Drinks"
+  },
+  {
+   "id": "desserts",
+   "name": "Desserts"
+  },
+  {
+   "id": "gift-shop",
+   "name": "Gift Shop"
+  }
+ ],
+ "items": [
+  {
+   "id": "half-lb-curried-chicken",
+   "categoryId": "chicken",
+   "name": "1/2 lb. Curried Chicken",
+   "description": "Tender chicken simmered in rich Jamaican curry with herbs, garlic, and spices—flavorful, hearty, and a true island favorite.",
+   "basePrice": 8.99,
+   "available": true,
+   "stock": 100,
+   "lowStockThreshold": 10,
+   "spice": "medium",
+   "modifierGroups": [
+    "extra-sauce"
+   ]
+  },
+  {
+   "id": "half-lb-jerk-chicken",
+   "categoryId": "chicken",
+   "name": "1/2 lb. Jerk Chicken",
+   "description": "Tender, smoky chicken marinated in authentic Jamaican spices, then jerked to perfection—bold, fiery, and bursting with island flavor in every bite.",
+   "basePrice": 9.59,
+   "available": true,
+   "stock": 100,
+   "lowStockThreshold": 10,
+   "spice": "hot",
+   "modifierGroups": [
+    "jerk-sauce-choice",
+    "extra-sauce",
+    "premium-sauce-upgrade"
+   ]
+  },
+  {
+   "id": "half-lb-stew-chicken",
+   "categoryId": "chicken",
+   "name": "1/2 lb. Stew Chicken",
+   "description": "Tender chicken pieces slow-simmered in a savory brown gravy with onions, bell peppers, garlic, and thyme—rich, comforting, and packed with deep island flavor.",
+   "basePrice": 8.99,
+   "available": true,
+   "stock": 100,
+   "lowStockThreshold": 10,
+   "spice": "mild",
+   "modifierGroups": [
+    "extra-sauce"
+   ]
+  },
+  {
+   "id": "1-lb-curried-chicken",
+   "categoryId": "chicken",
+   "name": "1 lb. Curried Chicken",
+   "description": "Tender chicken simmered in rich Jamaican curry with herbs, garlic, and spices—flavorful, hearty, and a true island favorite.",
+   "basePrice": 13.99,
+   "available": true,
+   "stock": 100,
+   "lowStockThreshold": 10,
+   "spice": "medium",
+   "modifierGroups": [
+    "extra-sauce"
+   ]
+  },
+  {
+   "id": "1-lb-jerk-chicken",
+   "categoryId": "chicken",
+   "name": "1 lb. Jerk Chicken",
+   "description": "Tender, smoky chicken marinated in authentic Jamaican spices, then jerked to perfection—bold, fiery, and bursting with island flavor in every bite.",
+   "basePrice": 14.59,
+   "available": true,
+   "stock": 100,
+   "lowStockThreshold": 10,
+   "spice": "hot",
+   "modifierGroups": [
+    "jerk-sauce-choice",
+    "extra-sauce",
+    "premium-sauce-upgrade"
+   ]
+  },
+  {
+   "id": "1-lb-stew-chicken",
+   "categoryId": "chicken",
+   "name": "1 lb. Stew Chicken",
+   "description": "Tender chicken pieces slow-simmered in a savory brown gravy with onions, bell peppers, garlic, and thyme—rich, comforting, and packed with deep island flavor.",
+   "basePrice": 13.99,
+   "available": true,
+   "stock": 100,
+   "lowStockThreshold": 10,
+   "spice": "mild",
+   "modifierGroups": [
+    "extra-sauce"
+   ]
+  },
+  {
+   "id": "boneless-curry-chicken-lg",
+   "categoryId": "chicken",
+   "name": "Boneless Curry Chicken - LG",
+   "description": "Tender boneless chicken strips slow-cooked in aromatic curry with herbs and spices, seasoned with our Jamaican blend for a warm, savory island taste. Served with seasoned rice & peas and fresh steamed cabbage with carrots, lightly tossed in island herbs and spices.",
+   "basePrice": 15.3,
+   "available": true,
+   "stock": 100,
+   "lowStockThreshold": 10,
+   "spice": "medium",
+   "modifierGroups": [
+    "side-selection",
+    "extra-sauce"
+   ]
+  },
+  {
+   "id": "boneless-curry-chicken-med",
+   "categoryId": "chicken",
+   "name": "Boneless Curry Chicken - MED",
+   "description": "Tender boneless chicken strips slow-cooked in aromatic curry with herbs and spices, seasoned with our Jamaican blend for a warm, savory island taste. Served with seasoned rice & peas and fresh steamed cabbage with carrots, lightly tossed in island herbs and spices.",
+   "basePrice": 12.8,
+   "available": true,
+   "stock": 100,
+   "lowStockThreshold": 10,
+   "spice": "medium",
+   "modifierGroups": [
+    "side-selection",
+    "extra-sauce"
+   ]
+  },
+  {
+   "id": "boneless-curry-chicken-sm",
+   "categoryId": "chicken",
+   "name": "Boneless Curry Chicken - SM",
+   "description": "Tender boneless chicken strips slow-cooked in aromatic curry with herbs and spices, seasoned with our Jamaican blend for a warm, savory island taste. Served with seasoned rice & peas and fresh steamed cabbage with carrots, lightly tossed in island herbs and spices.",
+   "basePrice": 10.8,
+   "available": true,
+   "stock": 100,
+   "lowStockThreshold": 10,
+   "spice": "medium",
+   "modifierGroups": [
+    "side-selection",
+    "extra-sauce"
+   ]
+  },
+  {
+   "id": "boneless-honey-bbq-chicken-lg",
+   "categoryId": "chicken",
+   "name": "Boneless Honey BBQ Chicken - LG",
+   "description": "Tender boneless chicken strips coated in our sweet and smoky honey BBQ sauce, seasoned with Jamaican herbs and spices for a rich island flavor. Served with seasoned rice & peas and fresh steamed cabbage with carrots, lightly tossed in island herbs and spices.",
+   "basePrice": 16.59,
+   "available": true,
+   "stock": 100,
+   "lowStockThreshold": 10,
+   "spice": "mild",
+   "modifierGroups": [
+    "side-selection",
+    "extra-sauce"
+   ]
+  },
+  {
+   "id": "boneless-honey-bbq-chicken-med",
+   "categoryId": "chicken",
+   "name": "Boneless Honey BBQ Chicken - MED",
+   "description": "Tender boneless chicken strips coated in our sweet and smoky honey BBQ sauce, seasoned with Jamaican herbs and spices for a rich island flavor. Served with seasoned rice & peas and fresh steamed cabbage with carrots, lightly tossed in island herbs and spices.",
+   "basePrice": 13.99,
+   "available": true,
+   "stock": 100,
+   "lowStockThreshold": 10,
+   "spice": "mild",
+   "modifierGroups": [
+    "side-selection",
+    "extra-sauce"
+   ]
+  },
+  {
+   "id": "boneless-honey-bbq-chicken-sm",
+   "categoryId": "chicken",
+   "name": "Boneless Honey BBQ Chicken - SM",
+   "description": "Tender boneless chicken strips coated in our sweet and smoky honey BBQ sauce, seasoned with Jamaican herbs and spices for a rich island flavor. Served with seasoned rice & peas and fresh steamed cabbage with carrots, lightly tossed in island herbs and spices.",
+   "basePrice": 11.99,
+   "available": true,
+   "stock": 100,
+   "lowStockThreshold": 10,
+   "spice": "mild",
+   "modifierGroups": [
+    "side-selection",
+    "extra-sauce"
+   ]
+  },
+  {
+   "id": "boneless-stew-chicken-lg",
+   "categoryId": "chicken",
+   "name": "Boneless Stew Chicken - LG",
+   "description": "Tender boneless chicken strips simmered in rich gravy with onions and peppers, seasoned with our Jamaican blend for a bold, comforting taste. Served with seasoned rice & peas and fresh steamed cabbage with carrots, lightly tossed in island herbs and spices.",
+   "basePrice": 15.3,
+   "available": true,
+   "stock": 100,
+   "lowStockThreshold": 10,
+   "spice": "mild",
+   "modifierGroups": [
+    "side-selection",
+    "extra-sauce"
+   ]
+  },
+  {
+   "id": "boneless-stew-chicken-med",
+   "categoryId": "chicken",
+   "name": "Boneless Stew Chicken - MED",
+   "description": "Tender boneless chicken strips simmered in rich gravy with onions and peppers, seasoned with our Jamaican blend for a bold, comforting taste. Served with seasoned rice & peas and fresh steamed cabbage with carrots, lightly tossed in island herbs and spices.",
+   "basePrice": 12.8,
+   "available": true,
+   "stock": 100,
+   "lowStockThreshold": 10,
+   "spice": "mild",
+   "modifierGroups": [
+    "side-selection",
+    "extra-sauce"
+   ]
+  },
+  {
+   "id": "boneless-stew-chicken-sm",
+   "categoryId": "chicken",
+   "name": "Boneless Stew Chicken - SM",
+   "description": "Tender boneless chicken strips simmered in rich gravy with onions and peppers, seasoned with our Jamaican blend for a bold, comforting taste. Served with seasoned rice & peas and fresh steamed cabbage with carrots, lightly tossed in island herbs and spices.",
+   "basePrice": 10.8,
+   "available": true,
+   "stock": 100,
+   "lowStockThreshold": 10,
+   "spice": "mild",
+   "modifierGroups": [
+    "side-selection",
+    "extra-sauce"
+   ]
+  },
+  {
+   "id": "curry-chicken-lg",
+   "categoryId": "chicken",
+   "name": "Curry Chicken - LG",
+   "description": "Tender chicken slow-cooked in aromatic curry with herbs and spices, seasoned with our Jamaican blend for a warm, savory island taste. Served with seasoned rice & peas and fresh steamed cabbage with carrots, lightly tossed in island herbs and spices",
+   "basePrice": 15.79,
+   "available": true,
+   "stock": 100,
+   "lowStockThreshold": 10,
+   "spice": "medium",
+   "modifierGroups": [
+    "side-selection",
+    "extra-sauce"
+   ]
+  },
+  {
+   "id": "curry-chicken-med",
+   "categoryId": "chicken",
+   "name": "Curry Chicken - MED",
+   "description": "Tender chicken slow-cooked in aromatic curry with herbs and spices, seasoned with our Jamaican blend for a warm, savory island taste. Served with seasoned rice & peas and fresh steamed cabbage with carrots, lightly tossed in island herbs and spices",
+   "basePrice": 13.49,
+   "available": true,
+   "stock": 100,
+   "lowStockThreshold": 10,
+   "spice": "medium",
+   "modifierGroups": [
+    "side-selection",
+    "extra-sauce"
+   ]
+  },
+  {
+   "id": "curry-chicken-sm",
+   "categoryId": "chicken",
+   "name": "Curry Chicken - SM",
+   "description": "Tender chicken slow-cooked in aromatic curry with herbs and spices, seasoned with our Jamaican blend for a warm, savory island taste. Served with seasoned rice & peas and fresh steamed cabbage with carrots, lightly tossed in island herbs and spices",
+   "basePrice": 10.99,
+   "available": true,
+   "stock": 100,
+   "lowStockThreshold": 10,
+   "spice": "medium",
+   "modifierGroups": [
+    "side-selection",
+    "extra-sauce"
+   ]
+  },
+  {
+   "id": "fried-chicken-12-pieces",
+   "categoryId": "chicken",
+   "name": "Fried Chicken 12 Pieces",
+   "description": "Golden, crunchy, and seasoned to the bone—this juicy fried chicken delivers big flavor and island-style comfort in every bite",
+   "basePrice": 28.99,
+   "available": true,
+   "stock": 100,
+   "lowStockThreshold": 10,
+   "spice": "mild",
+   "modifierGroups": [
+    "ketchup-option",
+    "gravy-option"
+   ]
+  },
+  {
+   "id": "fried-chicken-3-pieces",
+   "categoryId": "chicken",
+   "name": "Fried Chicken 3 Pieces",
+   "description": "Golden, crunchy, and seasoned to the bone—this juicy fried chicken delivers big flavor and island-style comfort in every bite",
+   "basePrice": 8.99,
+   "available": true,
+   "stock": 100,
+   "lowStockThreshold": 10,
+   "spice": "mild",
+   "modifierGroups": [
+    "ketchup-option",
+    "gravy-option"
+   ]
+  },
+  {
+   "id": "fried-chicken-6-pieces",
+   "categoryId": "chicken",
+   "name": "Fried Chicken 6 Pieces",
+   "description": "Golden, crunchy, and seasoned to the bone—this juicy fried chicken delivers big flavor and island-style comfort in every bite",
+   "basePrice": 15.99,
+   "available": true,
+   "stock": 100,
+   "lowStockThreshold": 10,
+   "spice": "mild",
+   "modifierGroups": [
+    "ketchup-option",
+    "gravy-option"
+   ]
+  },
+  {
+   "id": "fried-chicken-lg",
+   "categoryId": "chicken",
+   "name": "Fried Chicken - LG",
+   "description": "Crispy, golden fried chicken seasoned with our Jamaican blend, delivering a satisfying crunch and juicy finish in every bite. Served with seasoned rice & peas and fresh steamed cabbage with carrots, lightly tossed in island herbs and spices",
+   "basePrice": 16.59,
+   "available": true,
+   "stock": 100,
+   "lowStockThreshold": 10,
+   "spice": "mild",
+   "modifierGroups": [
+    "side-selection",
+    "gravy-option"
+   ]
+  },
+  {
+   "id": "fried-chicken-med",
+   "categoryId": "chicken",
+   "name": "Fried Chicken - MED",
+   "description": "Crispy, golden fried chicken seasoned with our Jamaican blend, delivering a satisfying crunch and juicy finish in every bite. Served with seasoned rice & peas and fresh steamed cabbage with carrots, lightly tossed in island herbs and spices",
+   "basePrice": 13.99,
+   "available": true,
+   "stock": 100,
+   "lowStockThreshold": 10,
+   "spice": "mild",
+   "modifierGroups": [
+    "side-selection",
+    "gravy-option"
+   ]
+  },
+  {
+   "id": "fried-chicken-sm",
+   "categoryId": "chicken",
+   "name": "Fried Chicken - SM",
+   "description": "Crispy, golden fried chicken seasoned with our Jamaican blend, delivering a satisfying crunch and juicy finish in every bite. Served with seasoned rice & peas and fresh steamed cabbage with carrots, lightly tossed in island herbs and spices",
+   "basePrice": 11.99,
+   "available": true,
+   "stock": 100,
+   "lowStockThreshold": 10,
+   "spice": "mild",
+   "modifierGroups": [
+    "side-selection",
+    "gravy-option"
+   ]
+  },
+  {
+   "id": "jamaican-wings-lg",
+   "categoryId": "chicken",
+   "name": "Jamaican Wings - LG",
+   "description": "A customer favorite—our signature jerk wings, marinated in bold Jamaican spices and oven-roasted for a rich, smoky flavor. Served with seasoned rice & peas and fresh steamed cabbage with carrots, lightly tossed in island herbs and spices",
+   "basePrice": 16.59,
+   "available": true,
+   "stock": 100,
+   "lowStockThreshold": 10,
+   "spice": "hot",
+   "modifierGroups": [
+    "side-selection",
+    "premium-sauce-upgrade",
+    "extra-sauce",
+    "wing-flavor"
+   ]
+  },
+  {
+   "id": "jamaican-wings-med",
+   "categoryId": "chicken",
+   "name": "Jamaican Wings - MED",
+   "description": "A customer favorite—our signature jerk wings, marinated in bold Jamaican spices and oven-roasted for a rich, smoky flavor. Served with seasoned rice & peas and fresh steamed cabbage with carrots, lightly tossed in island herbs and spices",
+   "basePrice": 13.99,
+   "available": true,
+   "stock": 100,
+   "lowStockThreshold": 10,
+   "spice": "hot",
+   "modifierGroups": [
+    "side-selection",
+    "premium-sauce-upgrade",
+    "extra-sauce",
+    "wing-flavor"
+   ]
+  },
+  {
+   "id": "jamaican-wings-sm",
+   "categoryId": "chicken",
+   "name": "Jamaican Wings - SM",
+   "description": "A customer favorite—our signature jerk wings, marinated in bold Jamaican spices and oven-roasted for a rich, smoky flavor. Served with seasoned rice & peas and fresh steamed cabbage with carrots, lightly tossed in island herbs and spices",
+   "basePrice": 11.99,
+   "available": true,
+   "stock": 100,
+   "lowStockThreshold": 10,
+   "spice": "hot",
+   "modifierGroups": [
+    "side-selection",
+    "premium-sauce-upgrade",
+    "extra-sauce",
+    "wing-flavor"
+   ]
+  },
+  {
+   "id": "jerk-chicken-lg",
+   "categoryId": "chicken",
+   "name": "Jerk Chicken - LG",
+   "description": "Our signature jerk chicken is marinated in bold Jamaican spices and slow-roasted for a rich, smoky flavor. Served with a scoop of rice & peas.",
+   "basePrice": 16.59,
+   "available": true,
+   "stock": 100,
+   "lowStockThreshold": 10,
+   "spice": "hot",
+   "modifierGroups": [
+    "jerk-sauce-choice",
+    "extra-sauce",
+    "premium-sauce-upgrade",
+    "side-selection"
+   ]
+  },
+  {
+   "id": "jerk-chicken-med",
+   "categoryId": "chicken",
+   "name": "Jerk Chicken - MED",
+   "description": "Our signature jerk chicken is marinated in bold Jamaican spices and slow-roasted for a rich, smoky flavor. Served with a scoop of rice & peas.",
+   "basePrice": 13.99,
+   "available": true,
+   "stock": 100,
+   "lowStockThreshold": 10,
+   "spice": "hot",
+   "modifierGroups": [
+    "jerk-sauce-choice",
+    "extra-sauce",
+    "premium-sauce-upgrade",
+    "side-selection"
+   ]
+  },
+  {
+   "id": "jerk-chicken-sm",
+   "categoryId": "chicken",
+   "name": "Jerk Chicken - SM",
+   "description": "Our signature jerk chicken is marinated in bold Jamaican spices and slow-roasted for a rich, smoky flavor. Served with a scoop of rice & peas.",
+   "basePrice": 11.99,
+   "available": true,
+   "stock": 100,
+   "lowStockThreshold": 10,
+   "spice": "hot",
+   "modifierGroups": [
+    "jerk-sauce-choice",
+    "extra-sauce",
+    "premium-sauce-upgrade",
+    "side-selection"
+   ]
+  },
+  {
+   "id": "stew-chicken-lg",
+   "categoryId": "chicken",
+   "name": "Stew Chicken - LG",
+   "description": "Tender chicken simmered in rich gravy with onions and peppers, seasoned with our Jamaican blend for a bold, comforting taste. Served with seasoned rice & peas and fresh steamed cabbage with carrots, lightly tossed in island herbs and spices",
+   "basePrice": 15.79,
+   "available": true,
+   "stock": 100,
+   "lowStockThreshold": 10,
+   "spice": "mild",
+   "modifierGroups": [
+    "side-selection",
+    "extra-sauce"
+   ]
+  },
+  {
+   "id": "stew-chicken-med",
+   "categoryId": "chicken",
+   "name": "Stew Chicken - MED",
+   "description": "Tender chicken simmered in rich gravy with onions and peppers, seasoned with our Jamaican blend for a bold, comforting taste. Served with seasoned rice & peas and fresh steamed cabbage with carrots, lightly tossed in island herbs and spices",
+   "basePrice": 13.49,
+   "available": true,
+   "stock": 100,
+   "lowStockThreshold": 10,
+   "spice": "mild",
+   "modifierGroups": [
+    "side-selection",
+    "extra-sauce"
+   ]
+  },
+  {
+   "id": "stew-chicken-sm",
+   "categoryId": "chicken",
+   "name": "Stew Chicken - SM",
+   "description": "Tender chicken simmered in rich gravy with onions and peppers, seasoned with our Jamaican blend for a bold, comforting taste. Served with seasoned rice & peas and fresh steamed cabbage with carrots, lightly tossed in island herbs and spices",
+   "basePrice": 10.99,
+   "available": true,
+   "stock": 100,
+   "lowStockThreshold": 10,
+   "spice": "mild",
+   "modifierGroups": [
+    "side-selection",
+    "extra-sauce"
+   ]
+  },
+  {
+   "id": "3-wings",
+   "categoryId": "chicken",
+   "name": "3 Wings",
+   "description": "Smoky, spicy, and perfectly grilled—these jerk-seasoned wings are bold, juicy, and packed with authentic Jamaican flavor in every bite.",
+   "basePrice": 7.99,
+   "available": true,
+   "stock": 100,
+   "lowStockThreshold": 10,
+   "spice": "hot",
+   "modifierGroups": [
+    "extra-sauce",
+    "wing-flavor"
+   ]
+  },
+  {
+   "id": "wings-12-by-the-dozen",
+   "categoryId": "chicken",
+   "name": "Wings 12 (By the Dozen)",
+   "description": "Smoky, spicy, and perfectly grilled—these jerk-seasoned wings are bold, juicy, and packed with authentic Jamaican flavor in every bite.",
+   "basePrice": 18.99,
+   "available": true,
+   "stock": 100,
+   "lowStockThreshold": 10,
+   "spice": "hot",
+   "modifierGroups": [
+    "extra-sauce",
+    "wing-flavor"
+   ]
+  },
+  {
+   "id": "wings-6",
+   "categoryId": "chicken",
+   "name": "Wings 6",
+   "description": "Smoky, spicy, and perfectly grilled—these jerk-seasoned wings are bold, juicy, and packed with authentic Jamaican flavor in every bite.",
+   "basePrice": 12.99,
+   "available": true,
+   "stock": 100,
+   "lowStockThreshold": 10,
+   "spice": "hot",
+   "modifierGroups": [
+    "extra-sauce",
+    "wing-flavor"
+   ]
+  },
+  {
+   "id": "half-lb-oxtail",
+   "categoryId": "oxtails",
+   "name": "1/2 lb. Oxtail",
+   "description": "Fall off the bone slow-braised in a rich, savory gravy, paired with creamy butter beans—heartwarming, comforting, and full of deep island flavor.",
+   "basePrice": 12.99,
+   "available": true,
+   "stock": 100,
+   "lowStockThreshold": 10,
+   "spice": "mild",
+   "modifierGroups": [
+    "extra-sauce"
+   ]
+  },
+  {
+   "id": "1-lb-oxtail",
+   "categoryId": "oxtails",
+   "name": "1 lb. Oxtail",
+   "description": "Fall off the bone slow-braised in a rich, savory gravy, paired with creamy butter beans—heartwarming, comforting, and full of deep island flavor.",
+   "basePrice": 19.99,
+   "available": true,
+   "stock": 100,
+   "lowStockThreshold": 10,
+   "spice": "mild",
+   "modifierGroups": [
+    "extra-sauce"
+   ]
+  },
+  {
+   "id": "oxtail-lg",
+   "categoryId": "oxtails",
+   "name": "Oxtail - LG",
+   "description": "Slow-braised oxtail simmered in savory gravy with butter beans, seasoned with our Jamaican blend for a deep, bold taste. Served with seasoned rice & peas and fresh steamed cabbage with carrots, lightly tossed in island herbs and spices",
+   "basePrice": 26.99,
+   "available": true,
+   "stock": 100,
+   "lowStockThreshold": 10,
+   "spice": "mild",
+   "modifierGroups": [
+    "side-selection",
+    "extra-sauce"
+   ]
+  },
+  {
+   "id": "oxtail-med",
+   "categoryId": "oxtails",
+   "name": "Oxtail - MED",
+   "description": "Slow-braised oxtail simmered in savory gravy with butter beans, seasoned with our Jamaican blend for a deep, bold taste. Served with seasoned rice & peas and fresh steamed cabbage with carrots, lightly tossed in island herbs and spices",
+   "basePrice": 22.49,
+   "available": true,
+   "stock": 100,
+   "lowStockThreshold": 10,
+   "spice": "mild",
+   "modifierGroups": [
+    "side-selection",
+    "extra-sauce"
+   ]
+  },
+  {
+   "id": "half-lb-curry-goat",
+   "categoryId": "goat-curry",
+   "name": "1/2 lb. Curry Goat",
+   "description": "Tender, slow-cooked goat simmered in rich Jamaican curry with herbs, garlic, and spices—bold, savory, and full of deep island flavor in every bite.",
+   "basePrice": 11.29,
+   "available": true,
+   "stock": 100,
+   "lowStockThreshold": 10,
+   "spice": "medium",
+   "modifierGroups": [
+    "extra-sauce"
+   ]
+  },
+  {
+   "id": "1-lb-curry-goat",
+   "categoryId": "goat-curry",
+   "name": "1 lb. Curry Goat",
+   "description": "Tender, slow-cooked goat simmered in rich Jamaican curry with herbs, garlic, and spices—bold, savory, and full of deep island flavor in every bite.",
+   "basePrice": 16.99,
+   "available": true,
+   "stock": 100,
+   "lowStockThreshold": 10,
+   "spice": "medium",
+   "modifierGroups": [
+    "extra-sauce"
+   ]
+  },
+  {
+   "id": "curry-goat-med",
+   "categoryId": "goat-curry",
+   "name": "Curry Goat - MED",
+   "description": "Tender goat slow-cooked in aromatic curry, seasoned with our Jamaican blend for a bold, savory island taste. Served with seasoned rice & peas and fresh steamed cabbage with carrots, lightly tossed in island herbs and spices",
+   "basePrice": 17.99,
+   "available": true,
+   "stock": 100,
+   "lowStockThreshold": 10,
+   "spice": "medium",
+   "modifierGroups": [
+    "side-selection",
+    "extra-sauce"
+   ]
+  },
+  {
+   "id": "curry-goat-lg",
+   "categoryId": "goat-curry",
+   "name": "Curry Goat - LG",
+   "description": "Tender goat slow-cooked in aromatic curry, seasoned with our Jamaican blend for a bold, savory island taste. Served with seasoned rice & peas and fresh steamed cabbage with carrots, lightly tossed in island herbs and spices",
+   "basePrice": 21.99,
+   "available": true,
+   "stock": 100,
+   "lowStockThreshold": 10,
+   "spice": "medium",
+   "modifierGroups": [
+    "side-selection",
+    "extra-sauce"
+   ]
+  },
+  {
+   "id": "half-lb-jerk-pork",
+   "categoryId": "pork",
+   "name": "1/2 lb. Jerk Pork",
+   "description": "Tender, juicy pork cubes marinated in authentic jerk seasoning and grilled to smoky perfection—spicy, flavorful, and full of island fire.",
+   "basePrice": 9.59,
+   "available": true,
+   "stock": 100,
+   "lowStockThreshold": 10,
+   "spice": "hot",
+   "modifierGroups": [
+    "jerk-sauce-choice",
+    "extra-sauce",
+    "premium-sauce-upgrade"
+   ]
+  },
+  {
+   "id": "1-lb-jerk-pork",
+   "categoryId": "pork",
+   "name": "1 lb. Jerk Pork",
+   "description": "Tender, juicy pork cubes marinated in authentic jerk seasoning and grilled to smoky perfection—spicy, flavorful, and full of island fire.",
+   "basePrice": 14.59,
+   "available": true,
+   "stock": 100,
+   "lowStockThreshold": 10,
+   "spice": "hot",
+   "modifierGroups": [
+    "jerk-sauce-choice",
+    "extra-sauce",
+    "premium-sauce-upgrade"
+   ]
+  },
+  {
+   "id": "jerk-pork-lg",
+   "categoryId": "pork",
+   "name": "Jerk Pork - LG",
+   "description": "A customer favourite—tender, slow-cooked pork marinated in bold Jamaican spices, delivering rich flavour with a signature kick. Served with seasoned rice & peas and fresh steamed cabbage with carrots, lightly tossed in island herbs and spices",
+   "basePrice": 16.59,
+   "available": true,
+   "stock": 100,
+   "lowStockThreshold": 10,
+   "spice": "hot",
+   "modifierGroups": [
+    "jerk-sauce-choice",
+    "extra-sauce",
+    "premium-sauce-upgrade",
+    "side-selection"
+   ]
+  },
+  {
+   "id": "jerk-pork-med",
+   "categoryId": "pork",
+   "name": "Jerk Pork - MED",
+   "description": "A customer favourite—tender, slow-cooked pork marinated in bold Jamaican spices, delivering rich flavour with a signature kick. Served with seasoned rice & peas and fresh steamed cabbage with carrots, lightly tossed in island herbs and spices",
+   "basePrice": 13.99,
+   "available": true,
+   "stock": 100,
+   "lowStockThreshold": 10,
+   "spice": "hot",
+   "modifierGroups": [
+    "jerk-sauce-choice",
+    "extra-sauce",
+    "premium-sauce-upgrade",
+    "side-selection"
+   ]
+  },
+  {
+   "id": "jerk-pork-sm",
+   "categoryId": "pork",
+   "name": "Jerk Pork - SM",
+   "description": "A customer favourite—tender, slow-cooked pork marinated in bold Jamaican spices, delivering rich flavour with a signature kick. Served with seasoned rice & peas and fresh steamed cabbage with carrots, lightly tossed in island herbs and spices",
+   "basePrice": 11.99,
+   "available": true,
+   "stock": 100,
+   "lowStockThreshold": 10,
+   "spice": "hot",
+   "modifierGroups": [
+    "jerk-sauce-choice",
+    "extra-sauce",
+    "premium-sauce-upgrade",
+    "side-selection"
+   ]
+  },
+  {
+   "id": "brown-stew-red-snapper-fish-three-quarter-1lbs",
+   "categoryId": "seafood",
+   "name": "Brown Stew Red Snapper Fish 3/4-1lbs",
+   "description": "Whole red snapper simmered in a rich brown stew sauce with onions, peppers, herbs, and Jamaican spices for a bold, savory island flavor. Served with seasoned rice & peas and fresh steamed cabbage with carrots, lightly tossed in island herbs and spices.",
+   "basePrice": 25.99,
+   "available": true,
+   "stock": 100,
+   "lowStockThreshold": 10,
+   "spice": "mild",
+   "modifierGroups": [
+    "side-selection"
+   ]
+  },
+  {
+   "id": "escovitch-red-snapper-fish-three-quarter-1-lb",
+   "categoryId": "seafood",
+   "name": "Escovitch Red Snapper Fish 3/4-1 lb",
+   "description": "Crispy fried red snapper topped with our signature escovitch blend of tangy pickled onions, carrots, and peppers for a zesty, bold Jamaican flavor. Served with seasoned rice & peas and fresh steamed cabbage with carrots, lightly tossed in island herbs and spices.",
+   "basePrice": 25.99,
+   "available": true,
+   "stock": 100,
+   "lowStockThreshold": 10,
+   "spice": "medium",
+   "modifierGroups": [
+    "side-selection"
+   ]
+  },
+  {
+   "id": "steamed-red-snapper-fish-three-quarter-1lbs",
+   "categoryId": "seafood",
+   "name": "Steamed Red Snapper Fish - 3/4-1lbs",
+   "description": "Whole red snapper steamed with onions, peppers, pumpkin, carrots, fresh herbs, Jamaican spices, and rich coconut milk for authentic island flavor.",
+   "basePrice": 25.99,
+   "available": true,
+   "stock": 100,
+   "lowStockThreshold": 10,
+   "spice": "mild",
+   "modifierGroups": [
+    "side-selection"
+   ]
+  },
+  {
+   "id": "brown-stew-shrimp-lg",
+   "categoryId": "seafood",
+   "name": "Brown Stew Shrimp - LG",
+   "description": "Simmered in rich brown stew gravy with onions and peppers, seasoned with our Jamaican blend for a bold, comforting island taste. Served with seasoned rice & peas and fresh steamed cabbage with carrots, lightly tossed in island herbs and spices",
+   "basePrice": 19.99,
+   "available": true,
+   "stock": 100,
+   "lowStockThreshold": 10,
+   "spice": "mild",
+   "modifierGroups": [
+    "side-selection"
+   ]
+  },
+  {
+   "id": "brown-stew-shrimp-med",
+   "categoryId": "seafood",
+   "name": "Brown Stew Shrimp - MED",
+   "description": "Simmered in rich brown stew gravy with onions and peppers, seasoned with our Jamaican blend for a bold, comforting island taste. Served with seasoned rice & peas and fresh steamed cabbage with carrots, lightly tossed in island herbs and spices",
+   "basePrice": 16.99,
+   "available": true,
+   "stock": 100,
+   "lowStockThreshold": 10,
+   "spice": "mild",
+   "modifierGroups": [
+    "side-selection"
+   ]
+  },
+  {
+   "id": "brown-stew-shrimp-sm",
+   "categoryId": "seafood",
+   "name": "Brown Stew Shrimp - SM",
+   "description": "Simmered in rich brown stew gravy with onions and peppers, seasoned with our Jamaican blend for a bold, comforting island taste. Served with seasoned rice & peas and fresh steamed cabbage with carrots, lightly tossed in island herbs and spices",
+   "basePrice": 12.99,
+   "available": true,
+   "stock": 100,
+   "lowStockThreshold": 10,
+   "spice": "mild",
+   "modifierGroups": [
+    "side-selection"
+   ]
+  },
+  {
+   "id": "curried-shrimp-sm",
+   "categoryId": "seafood",
+   "name": "Curried Shrimp - SM",
+   "description": "Simmered in aromatic curry, seasoned with our Jamaican blend for a warm, savory island taste. Served with seasoned rice & peas and fresh steamed cabbage with carrots, lightly tossed in island herbs and spices",
+   "basePrice": 12.99,
+   "available": true,
+   "stock": 100,
+   "lowStockThreshold": 10,
+   "spice": "medium",
+   "modifierGroups": [
+    "side-selection"
+   ]
+  },
+  {
+   "id": "curry-shrimp-lg",
+   "categoryId": "seafood",
+   "name": "Curry Shrimp - LG",
+   "description": "Simmered in aromatic curry, seasoned with our Jamaican blend for a warm, savory island taste. Served with seasoned rice & peas and fresh steamed cabbage with carrots, lightly tossed in island herbs and spices",
+   "basePrice": 19.99,
+   "available": true,
+   "stock": 100,
+   "lowStockThreshold": 10,
+   "spice": "medium",
+   "modifierGroups": [
+    "side-selection"
+   ]
+  },
+  {
+   "id": "curry-shrimp-med",
+   "categoryId": "seafood",
+   "name": "Curry Shrimp - MED",
+   "description": "Simmered in aromatic curry, seasoned with our Jamaican blend for a warm, savory island taste. Served with seasoned rice & peas and fresh steamed cabbage with carrots, lightly tossed in island herbs and spices",
+   "basePrice": 16.99,
+   "available": true,
+   "stock": 100,
+   "lowStockThreshold": 10,
+   "spice": "medium",
+   "modifierGroups": [
+    "side-selection"
+   ]
+  },
+  {
+   "id": "jerk-shrimp-lg",
+   "categoryId": "seafood",
+   "name": "Jerk Shrimp - LG",
+   "description": "Juicy shrimp seasoned with bold Jamaican jerk spices, cooked to perfection for a rich, smoky flavor with a signature island kick. Served with seasoned rice & peas and fresh steamed cabbage with carrots, lightly tossed in island herbs and spices",
+   "basePrice": 19.99,
+   "available": true,
+   "stock": 100,
+   "lowStockThreshold": 10,
+   "spice": "hot",
+   "modifierGroups": [
+    "side-selection"
+   ]
+  },
+  {
+   "id": "jerk-shrimp-med",
+   "categoryId": "seafood",
+   "name": "Jerk Shrimp - MED",
+   "description": "Juicy shrimp seasoned with bold Jamaican jerk spices, cooked to perfection for a rich, smoky flavor with a signature island kick. Served with seasoned rice & peas and fresh steamed cabbage with carrots, lightly tossed in island herbs and spices",
+   "basePrice": 16.99,
+   "available": true,
+   "stock": 100,
+   "lowStockThreshold": 10,
+   "spice": "hot",
+   "modifierGroups": [
+    "side-selection"
+   ]
+  },
+  {
+   "id": "jerk-shrimp-sm",
+   "categoryId": "seafood",
+   "name": "Jerk Shrimp - SM",
+   "description": "Juicy shrimp seasoned with bold Jamaican jerk spices, cooked to perfection for a rich, smoky flavor with a signature island kick. Served with seasoned rice & peas and fresh steamed cabbage with carrots, lightly tossed in island herbs and spices",
+   "basePrice": 12.99,
+   "available": true,
+   "stock": 100,
+   "lowStockThreshold": 10,
+   "spice": "hot",
+   "modifierGroups": [
+    "side-selection"
+   ]
+  },
+  {
+   "id": "sweet-chilli-fried-shrimp-lg",
+   "categoryId": "seafood",
+   "name": "Sweet Chilli Fried Shrimp - LG",
+   "description": "Crispy fried shrimp tossed in our sweet chili sauce, delivering the perfect balance of sweetness and mild heat. Served with seasoned rice & peas and fresh steamed cabbage with carrots, lightly tossed in island herbs and spices.",
+   "basePrice": 19.99,
+   "available": true,
+   "stock": 100,
+   "lowStockThreshold": 10,
+   "spice": "medium",
+   "modifierGroups": [
+    "side-selection"
+   ]
+  },
+  {
+   "id": "sweet-chilli-fried-shrimp-med",
+   "categoryId": "seafood",
+   "name": "Sweet Chilli Fried Shrimp - MED",
+   "description": "Crispy fried shrimp tossed in our sweet chili sauce, delivering the perfect balance of sweetness and mild heat. Served with seasoned rice & peas and fresh steamed cabbage with carrots, lightly tossed in island herbs and spices.",
+   "basePrice": 16.99,
+   "available": true,
+   "stock": 100,
+   "lowStockThreshold": 10,
+   "spice": "medium",
+   "modifierGroups": [
+    "side-selection"
+   ]
+  },
+  {
+   "id": "sweet-chilli-fried-shrimp-sm",
+   "categoryId": "seafood",
+   "name": "Sweet Chilli Fried Shrimp - SM",
+   "description": "Crispy fried shrimp tossed in our sweet chili sauce, delivering the perfect balance of sweetness and mild heat. Served with seasoned rice & peas and fresh steamed cabbage with carrots, lightly tossed in island herbs and spices.",
+   "basePrice": 12.99,
+   "available": true,
+   "stock": 100,
+   "lowStockThreshold": 10,
+   "spice": "medium",
+   "modifierGroups": [
+    "side-selection"
+   ]
+  },
+  {
+   "id": "half-lb-pepper-steak",
+   "categoryId": "steak",
+   "name": "1/2 lb. Pepper Steak",
+   "description": "Tender beef strips with vibrant bell peppers in a savory sauce.",
+   "basePrice": 11.29,
+   "available": true,
+   "stock": 100,
+   "lowStockThreshold": 10,
+   "spice": "medium",
+   "modifierGroups": []
+  },
+  {
+   "id": "1-lb-pepper-steak",
+   "categoryId": "steak",
+   "name": "1 lb. Pepper Steak",
+   "description": "Tender beef strips with vibrant bell peppers in a savory sauce.",
+   "basePrice": 16.99,
+   "available": true,
+   "stock": 100,
+   "lowStockThreshold": 10,
+   "spice": "medium",
+   "modifierGroups": []
+  },
+  {
+   "id": "pepper-steak-lg",
+   "categoryId": "steak",
+   "name": "Pepper Steak - LG",
+   "description": "Tender steak strips sautéed with onions and peppers in a savory sauce, seasoned with our Jamaican blend for a bold, satisfying taste. Served with seasoned rice & peas and fresh steamed cabbage with carrots, lightly tossed in island herbs and spices",
+   "basePrice": 21.99,
+   "available": true,
+   "stock": 100,
+   "lowStockThreshold": 10,
+   "spice": "medium",
+   "modifierGroups": [
+    "side-selection"
+   ]
+  },
+  {
+   "id": "pepper-steak-med",
+   "categoryId": "steak",
+   "name": "Pepper Steak - MED",
+   "description": "Tender steak strips sautéed with onions and peppers in a savory sauce, seasoned with our Jamaican blend for a bold, satisfying taste. Served with seasoned rice & peas and fresh steamed cabbage with carrots, lightly tossed in island herbs and spices",
+   "basePrice": 17.99,
+   "available": true,
+   "stock": 100,
+   "lowStockThreshold": 10,
+   "spice": "medium",
+   "modifierGroups": [
+    "side-selection"
+   ]
+  },
+  {
+   "id": "half-lb-curry-chickpeas",
+   "categoryId": "vegetarian-meals",
+   "name": "1/2 lb. Curry Chickpeas",
+   "description": "Tender chickpeas simmered in a fragrant curry sauce with herbs and spices—hearty, vegan-friendly, and packed with bold Jamaican flavor.",
+   "basePrice": 5.0,
+   "available": true,
+   "stock": 100,
+   "lowStockThreshold": 10,
+   "spice": "medium",
+   "modifierGroups": []
+  },
+  {
+   "id": "1-lb-curry-chickpeas",
+   "categoryId": "vegetarian-meals",
+   "name": "1 lb. Curry Chickpeas",
+   "description": "Tender chickpeas simmered in a fragrant curry sauce with herbs and spices—hearty, vegan-friendly, and packed with bold Jamaican flavor.",
+   "basePrice": 8.0,
+   "available": true,
+   "stock": 100,
+   "lowStockThreshold": 10,
+   "spice": "medium",
+   "modifierGroups": []
+  },
+  {
+   "id": "curried-chick-peas-lg",
+   "categoryId": "vegetarian-meals",
+   "name": "Curried Chick Peas - LG",
+   "description": "Tender chickpeas simmered in coconut curry with pumpkin, carrots, potatoes, butter beans, onions, and peppers for a hearty island classic. Served with seasoned rice & peas and fresh steamed cabbage with carrots, lightly tossed in island herbs and spices",
+   "basePrice": 14.49,
+   "available": true,
+   "stock": 100,
+   "lowStockThreshold": 10,
+   "spice": "medium",
+   "modifierGroups": [
+    "side-selection",
+    "add-veg-patty"
+   ]
+  },
+  {
+   "id": "curried-chick-peas-med",
+   "categoryId": "vegetarian-meals",
+   "name": "Curried Chick Peas - MED",
+   "description": "Tender chickpeas simmered in coconut curry with pumpkin, carrots, potatoes, butter beans, onions, and peppers for a hearty island classic. Served with seasoned rice & peas and fresh steamed cabbage with carrots, lightly tossed in island herbs and spices",
+   "basePrice": 12.29,
+   "available": true,
+   "stock": 100,
+   "lowStockThreshold": 10,
+   "spice": "medium",
+   "modifierGroups": [
+    "side-selection",
+    "add-veg-patty"
+   ]
+  },
+  {
+   "id": "curried-chick-peas-sm",
+   "categoryId": "vegetarian-meals",
+   "name": "Curried Chick Peas - SM",
+   "description": "Tender chickpeas simmered in coconut curry with pumpkin, carrots, potatoes, butter beans, onions, and peppers for a hearty island classic. Served with seasoned rice & peas and fresh steamed cabbage with carrots, lightly tossed in island herbs and spices",
+   "basePrice": 10.29,
+   "available": true,
+   "stock": 100,
+   "lowStockThreshold": 10,
+   "spice": "medium",
+   "modifierGroups": [
+    "side-selection",
+    "add-veg-patty"
+   ]
+  },
+  {
+   "id": "rice-peas-cabbage-lg",
+   "categoryId": "vegetarian-meals",
+   "name": "Rice & Peas & CABBAGE - LG",
+   "description": "Perfectly seasoned rice & peas served with fresh steamed cabbage and carrots, lightly tossed in island herbs and spices for a classic Jamaican side",
+   "basePrice": 10.99,
+   "available": true,
+   "stock": 100,
+   "lowStockThreshold": 10,
+   "spice": "mild",
+   "modifierGroups": [
+    "add-veg-patty"
+   ]
+  },
+  {
+   "id": "rice-peas-cabbage-med",
+   "categoryId": "vegetarian-meals",
+   "name": "Rice & Peas & Cabbage - MED",
+   "description": "Perfectly seasoned rice & peas served with fresh steamed cabbage and carrots, lightly tossed in island herbs and spices for a classic Jamaican side",
+   "basePrice": 8.49,
+   "available": true,
+   "stock": 100,
+   "lowStockThreshold": 10,
+   "spice": "mild",
+   "modifierGroups": [
+    "add-veg-patty"
+   ]
+  },
+  {
+   "id": "rice-peas-cabbage-sm",
+   "categoryId": "vegetarian-meals",
+   "name": "Rice & Peas & CABBAGE - SM",
+   "description": "Perfectly seasoned rice & peas served with fresh steamed cabbage and carrots, lightly tossed in island herbs and spices for a classic Jamaican side",
+   "basePrice": 6.99,
+   "available": true,
+   "stock": 100,
+   "lowStockThreshold": 10,
+   "spice": "mild",
+   "modifierGroups": [
+    "add-veg-patty"
+   ]
+  },
+  {
+   "id": "rice-peas-lg",
+   "categoryId": "vegetarian-meals",
+   "name": "Rice & Peas - LG",
+   "description": "Our signature Jamaican rice & peas, simmered in coconut milk with thyme, Scallion, and traditional island spices for a rich, aromatic flavor.",
+   "basePrice": 8.99,
+   "available": true,
+   "stock": 100,
+   "lowStockThreshold": 10,
+   "spice": "mild",
+   "modifierGroups": [
+    "add-veg-patty"
+   ]
+  },
+  {
+   "id": "rice-peas-med",
+   "categoryId": "vegetarian-meals",
+   "name": "Rice & Peas - MED",
+   "description": "Our signature Jamaican rice & peas, simmered in coconut milk with thyme, Scallion, and traditional island spices for a rich, aromatic flavor.",
+   "basePrice": 6.99,
+   "available": true,
+   "stock": 100,
+   "lowStockThreshold": 10,
+   "spice": "mild",
+   "modifierGroups": [
+    "add-veg-patty"
+   ]
+  },
+  {
+   "id": "rice-peas-sm",
+   "categoryId": "vegetarian-meals",
+   "name": "Rice & Peas - SM",
+   "description": "Our signature Jamaican rice & peas, simmered in coconut milk with thyme, Scallion, and traditional island spices for a rich, aromatic flavor.",
+   "basePrice": 5.49,
+   "available": true,
+   "stock": 100,
+   "lowStockThreshold": 10,
+   "spice": "mild",
+   "modifierGroups": [
+    "add-veg-patty"
+   ]
+  },
+  {
+   "id": "steamed-cabbage-sm",
+   "categoryId": "vegetarian-meals",
+   "name": "Steamed CABBAGE - SM",
+   "description": "Fresh cabbage and carrots lightly steamed and seasoned with island herbs and spices for a simple, flavorful Jamaican side.",
+   "basePrice": 5.49,
+   "available": true,
+   "stock": 100,
+   "lowStockThreshold": 10,
+   "spice": "mild",
+   "modifierGroups": [
+    "add-veg-patty"
+   ]
+  },
+  {
+   "id": "steamed-cabbage-lg",
+   "categoryId": "vegetarian-meals",
+   "name": "Steamed CABBAGE - LG",
+   "description": "Fresh cabbage and carrots lightly steamed and seasoned with island herbs and spices for a simple, flavorful Jamaican side.",
+   "basePrice": 8.99,
+   "available": true,
+   "stock": 100,
+   "lowStockThreshold": 10,
+   "spice": "mild",
+   "modifierGroups": [
+    "add-veg-patty"
+   ]
+  },
+  {
+   "id": "steamed-cabbage-med",
+   "categoryId": "vegetarian-meals",
+   "name": "Steamed CABBAGE - MED",
+   "description": "Fresh cabbage and carrots lightly steamed and seasoned with island herbs and spices for a simple, flavorful Jamaican side.",
+   "basePrice": 6.99,
+   "available": true,
+   "stock": 100,
+   "lowStockThreshold": 10,
+   "spice": "mild",
+   "modifierGroups": [
+    "add-veg-patty"
+   ]
+  },
+  {
+   "id": "sweet-sour-tofu-lg",
+   "categoryId": "vegetarian-meals",
+   "name": "Sweet + Sour Tofu - LG",
+   "description": "Crispy golden tofu tossed in a sweet & sour pineapple glaze with sautéed onions and green peppers for a bold, balanced Jamaican flavor. Served with seasoned rice & peas and fresh steamed cabbage with carrots, lightly tossed in island herbs and spices",
+   "basePrice": 14.49,
+   "available": true,
+   "stock": 100,
+   "lowStockThreshold": 10,
+   "spice": "mild",
+   "modifierGroups": [
+    "side-selection",
+    "add-veg-patty"
+   ]
+  },
+  {
+   "id": "sweet-sour-tofu-med",
+   "categoryId": "vegetarian-meals",
+   "name": "Sweet + Sour Tofu - MED",
+   "description": "Crispy golden tofu tossed in a sweet & sour pineapple glaze with sautéed onions and green peppers for a bold, balanced Jamaican flavor. Served with seasoned rice & peas and fresh steamed cabbage with carrots, lightly tossed in island herbs and spices",
+   "basePrice": 12.29,
+   "available": true,
+   "stock": 100,
+   "lowStockThreshold": 10,
+   "spice": "mild",
+   "modifierGroups": [
+    "side-selection",
+    "add-veg-patty"
+   ]
+  },
+  {
+   "id": "sweet-sour-tofu-sm",
+   "categoryId": "vegetarian-meals",
+   "name": "Sweet + Sour Tofu - SM",
+   "description": "Crispy golden tofu tossed in a sweet & sour pineapple glaze with sautéed onions and green peppers for a bold, balanced Jamaican flavor. Served with seasoned rice & peas and fresh steamed cabbage with carrots, lightly tossed in island herbs and spices",
+   "basePrice": 10.29,
+   "available": true,
+   "stock": 100,
+   "lowStockThreshold": 10,
+   "spice": "mild",
+   "modifierGroups": [
+    "side-selection",
+    "add-veg-patty"
+   ]
+  },
+  {
+   "id": "white-rice-cabbage-lg",
+   "categoryId": "vegetarian-meals",
+   "name": "White Rice & Cabbage - LG",
+   "description": "Fluffy white rice served with our lightly steamed cabbage and carrots, seasoned with simple island herbs and spices for a clean, comforting classic.",
+   "basePrice": 10.99,
+   "available": true,
+   "stock": 100,
+   "lowStockThreshold": 10,
+   "spice": "mild",
+   "modifierGroups": [
+    "add-veg-patty"
+   ]
+  },
+  {
+   "id": "white-rice-cabbage-med",
+   "categoryId": "vegetarian-meals",
+   "name": "White Rice & CABBAGE - MED",
+   "description": "Fluffy white rice served with our lightly steamed cabbage and carrots, seasoned with simple island herbs and spices for a clean, comforting classic.",
+   "basePrice": 8.49,
+   "available": true,
+   "stock": 100,
+   "lowStockThreshold": 10,
+   "spice": "mild",
+   "modifierGroups": [
+    "add-veg-patty"
+   ]
+  },
+  {
+   "id": "white-rice-cabbage-sm",
+   "categoryId": "vegetarian-meals",
+   "name": "White Rice & Cabbage - SM",
+   "description": "Fluffy white rice served with our lightly steamed cabbage and carrots, seasoned with simple island herbs and spices for a clean, comforting classic.",
+   "basePrice": 6.99,
+   "available": true,
+   "stock": 100,
+   "lowStockThreshold": 10,
+   "spice": "mild",
+   "modifierGroups": [
+    "add-veg-patty"
+   ]
+  },
+  {
+   "id": "white-rice-lg",
+   "categoryId": "vegetarian-meals",
+   "name": "White Rice - LG",
+   "description": "Perfectly steamed white rice with a light, fluffy texture—simple, satisfying, and the perfect complement to any meal.",
+   "basePrice": 8.99,
+   "available": true,
+   "stock": 100,
+   "lowStockThreshold": 10,
+   "spice": "mild",
+   "modifierGroups": [
+    "add-veg-patty"
+   ]
+  },
+  {
+   "id": "white-rice-med",
+   "categoryId": "vegetarian-meals",
+   "name": "White Rice - MED",
+   "description": "Perfectly steamed white rice with a light, fluffy texture—simple, satisfying, and the perfect complement to any meal.",
+   "basePrice": 6.99,
+   "available": true,
+   "stock": 100,
+   "lowStockThreshold": 10,
+   "spice": "mild",
+   "modifierGroups": [
+    "add-veg-patty"
+   ]
+  },
+  {
+   "id": "white-rice-sm",
+   "categoryId": "vegetarian-meals",
+   "name": "White Rice - SM",
+   "description": "Perfectly steamed white rice with a light, fluffy texture—simple, satisfying, and the perfect complement to any meal.",
+   "basePrice": 5.49,
+   "available": true,
+   "stock": 100,
+   "lowStockThreshold": 10,
+   "spice": "mild",
+   "modifierGroups": [
+    "add-veg-patty"
+   ]
+  },
+  {
+   "id": "beef-patty-mild",
+   "categoryId": "patties",
+   "name": "Beef Patty Mild",
+   "description": "Flaky crust filled with perfectly seasoned ground beef—savory, juicy, and packed with flavor without the heat.",
+   "basePrice": 3.9,
+   "available": true,
+   "stock": 100,
+   "lowStockThreshold": 10,
+   "spice": "mild",
+   "modifierGroups": [
+    "dipping-sauce"
+   ]
+  },
+  {
+   "id": "beef-patty-spicy",
+   "categoryId": "patties",
+   "name": "Beef Patty Spicy",
+   "description": "Bold and fiery ground beef wrapped in a flaky crust—packed with island spices for a delicious kick in every bite.",
+   "basePrice": 3.9,
+   "available": true,
+   "stock": 100,
+   "lowStockThreshold": 10,
+   "spice": "hot",
+   "modifierGroups": [
+    "dipping-sauce"
+   ]
+  },
+  {
+   "id": "cheesy-beef-mild",
+   "categoryId": "patties",
+   "name": "Cheesy Beef Mild",
+   "description": "Flaky crust filled with gently seasoned ground beef and melted cheese—smooth, savory, and perfect for those who like rich flavor without the heat.",
+   "basePrice": 4.49,
+   "available": true,
+   "stock": 100,
+   "lowStockThreshold": 10,
+   "spice": "mild",
+   "modifierGroups": [
+    "dipping-sauce"
+   ]
+  },
+  {
+   "id": "cheesy-beef-spicy",
+   "categoryId": "patties",
+   "name": "Cheesy Beef Spicy",
+   "description": "Flaky crust filled with gently seasoned ground beef and melted cheese—smooth, savory, and perfect for those who like rich flavor without the heat.",
+   "basePrice": 4.49,
+   "available": true,
+   "stock": 100,
+   "lowStockThreshold": 10,
+   "spice": "hot",
+   "modifierGroups": [
+    "dipping-sauce"
+   ]
+  },
+  {
+   "id": "chicken-patty",
+   "categoryId": "patties",
+   "name": "Chicken Patty",
+   "description": "Tender curry-spiced chicken wrapped in a flaky crust—bold, aromatic, and bursting with rich Jamaican flavor in every bite.",
+   "basePrice": 3.9,
+   "available": true,
+   "stock": 100,
+   "lowStockThreshold": 10,
+   "spice": "medium",
+   "modifierGroups": [
+    "dipping-sauce",
+    "add-cheese"
+   ]
+  },
+  {
+   "id": "coco-bread",
+   "categoryId": "patties",
+   "name": "Coco Bread",
+   "description": "Soft, slightly sweet, and buttery—this delightful Jamaican bread is perfect on its own or wrapped around a patty for the ultimate bite.",
+   "basePrice": 2.6,
+   "available": true,
+   "stock": 100,
+   "lowStockThreshold": 10,
+   "spice": "mild",
+   "modifierGroups": []
+  },
+  {
+   "id": "coco-bread-n-cheese",
+   "categoryId": "patties",
+   "name": "Coco Bread N Cheese",
+   "description": "Warm, fluffy coco bread layered with thick slices of creamy cheese—a soft, savory-sweet combo that melts in your mouth with every bite.",
+   "basePrice": 3.69,
+   "available": true,
+   "stock": 100,
+   "lowStockThreshold": 10,
+   "spice": "mild",
+   "modifierGroups": []
+  },
+  {
+   "id": "jerk-patty",
+   "categoryId": "patties",
+   "name": "Jerk Patty",
+   "description": "Flaky, golden pastry filled with tender chicken seasoned in our signature Jamaican jerk blend—featuring bold spices, smoky heat, and a hint of island sweetness. Baked to perfection for a crisp, buttery crust and a juicy, flavorful center",
+   "basePrice": 3.9,
+   "available": true,
+   "stock": 100,
+   "lowStockThreshold": 10,
+   "spice": "hot",
+   "modifierGroups": [
+    "dipping-sauce",
+    "add-cheese"
+   ]
+  },
+  {
+   "id": "spinach-patty-vegetarian",
+   "categoryId": "patties",
+   "name": "Spinach Patty - Vegetarian",
+   "description": "Flaky crust filled with seasoned spinach and aromatic herbs—savory, wholesome, and bursting with vibrant island flavor in every bite.",
+   "basePrice": 3.9,
+   "available": true,
+   "stock": 100,
+   "lowStockThreshold": 10,
+   "spice": "mild",
+   "modifierGroups": [
+    "dipping-sauce",
+    "add-cheese"
+   ]
+  },
+  {
+   "id": "veggie-patty",
+   "categoryId": "patties",
+   "name": "Veggie Patty",
+   "description": "A flaky crust filled with seasoned vegetables and aromatic herbs—wholesome, savory, and packed with plant-powered island flavor in every bite.",
+   "basePrice": 3.9,
+   "available": true,
+   "stock": 100,
+   "lowStockThreshold": 10,
+   "spice": "mild",
+   "modifierGroups": [
+    "dipping-sauce",
+    "add-cheese"
+   ]
+  },
+  {
+   "id": "coleslaw",
+   "categoryId": "side-orders",
+   "name": "Coleslaw",
+   "description": "Crisp cabbage and carrots tossed in a creamy, tangy dressing—cool, refreshing, and the perfect side to balance bold island flavors.",
+   "basePrice": 4.49,
+   "available": true,
+   "stock": 100,
+   "lowStockThreshold": 10,
+   "spice": "mild",
+   "modifierGroups": []
+  },
+  {
+   "id": "cup-sauce",
+   "categoryId": "side-orders",
+   "name": "Cup Sauce",
+   "description": "A bold, smoky blend of scotch bonnet peppers, herbs, and spices. Perfect for dipping, marinating, or adding heat to any dish.",
+   "basePrice": 3.0,
+   "available": true,
+   "stock": 100,
+   "lowStockThreshold": 10,
+   "spice": "hot",
+   "modifierGroups": []
+  },
+  {
+   "id": "fries",
+   "categoryId": "side-orders",
+   "name": "Fries",
+   "description": "Crispy, golden, and perfectly salted—classic fries that make the perfect sidekick to any meal.",
+   "basePrice": 4.49,
+   "available": true,
+   "stock": 100,
+   "lowStockThreshold": 10,
+   "spice": "mild",
+   "modifierGroups": [
+    "fries-sauce-choice"
+   ]
+  },
+  {
+   "id": "jerk-chicken-mac-n-cheese",
+   "categoryId": "side-orders",
+   "name": "Jerk Chicken Mac N Cheese",
+   "description": "Creamy, cheesy macaroni with a bold twist—blended with spicy jerk seasoning for a smoky, flavorful kick in every bite.",
+   "basePrice": 10.99,
+   "available": true,
+   "stock": 100,
+   "lowStockThreshold": 10,
+   "spice": "hot",
+   "modifierGroups": []
+  },
+  {
+   "id": "jk-jerk-sauce",
+   "categoryId": "side-orders",
+   "name": "Jk Jerk Sauce",
+   "description": "A bold, smoky blend of scotch bonnet peppers, herbs, and spices. Perfect for dipping, marinating, or adding heat to any dish.",
+   "basePrice": 4.0,
+   "available": true,
+   "stock": 100,
+   "lowStockThreshold": 10,
+   "spice": "hot",
+   "modifierGroups": []
+  },
+  {
+   "id": "sweet-plantains-3",
+   "categoryId": "side-orders",
+   "name": "Sweet Plantains 3",
+   "description": "Ripe plantains sliced and caramelized to golden perfection—soft, sweet, and bursting with rich, tropical flavor in every bite.",
+   "basePrice": 2.0,
+   "available": true,
+   "stock": 100,
+   "lowStockThreshold": 10,
+   "spice": "mild",
+   "modifierGroups": []
+  },
+  {
+   "id": "sweet-plantains-6",
+   "categoryId": "side-orders",
+   "name": "Sweet Plantains 6",
+   "description": "Ripe plantains sliced and caramelized to golden perfection—soft, sweet, and bursting with rich, tropical flavor in every bite.",
+   "basePrice": 3.99,
+   "available": true,
+   "stock": 100,
+   "lowStockThreshold": 10,
+   "spice": "mild",
+   "modifierGroups": []
+  },
+  {
+   "id": "crispy-chicken-sandwich",
+   "categoryId": "sandwiches-wraps",
+   "name": "Crispy Chicken Sandwich",
+   "description": "Crispy, golden-fried chicken served on soft Jamaican coco bread with fresh lettuce, tomato, and creamy mayo for a satisfying, flavorful bite.",
+   "basePrice": 10.99,
+   "available": true,
+   "stock": 100,
+   "lowStockThreshold": 10,
+   "spice": "mild",
+   "modifierGroups": []
+  },
+  {
+   "id": "extra-cheese",
+   "categoryId": "sandwiches-wraps",
+   "name": "Extra cheese",
+   "description": "Rich, bold, and unmistakably Jamaican—this firm, flavorful cheddar-style cheese is perfect with hard dough bread or tucked into a warm patty.",
+   "basePrice": 1.0,
+   "available": true,
+   "stock": 100,
+   "lowStockThreshold": 10,
+   "spice": "mild",
+   "modifierGroups": []
+  },
+  {
+   "id": "fish-chips",
+   "categoryId": "sandwiches-wraps",
+   "name": "Fish + Chips",
+   "description": "crispy, golden-fried fish served with thick-cut fries—hot, hearty, and perfectly seasoned for a satisfying island-style take on a classic favorite.",
+   "basePrice": 13.59,
+   "available": true,
+   "stock": 100,
+   "lowStockThreshold": 10,
+   "spice": "mild",
+   "modifierGroups": [
+    "choose-your-sauce"
+   ]
+  },
+  {
+   "id": "fish-sandwich",
+   "categoryId": "sandwiches-wraps",
+   "name": "Fish Sandwich",
+   "description": "Crispy fried fish served on soft, buttery coco bread with melted cheese and tangy tartar sauce—simple, rich, and bursting with island comfort.",
+   "basePrice": 11.49,
+   "available": true,
+   "stock": 100,
+   "lowStockThreshold": 10,
+   "spice": "mild",
+   "modifierGroups": [
+    "sandwich-toppings"
+   ]
+  },
+  {
+   "id": "jerk-chicken-sandwich",
+   "categoryId": "sandwiches-wraps",
+   "name": "Jerk Chicken Sandwich",
+   "description": "Spicy, smoky jerk chicken stacked on soft, buttery coco bread with creamy coleslaw and zesty chipotle mayo—bold, juicy, and packed with island heat and flavor.",
+   "basePrice": 10.99,
+   "available": true,
+   "stock": 100,
+   "lowStockThreshold": 10,
+   "spice": "hot",
+   "modifierGroups": [
+    "sandwich-toppings",
+    "sandwich-add-ons"
+   ]
+  },
+  {
+   "id": "jerk-pork-sandwich",
+   "categoryId": "sandwiches-wraps",
+   "name": "Jerk Pork Sandwich",
+   "description": "Savory minced jerk pork piled high on soft, buttery coco bread with a drizzle of smoky chipotle mayo—spicy, juicy, and bursting with island flavor in every bite.",
+   "basePrice": 10.99,
+   "available": true,
+   "stock": 100,
+   "lowStockThreshold": 10,
+   "spice": "hot",
+   "modifierGroups": [
+    "sandwich-toppings",
+    "sandwich-add-ons"
+   ]
+  },
+  {
+   "id": "ackee-saltfish-med",
+   "categoryId": "breakfast",
+   "name": "Ackee & Saltfish - MED",
+   "description": "Creamy ackee gently sautéed with tender flaked saltfish, onions, peppers, and aromatic herbs—savory, comforting, and Jamaica's beloved national dish. Served in a medium container.",
+   "basePrice": 16.99,
+   "available": true,
+   "stock": 100,
+   "lowStockThreshold": 10,
+   "spice": "mild",
+   "modifierGroups": [
+    "breakfast-side-selection"
+   ]
+  },
+  {
+   "id": "callaloo-salt-fish-med",
+   "categoryId": "breakfast",
+   "name": "Callaloo & Salt Fish - MED",
+   "description": "Tender callaloo leaves sautéed with flaky saltfish, garlic, onions, and a hint of thyme—hearty, savory, and brimming with authentic island flavor, served in a medium container for a satisfying portion.",
+   "basePrice": 12.99,
+   "available": true,
+   "stock": 100,
+   "lowStockThreshold": 10,
+   "spice": "mild",
+   "modifierGroups": [
+    "breakfast-side-selection"
+   ]
+  },
+  {
+   "id": "carrot-dumpling-3",
+   "categoryId": "breakfast",
+   "name": "Carrot Dumpling 3",
+   "description": "Crispy on the outside, soft on the inside—these golden dumplings are made with grated carrot for sweetness in every bite.",
+   "basePrice": 4.49,
+   "available": true,
+   "stock": 100,
+   "lowStockThreshold": 10,
+   "spice": "mild",
+   "modifierGroups": []
+  },
+  {
+   "id": "festival-3",
+   "categoryId": "breakfast",
+   "name": "Festival 3",
+   "description": "Golden, crispy on the outside and soft on the inside—these sweet, doughy Jamaican fried festivals are the perfect companion to jerk meats, fried fish, or just enjoyed on their own. Island comfort in every bite.",
+   "basePrice": 4.49,
+   "available": true,
+   "stock": 100,
+   "lowStockThreshold": 10,
+   "spice": "hot",
+   "modifierGroups": []
+  },
+  {
+   "id": "porridge-lg",
+   "categoryId": "breakfast",
+   "name": "Porridge - LG",
+   "description": "A smooth, creamy Jamaican breakfast porridge made with fine cornmeal, warm spices, and a touch of sweetness. A comforting island favorite served hot.",
+   "basePrice": 10.89,
+   "available": true,
+   "stock": 100,
+   "lowStockThreshold": 10,
+   "spice": "mild",
+   "modifierGroups": []
+  },
+  {
+   "id": "sm-porridge",
+   "categoryId": "breakfast",
+   "name": "Sm Porridge",
+   "description": "A smooth, creamy Jamaican breakfast porridge made with fine cornmeal, warm spices, and a touch of sweetness. A comforting island favorite served hot.",
+   "basePrice": 8.0,
+   "available": true,
+   "stock": 100,
+   "lowStockThreshold": 10,
+   "spice": "mild",
+   "modifierGroups": []
+  },
+  {
+   "id": "side-callaloo-salt-fish",
+   "categoryId": "breakfast",
+   "name": "Side - Callaloo & Salt Fish",
+   "description": "Tender callaloo leaves sautéed with flaky saltfish, garlic, onions, and a hint of thyme—hearty, savory, and brimming with authentic island flavor.",
+   "basePrice": 7.0,
+   "available": true,
+   "stock": 100,
+   "lowStockThreshold": 10,
+   "spice": "mild",
+   "modifierGroups": []
+  },
+  {
+   "id": "large-soup",
+   "categoryId": "soups",
+   "name": "Large Soup",
+   "description": "Simmered with tender chicken, green banana and white yam, hearty vegetables, and soft dumplings—comforting, flavorful, and packed with island goodness.",
+   "basePrice": 10.89,
+   "available": true,
+   "stock": 100,
+   "lowStockThreshold": 10,
+   "spice": "mild",
+   "modifierGroups": []
+  },
+  {
+   "id": "small-soup",
+   "categoryId": "soups",
+   "name": "Small Soup",
+   "description": "Simmered with tender chicken, green banana and white yam, hearty vegetables, and soft dumplings—comforting, flavorful, and packed with island goodness.",
+   "basePrice": 8.0,
+   "available": true,
+   "stock": 100,
+   "lowStockThreshold": 10,
+   "spice": "mild",
+   "modifierGroups": []
+  },
+  {
+   "id": "bottled-drink",
+   "categoryId": "drinks",
+   "name": "Bottled Drink",
+   "description": "Chilled and fizzy favorites straight from the U.S.—including Coke, Sprite, Gatorade, Snapple, and more. Classic, refreshing, and perfect with any meal.",
+   "basePrice": 3.2,
+   "available": true,
+   "stock": 100,
+   "lowStockThreshold": 10,
+   "spice": "mild",
+   "modifierGroups": [
+    "drink-choice"
+   ]
+  },
+  {
+   "id": "d-g",
+   "categoryId": "drinks",
+   "name": "D&G",
+   "description": "Bursting with bold Caribbean flavor, these classic Jamaican sodas—like Kola Champagne, Pineapple, and Ginger Beer—bring sweet, fizzy refreshment in every sip.",
+   "basePrice": 3.6,
+   "available": true,
+   "stock": 100,
+   "lowStockThreshold": 10,
+   "spice": "medium",
+   "modifierGroups": [
+    "d-g-flavor-choice"
+   ]
+  },
+  {
+   "id": "grace-bottled-juice",
+   "categoryId": "drinks",
+   "name": "Grace Bottled Juice",
+   "description": "Smooth, refreshing tropical juices—bursting with real fruit flavor in every sip. It's pure island goodness in a bottle.",
+   "basePrice": 3.6,
+   "available": true,
+   "stock": 100,
+   "lowStockThreshold": 10,
+   "spice": "mild",
+   "modifierGroups": [
+    "grace-flavor-choice"
+   ]
+  },
+  {
+   "id": "irish-moss",
+   "categoryId": "drinks",
+   "name": "Irish Moss",
+   "description": "A thick, creamy Jamaican drink made with sea moss, milk, spices, and a touch of sweetness—smooth, energizing, and packed with traditional island goodness.",
+   "basePrice": 3.6,
+   "available": true,
+   "stock": 100,
+   "lowStockThreshold": 10,
+   "spice": "mild",
+   "modifierGroups": []
+  },
+  {
+   "id": "lemonade-16oz",
+   "categoryId": "drinks",
+   "name": "Lemonade 16oz",
+   "description": "Refreshing, tangy, cool, crisp and perfectly balanced for a bright island-style thirst quencher.",
+   "basePrice": 2.6,
+   "available": true,
+   "stock": 100,
+   "lowStockThreshold": 10,
+   "spice": "mild",
+   "modifierGroups": []
+  },
+  {
+   "id": "mango-punch-16oz",
+   "categoryId": "drinks",
+   "name": "Mango Punch 16oz",
+   "description": "Vibrant mango bliss—smooth, sweet, and bursting with sunny island flavor in every sip.",
+   "basePrice": 3.99,
+   "available": true,
+   "stock": 100,
+   "lowStockThreshold": 10,
+   "spice": "mild",
+   "modifierGroups": []
+  },
+  {
+   "id": "sorrel-16oz",
+   "categoryId": "drinks",
+   "name": "Sorrel 16oz",
+   "description": "Bright, tangy hibiscus tea steeped with ginger, cinnamon, and cloves—refreshing, vividly colored, and bursting with festive island spice.",
+   "basePrice": 4.2,
+   "available": true,
+   "stock": 100,
+   "lowStockThreshold": 10,
+   "spice": "medium",
+   "modifierGroups": []
+  },
+  {
+   "id": "sorrel-gallon",
+   "categoryId": "drinks",
+   "name": "Sorrel Gallon",
+   "description": "Bright, tangy hibiscus tea steeped with ginger, cinnamon, and cloves—refreshing, vividly colored, and bursting with festive island spice.",
+   "basePrice": 30.0,
+   "available": true,
+   "stock": 100,
+   "lowStockThreshold": 10,
+   "spice": "medium",
+   "modifierGroups": []
+  },
+  {
+   "id": "supligen",
+   "categoryId": "drinks",
+   "name": "Supligen",
+   "description": "Creamy, nutrient-packed malt drink fortified with vitamins and minerals—rich, smooth, and energizing for a wholesome island-style boost.",
+   "basePrice": 3.6,
+   "available": true,
+   "stock": 100,
+   "lowStockThreshold": 10,
+   "spice": "mild",
+   "modifierGroups": [
+    "supligen-flavor"
+   ]
+  },
+  {
+   "id": "ting",
+   "categoryId": "drinks",
+   "name": "Ting",
+   "description": "Bright, bubbly, and bursting with real Jamaican grapefruit flavor—Ting is a crisp, tangy soda with just the right balance of sweet and citrusy zing. Refreshing and bold, it's the island's iconic drink in a bottle.",
+   "basePrice": 3.6,
+   "available": true,
+   "stock": 100,
+   "lowStockThreshold": 10,
+   "spice": "mild",
+   "modifierGroups": []
+  },
+  {
+   "id": "water",
+   "categoryId": "drinks",
+   "name": "Water",
+   "description": "Cool Refreshing Poland Spring Water.",
+   "basePrice": 2.0,
+   "available": true,
+   "stock": 100,
+   "lowStockThreshold": 10,
+   "spice": "mild",
+   "modifierGroups": []
+  },
+  {
+   "id": "half-cheese",
+   "categoryId": "desserts",
+   "name": "1/2 Cheese",
+   "description": "Rich, bold, and unmistakably Jamaican—this firm, flavorful cheddar-style cheese is perfect with hard dough bread or tucked into a warm patty.",
+   "basePrice": 16.5,
+   "available": true,
+   "stock": 100,
+   "lowStockThreshold": 10,
+   "spice": "mild",
+   "modifierGroups": []
+  },
+  {
+   "id": "1-4-cheese",
+   "categoryId": "desserts",
+   "name": "1/4 Cheese",
+   "description": "Rich, bold, and unmistakably Jamaican—this firm, flavorful cheddar-style cheese is perfect with hard dough bread or tucked into a warm patty.",
+   "basePrice": 10.5,
+   "available": true,
+   "stock": 100,
+   "lowStockThreshold": 10,
+   "spice": "mild",
+   "modifierGroups": []
+  },
+  {
+   "id": "bun-cheese",
+   "categoryId": "desserts",
+   "name": "Bun + Cheese",
+   "description": "Spiced bun with raisins paired with a slice of cheddar cheese.",
+   "basePrice": 4.49,
+   "available": true,
+   "stock": 100,
+   "lowStockThreshold": 10,
+   "spice": "mild",
+   "modifierGroups": []
+  },
+  {
+   "id": "carrot-cake",
+   "categoryId": "desserts",
+   "name": "Carrot Cake",
+   "description": "Moist and warmly spiced, this classic carrot cake is packed with fresh grated carrots and rich flavor in every bite—simple, sweet, and satisfying.",
+   "basePrice": 3.99,
+   "available": true,
+   "stock": 100,
+   "lowStockThreshold": 10,
+   "spice": "mild",
+   "modifierGroups": []
+  },
+  {
+   "id": "cheese-slice",
+   "categoryId": "desserts",
+   "name": "Cheese Slice",
+   "description": "Rich, bold, and unmistakably Jamaican—this firm, flavorful cheddar-style cheese is perfect with hard dough bread or tucked into a warm patty.",
+   "basePrice": 2.49,
+   "available": true,
+   "stock": 100,
+   "lowStockThreshold": 10,
+   "spice": "mild",
+   "modifierGroups": []
+  },
+  {
+   "id": "rum-cake",
+   "categoryId": "desserts",
+   "name": "Rum Cake",
+   "description": "Moist, buttery sponge soaked in rich Caribbean rum and finished with a glossy caramel glaze—decadent, boozy, and utterly irresistible.",
+   "basePrice": 4.29,
+   "available": true,
+   "stock": 100,
+   "lowStockThreshold": 10,
+   "spice": "mild",
+   "modifierGroups": []
+  },
+  {
+   "id": "100-blue-mountain-coffee-4oz",
+   "categoryId": "gift-shop",
+   "name": "100% Blue Mountain Coffee 4oz",
+   "description": "Enjoy a premium 4-oz pack of authentic Blue Mountain coffee — smooth, bold, and perfect for gifting or savoring at home.",
+   "basePrice": 14.99,
+   "available": true,
+   "stock": 100,
+   "lowStockThreshold": 10,
+   "spice": "mild",
+   "modifierGroups": []
+  },
+  {
+   "id": "cd",
+   "categoryId": "gift-shop",
+   "name": "CD",
+   "description": "Founder, Owner, and Operator Phorein expresses his journey through the sweet sounds of reggae music.",
+   "basePrice": 10.0,
+   "available": true,
+   "stock": 100,
+   "lowStockThreshold": 10,
+   "spice": "mild",
+   "modifierGroups": []
+  }
+ ]
+}

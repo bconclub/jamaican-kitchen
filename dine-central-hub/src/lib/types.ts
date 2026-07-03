@@ -89,6 +89,7 @@ export interface MenuItem {
   lowStockThreshold: number;
   imageEmoji: string;
   featured: boolean; // "Best Seller" flag — drives the storefront homepage section
+  modifierGroups?: string[]; // modifier group slugs offered by this item
 }
 
 export interface StaffMember {

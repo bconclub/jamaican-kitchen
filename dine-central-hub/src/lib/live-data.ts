@@ -4,6 +4,17 @@
 import { useEffect, useState, useCallback, useId } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import type { Order, OrderStatus, MenuItem, MenuCategory, Location, Channel, Customer } from "./types";
+import previewMenu from "./preview-menu.json";
+
+// Set VITE_USE_STATIC_MENU=true to render the bundled new menu (preview parity
+// with the storefront) without the migration being applied to Supabase yet.
+const USE_STATIC_MENU = import.meta.env.VITE_USE_STATIC_MENU === "true";
+const EMOJI_PREVIEW: Record<string, string> = {
+  chicken: "🍗", oxtails: "🍖", "goat-curry": "🍛", pork: "🥩", seafood: "🐟",
+  steak: "🥩", "vegetarian-meals": "🥗", patties: "🥟", "side-orders": "🍚",
+  "sandwiches-wraps": "🥪", breakfast: "🍳", soups: "🍲", drinks: "🥤",
+  desserts: "🍰", "gift-shop": "🎁",
+};
 
 // ---------- Orders (live + realtime) ----------
 interface DbOrderItem {
@@ -305,6 +316,30 @@ export function useLiveMenu() {
   const [loading, setLoading] = useState(true);
 
   const reload = useCallback(async () => {
+    if (USE_STATIC_MENU) {
+      setCategories(previewMenu.categories as MenuCategory[]);
+      setItems(
+        (previewMenu.items as Array<Record<string, unknown>>).map((m) => ({
+          id: m.id as string,
+          categoryId: m.categoryId as string,
+          name: m.name as string,
+          description: (m.description as string) ?? "",
+          basePrice: m.basePrice as number,
+          available: m.available as boolean,
+          channelOverrides: {
+            web: { available: m.available as boolean, priceMultiplier: 1 },
+            app: { available: m.available as boolean, priceMultiplier: 1 },
+          },
+          stock: m.stock as number,
+          lowStockThreshold: m.lowStockThreshold as number,
+          imageEmoji: EMOJI_PREVIEW[m.categoryId as string] ?? "🍽️",
+          featured: false,
+          modifierGroups: (m.modifierGroups as string[]) ?? [],
+        })),
+      );
+      setLoading(false);
+      return;
+    }
     const [{ data: cats }, { data: mi }] = await Promise.all([
       supabase.from("menu_categories").select("*").order("sort_order"),
       supabase.from("menu_items").select("*").order("sort_order"),
@@ -328,6 +363,9 @@ export function useLiveMenu() {
         lowStockThreshold: m.low_stock_threshold,
         imageEmoji: EMOJI_BY_CATEGORY[catSlugById.get(m.category_id ?? "") ?? ""] ?? "🍽️",
         featured: Boolean((m as unknown as { featured?: boolean }).featured),
+        modifierGroups: Array.isArray((m as unknown as { modifier_groups?: string[] }).modifier_groups)
+          ? (m as unknown as { modifier_groups: string[] }).modifier_groups
+          : [],
       })),
     );
     setLoading(false);

@@ -56,13 +56,29 @@ export const CartSidebar = () => {
               <div className="space-y-4">
                 {items.map((item) => (
                   <div key={item.id} className="flex gap-3 bg-muted/50 rounded-lg p-3">
-                    <img
-                      src={item.image}
-                      alt={item.name}
-                      className="h-20 w-20 object-cover rounded-md"
-                    />
+                    {item.image ? (
+                      <img
+                        src={item.image}
+                        alt={item.name}
+                        className="h-20 w-20 object-cover rounded-md"
+                      />
+                    ) : (
+                      <div className="flex h-20 w-20 shrink-0 items-center justify-center rounded-md bg-gradient-to-br from-primary/20 to-secondary/20">
+                        <ShoppingBag className="h-6 w-6 text-secondary/50" />
+                      </div>
+                    )}
                     <div className="flex-1 min-w-0">
                       <h4 className="font-semibold text-sm line-clamp-1">{item.name}</h4>
+                      {item.modifiers && item.modifiers.length > 0 && (
+                        <ul className="mt-0.5 text-xs text-muted-foreground">
+                          {item.modifiers.map((m, i) => (
+                            <li key={i} className="line-clamp-1">
+                              {m.name}
+                              {m.price > 0 ? ` (+$${m.price.toFixed(2)})` : ""}
+                            </li>
+                          ))}
+                        </ul>
+                      )}
                       <div className="mt-1">
                         <SpiceLevelBadge level={item.spiceLevel} size="sm" />
                       </div>

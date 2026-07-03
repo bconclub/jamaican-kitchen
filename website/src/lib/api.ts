@@ -84,6 +84,7 @@ export interface PlaceOrderInput {
     price: number;
     spice_level?: string;
     menu_item_slug?: string;
+    modifiers?: Array<{ group?: string; name: string; price: number }>;
   }>;
   subtotal: number;
   tax: number;

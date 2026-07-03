@@ -177,6 +177,7 @@ function MenuPage() {
                       <th className="px-4 py-3">Item</th>
                       <th className="px-4 py-3">Category</th>
                       <th className="px-4 py-3 text-right">Base price</th>
+                      <th className="px-4 py-3">Options</th>
                       <th className="px-4 py-3 text-right">Stock</th>
                       <th className="px-4 py-3">Available</th>
                       <th className="px-4 py-3">Best Seller</th>
@@ -228,6 +229,20 @@ function MenuPage() {
                             onBlur={(e) => persist(m.id, { base_price: parseFloat(e.target.value) || 0 })}
                             className="h-8 w-24 ml-auto text-right tabular-nums"
                           />
+                        </td>
+                        <td className="px-4 py-3">
+                          {m.modifierGroups && m.modifierGroups.length > 0 ? (
+                            <span
+                              className="inline-flex items-center rounded-full bg-primary/10 px-2 py-0.5 text-xs font-medium text-primary"
+                              title={m.modifierGroups
+                                .map((s) => s.replace(/-/g, " ").replace(/\b\w/g, (c) => c.toUpperCase()))
+                                .join(", ")}
+                            >
+                              {m.modifierGroups.length} option{m.modifierGroups.length > 1 ? "s" : ""}
+                            </span>
+                          ) : (
+                            <span className="text-xs text-muted-foreground">—</span>
+                          )}
                         </td>
                         <td className="px-4 py-3 text-right">
                           <Input

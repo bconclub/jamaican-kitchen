@@ -1,12 +1,21 @@
 import { createContext, useContext, useState, useRef, ReactNode } from "react";
 
+export interface SelectedModifier {
+  group: string; // modifier group name (for display/grouping)
+  name: string;  // chosen option name
+  price: number; // per-unit add-on price
+}
+
 export interface CartItem {
-  id: string;
+  id: string; // line key — composite (base slug + chosen modifiers) so the same
+  // dish with different options is a separate line
+  baseId?: string; // the underlying menu item slug, for the order payload
   name: string;
-  price: number;
+  price: number; // unit price incl. selected modifier add-ons
   quantity: number;
   spiceLevel: "mild" | "medium" | "hot";
   image: string;
+  modifiers?: SelectedModifier[];
 }
 
 // Snapshot of a completed order, kept after the cart is cleared so the

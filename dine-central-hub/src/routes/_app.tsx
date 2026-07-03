@@ -12,15 +12,22 @@ export const Route = createFileRoute("/_app")({
   component: AppLayout,
 });
 
+// Local menu-preview bypass: only in dev AND only when the static-menu flag is
+// on, so the menu/UI can be reviewed without a Supabase session. Never active in
+// a production build (import.meta.env.DEV is false there).
+const PREVIEW_BYPASS =
+  import.meta.env.DEV && import.meta.env.VITE_USE_STATIC_MENU === "true";
+
 function AppLayout() {
   const { session, loading } = useAuth();
   const navigate = useNavigate();
 
   useEffect(() => {
+    if (PREVIEW_BYPASS) return;
     if (!loading && !session) navigate({ to: "/login" });
   }, [loading, session, navigate]);
 
-  if (loading || !session) {
+  if (!PREVIEW_BYPASS && (loading || !session)) {
     return (
       <div className="flex min-h-screen items-center justify-center bg-muted/30">
         <Loader2 className="h-6 w-6 animate-spin text-muted-foreground" />
