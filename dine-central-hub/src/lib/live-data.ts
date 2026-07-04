@@ -3,8 +3,9 @@
 // Supabase Realtime subscriptions so the order feed updates with no refresh.
 import { useEffect, useState, useCallback, useId } from "react";
 import { supabase } from "@/integrations/supabase/client";
-import type { Order, OrderStatus, MenuItem, MenuCategory, Location, Channel, Customer } from "./types";
+import type { Order, OrderStatus, MenuItem, MenuCategory, Location, Channel, Customer, ModifierGroupFull } from "./types";
 import previewMenu from "./preview-menu.json";
+import previewModifierGroups from "./modifier-groups.json";
 
 // Set VITE_USE_STATIC_MENU=true to render the bundled new menu (preview parity
 // with the storefront) without the migration being applied to Supabase yet.
@@ -380,4 +381,109 @@ export function useLiveMenu() {
   }, [reload]);
 
   return { items, categories, loading, reload };
+}
+
+// ---------- Modifier groups & options (add-ons manager) ----------
+// Preview mode reads/writes the bundled JSON's shape only in memory (nothing
+// persists across a reload); once migration 0003 is applied, the exact same
+// consumer (the Modifiers tab) reads/writes modifier_groups/modifier_options.
+export function useLiveModifiers() {
+  const [groups, setGroups] = useState<ModifierGroupFull[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  const reload = useCallback(async () => {
+    if (USE_STATIC_MENU) {
+      type PreviewGroup = { slug: string; name: string; required: boolean; min: number; max: number; options: { name: string; price: number }[] };
+      setGroups(
+        (previewModifierGroups as PreviewGroup[]).map((g) => ({
+          id: g.slug,
+          slug: g.slug,
+          name: g.name,
+          required: g.required,
+          min: g.min,
+          max: g.max,
+          options: g.options.map((o, i) => ({ id: `${g.slug}__${i}`, name: o.name, price: o.price })),
+        })),
+      );
+      setLoading(false);
+      return;
+    }
+    const [{ data: gs }, { data: os }] = await Promise.all([
+      supabase.from("modifier_groups").select("*").order("sort_order"),
+      supabase.from("modifier_options").select("*").order("sort_order"),
+    ]);
+    setGroups(
+      (gs ?? []).map((g) => ({
+        id: g.id,
+        slug: g.slug,
+        name: g.name,
+        required: g.required,
+        min: g.min_select,
+        max: g.max_select,
+        options: (os ?? [])
+          .filter((o) => o.group_id === g.id)
+          .map((o) => ({ id: o.id, name: o.name, price: Number(o.price) })),
+      })),
+    );
+    setLoading(false);
+  }, []);
+
+  useEffect(() => {
+    reload();
+  }, [reload]);
+
+  return { groups, loading, reload, setGroups, preview: USE_STATIC_MENU };
+}
+
+function modSlugify(name: string) {
+  const base = name.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/(^-|-$)/g, "");
+  return base || `group-${Math.random().toString(36).slice(2, 6)}`;
+}
+
+export async function createModifierGroupLive(input: { name: string; required: boolean; min: number; max: number }) {
+  const { data, error } = await supabase
+    .from("modifier_groups")
+    .insert({ slug: modSlugify(input.name), name: input.name, required: input.required, min_select: input.min, max_select: input.max } as never)
+    .select()
+    .single();
+  if (error) throw error;
+  return data;
+}
+
+export async function updateModifierGroupLive(id: string, patch: { name?: string; required?: boolean; min?: number; max?: number }) {
+  const { error } = await supabase
+    .from("modifier_groups")
+    .update({
+      ...(patch.name !== undefined ? { name: patch.name } : {}),
+      ...(patch.required !== undefined ? { required: patch.required } : {}),
+      ...(patch.min !== undefined ? { min_select: patch.min } : {}),
+      ...(patch.max !== undefined ? { max_select: patch.max } : {}),
+    } as never)
+    .eq("id", id);
+  if (error) throw error;
+}
+
+export async function deleteModifierGroupLive(id: string) {
+  const { error } = await supabase.from("modifier_groups").delete().eq("id", id);
+  if (error) throw error;
+}
+
+export async function createModifierOptionLive(groupId: string, input: { name: string; price: number }) {
+  const { data, error } = await supabase
+    .from("modifier_options")
+    .insert({ group_id: groupId, name: input.name, price: input.price } as never)
+    .select()
+    .single();
+  if (error) throw error;
+  return data;
+}
+
+export async function updateModifierOptionLive(id: string, patch: { name?: string; price?: number }) {
+  const { error } = await supabase.from("modifier_options").update(patch as never).eq("id", id);
+  if (error) throw error;
+}
+
+export async function deleteModifierOptionLive(id: string) {
+  const { error } = await supabase.from("modifier_options").delete().eq("id", id);
+  if (error) throw error;
 }

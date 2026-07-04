@@ -203,6 +203,43 @@ export type Database = {
         Update: Partial<{ id: string; user_id: string; role: "owner" | "manager" | "staff" | "developer" }>
         Relationships: []
       }
+      modifier_groups: {
+        Row: {
+          id: string
+          slug: string
+          name: string
+          required: boolean
+          min_select: number
+          max_select: number
+          multi_different: boolean
+          multi_same: boolean
+          sort_order: number
+          created_at: string
+        }
+        Insert: { slug: string; name: string } & Partial<Database["public"]["Tables"]["modifier_groups"]["Row"]>
+        Update: Partial<Database["public"]["Tables"]["modifier_groups"]["Row"]>
+        Relationships: []
+      }
+      modifier_options: {
+        Row: {
+          id: string
+          group_id: string
+          name: string
+          price: number
+          sort_order: number
+        }
+        Insert: { group_id: string; name: string } & Partial<Database["public"]["Tables"]["modifier_options"]["Row"]>
+        Update: Partial<Database["public"]["Tables"]["modifier_options"]["Row"]>
+        Relationships: [
+          {
+            foreignKeyName: "modifier_options_group_id_fkey"
+            columns: ["group_id"]
+            isOneToOne: false
+            referencedRelation: "modifier_groups"
+            referencedColumns: ["id"]
+          }
+        ]
+      }
     }
     Views: {
       [_ in never]: never

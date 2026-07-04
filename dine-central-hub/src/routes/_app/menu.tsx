@@ -23,23 +23,21 @@ import {
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { Sheet, SheetContent, SheetHeader, SheetTitle } from "@/components/ui/sheet";
 import { CHANNEL_META } from "@/lib/mock-data";
-import { useLiveMenu } from "@/lib/live-data";
+import {
+  useLiveMenu,
+  useLiveModifiers,
+  createModifierGroupLive,
+  updateModifierGroupLive,
+  deleteModifierGroupLive,
+  createModifierOptionLive,
+  updateModifierOptionLive,
+  deleteModifierOptionLive,
+} from "@/lib/live-data";
 import { supabase } from "@/integrations/supabase/client";
-import type { Channel, MenuItem } from "@/lib/types";
-import modifierGroupsData from "@/lib/modifier-groups.json";
+import type { Channel, MenuItem, ModifierGroupFull } from "@/lib/types";
 import { PageHeader, formatMoney } from "@/components/PageHeader";
-import { Plus, Search, Trash2, FolderPlus, Globe, PartyPopper, Info, Star, Pencil, UtensilsCrossed } from "lucide-react";
+import { Plus, Search, Trash2, FolderPlus, Globe, PartyPopper, Info, Star, Pencil, UtensilsCrossed, X, Layers } from "lucide-react";
 import { toast } from "sonner";
-
-interface ModifierGroupRef {
-  slug: string;
-  name: string;
-  required: boolean;
-  min: number;
-  max: number;
-  options: { name: string; price: number }[];
-}
-const MODIFIER_GROUPS = modifierGroupsData as ModifierGroupRef[];
 
 // In static-menu preview, edits update the on-screen list only (no Supabase write).
 const PREVIEW_MENU = import.meta.env.VITE_USE_STATIC_MENU === "true";
@@ -62,11 +60,18 @@ function slugify(name: string) {
   return `${base || "item"}-${Math.random().toString(36).slice(2, 6)}`;
 }
 
+function slugifyGroup(name: string) {
+  const base = name.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/(^-|-$)/g, "");
+  return base || `group-${Math.random().toString(36).slice(2, 6)}`;
+}
+
 function MenuPage() {
   const { items: liveItems, categories: CATEGORIES, reload } = useLiveMenu();
+  const { groups: modGroups, setGroups: setModGroups, preview: modPreview } = useLiveModifiers();
   const [cat, setCat] = useState<string>("all");
   const [q, setQ] = useState("");
-  const [tab, setTab] = useState<"base" | Channel>("base");
+  const [modFilter, setModFilter] = useState<string | null>(null);
+  const [tab, setTab] = useState<"base" | "modifiers" | Channel>("base");
   const [items, setItems] = useState<MenuItem[]>([]);
 
   // Right-side product editor
@@ -126,11 +131,17 @@ function MenuPage() {
     setItems(liveItems.map((m) => ({ ...m, channelOverrides: ensureOverrides(m) })));
   }, [liveItems]);
 
+  // Distinct photos already used across the menu — lets staff reuse an existing
+  // shot instead of hunting for a URL (a lightweight "gallery" until real uploads).
+  const gallery = [...new Set(items.map((m) => m.image).filter((u): u is string => !!u))];
+
   const filtered = items.filter(
     (m) =>
       (cat === "all" || m.categoryId === cat) &&
-      m.name.toLowerCase().includes(q.toLowerCase()),
+      m.name.toLowerCase().includes(q.toLowerCase()) &&
+      (!modFilter || (m.modifierGroups ?? []).includes(modFilter)),
   );
+  const modFilterGroup = modFilter ? modGroups.find((g) => g.slug === modFilter) : null;
 
   const updateItem = (id: string, patch: Partial<MenuItem>) =>
     setItems((prev) => prev.map((m) => (m.id === id ? { ...m, ...patch } : m)));
@@ -185,6 +196,81 @@ function MenuPage() {
     reload();
   };
 
+  // ---- Modifier groups & options (add-ons manager) ----
+  const usageCount = (slug: string) => items.filter((m) => (m.modifierGroups ?? []).includes(slug)).length;
+
+  const addGroup = async () => {
+    const name = window.prompt("New add-on group name (e.g. \"Extra Toppings\")");
+    if (!name?.trim()) return;
+    if (modPreview) {
+      const slug = slugifyGroup(name);
+      setModGroups((prev) => [...prev, { id: slug, slug, name: name.trim(), required: false, min: 0, max: 1, options: [] }]);
+      return toast.success(`"${name.trim()}" added (preview — not written to DB)`);
+    }
+    try {
+      const row = await createModifierGroupLive({ name: name.trim(), required: false, min: 0, max: 1 });
+      setModGroups((prev) => [...prev, { id: row.id, slug: row.slug, name: row.name, required: row.required, min: row.min_select, max: row.max_select, options: [] }]);
+      toast.success(`"${name.trim()}" added`);
+    } catch {
+      toast.error("Couldn't create add-on group");
+    }
+  };
+
+  const patchGroup = (id: string, patch: Partial<ModifierGroupFull>) => {
+    setModGroups((prev) => prev.map((g) => (g.id === id ? { ...g, ...patch } : g)));
+    if (!modPreview) void updateModifierGroupLive(id, patch).catch(() => toast.error("Couldn't save add-on group"));
+  };
+
+  const removeGroup = async (g: ModifierGroupFull) => {
+    if (!window.confirm(`Delete "${g.name}"? Items offering it will lose this add-on.`)) return;
+    setModGroups((prev) => prev.filter((x) => x.id !== g.id));
+    if (modFilter === g.slug) setModFilter(null);
+    if (!modPreview) {
+      try {
+        await deleteModifierGroupLive(g.id);
+        toast.success(`"${g.name}" deleted`);
+      } catch {
+        toast.error("Couldn't delete add-on group");
+      }
+    } else {
+      toast.success(`"${g.name}" deleted (preview)`);
+    }
+  };
+
+  const addOption = async (g: ModifierGroupFull) => {
+    const name = window.prompt(`New option in "${g.name}" (e.g. "Extra Cheese")`);
+    if (!name?.trim()) return;
+    if (modPreview) {
+      const id = `${g.slug}__${Math.random().toString(36).slice(2, 6)}`;
+      setModGroups((prev) => prev.map((x) => (x.id === g.id ? { ...x, options: [...x.options, { id, name: name.trim(), price: 0 }] } : x)));
+      return;
+    }
+    try {
+      const row = await createModifierOptionLive(g.id, { name: name.trim(), price: 0 });
+      setModGroups((prev) => prev.map((x) => (x.id === g.id ? { ...x, options: [...x.options, { id: row.id, name: row.name, price: Number(row.price) }] } : x)));
+    } catch {
+      toast.error("Couldn't add option");
+    }
+  };
+
+  const patchOption = (groupId: string, optId: string, patch: { name?: string; price?: number }) => {
+    setModGroups((prev) =>
+      prev.map((g) => (g.id === groupId ? { ...g, options: g.options.map((o) => (o.id === optId ? { ...o, ...patch } : o)) } : g)),
+    );
+    if (!modPreview) void updateModifierOptionLive(optId, patch).catch(() => toast.error("Couldn't save option"));
+  };
+
+  const removeOption = async (groupId: string, optId: string) => {
+    setModGroups((prev) => prev.map((g) => (g.id === groupId ? { ...g, options: g.options.filter((o) => o.id !== optId) } : g)));
+    if (!modPreview) {
+      try {
+        await deleteModifierOptionLive(optId);
+      } catch {
+        toast.error("Couldn't delete option");
+      }
+    }
+  };
+
   return (
     <>
       <PageHeader
@@ -219,6 +305,9 @@ function MenuPage() {
       <Tabs value={tab} onValueChange={(v) => setTab(v as typeof tab)} className="w-full">
         <TabsList className="flex flex-wrap h-auto mb-3">
           <TabsTrigger value="base">Base</TabsTrigger>
+          <TabsTrigger value="modifiers">
+            <Layers className="mr-1 h-3.5 w-3.5" /> Add-ons
+          </TabsTrigger>
           {CHANNELS.map((ch) => (
             <TabsTrigger key={ch} value={ch}>
               {CHANNEL_META[ch].label}
@@ -227,6 +316,19 @@ function MenuPage() {
         </TabsList>
 
         <TabsContent value="base" className="mt-0">
+          {modFilterGroup && (
+            <div className="mb-3 flex items-center gap-2 rounded-lg border border-primary/30 bg-primary/5 px-3 py-2 text-sm">
+              <Layers className="h-4 w-4 text-primary" />
+              Showing items with <span className="font-medium">{modFilterGroup.name}</span>
+              <button
+                type="button"
+                onClick={() => setModFilter(null)}
+                className="ml-auto flex items-center gap-1 text-xs text-muted-foreground hover:text-foreground"
+              >
+                Clear <X className="h-3.5 w-3.5" />
+              </button>
+            </div>
+          )}
           <Card>
             <CardContent className="p-0">
               <div className="overflow-x-auto">
@@ -248,7 +350,23 @@ function MenuPage() {
                       <tr key={m.id} className="border-b hover:bg-muted/40">
                         <td className="px-4 py-3">
                           <div className="flex items-center gap-3">
-                            <span className="text-xl">{m.imageEmoji}</span>
+                            <button
+                              type="button"
+                              onClick={() => openEdit(m)}
+                              title="Click to edit photo"
+                              className="group relative h-11 w-11 shrink-0 overflow-hidden rounded-md border border-border"
+                            >
+                              {m.image ? (
+                                <img src={m.image} alt={m.name} className="h-full w-full object-cover" />
+                              ) : (
+                                <div className="flex h-full w-full items-center justify-center bg-gradient-to-br from-primary/15 to-secondary/15 text-base">
+                                  {m.imageEmoji}
+                                </div>
+                              )}
+                              <span className="absolute inset-0 flex items-center justify-center bg-black/50 opacity-0 transition-opacity group-hover:opacity-100">
+                                <Pencil className="h-3.5 w-3.5 text-white" />
+                              </span>
+                            </button>
                             <div>
                               <Input
                                 value={m.name}
@@ -354,6 +472,106 @@ function MenuPage() {
               </div>
             </CardContent>
           </Card>
+        </TabsContent>
+
+        <TabsContent value="modifiers" className="mt-0">
+          <div className="mb-3 flex items-center justify-between">
+            <p className="text-sm text-muted-foreground">
+              Add-on groups offered across the menu — rename, reprice, add options, or retire a group.
+              {modPreview && " Changes here show in this session only until the DB migration is applied."}
+            </p>
+            <Button onClick={addGroup}>
+              <Plus className="mr-1 h-4 w-4" /> New group
+            </Button>
+          </div>
+          <div className="grid gap-3 md:grid-cols-2">
+            {modGroups.map((g) => {
+              const count = usageCount(g.slug);
+              return (
+                <Card key={g.id}>
+                  <CardContent className="p-4">
+                    <div className="mb-3 flex items-start justify-between gap-2">
+                      <Input
+                        value={g.name}
+                        onChange={(e) => patchGroup(g.id, { name: e.target.value })}
+                        className="h-8 max-w-[220px] font-medium"
+                      />
+                      <div className="flex items-center gap-1">
+                        <button
+                          type="button"
+                          onClick={() => { setModFilter(g.slug); setTab("base"); }}
+                          className="rounded-full bg-muted px-2.5 py-1 text-xs font-medium text-muted-foreground hover:bg-muted/70"
+                          title={`View the ${count} item${count === 1 ? "" : "s"} offering this add-on`}
+                        >
+                          {count} item{count === 1 ? "" : "s"}
+                        </button>
+                        <Button variant="ghost" size="icon" className="h-7 w-7 text-destructive hover:text-destructive" onClick={() => removeGroup(g)}>
+                          <Trash2 className="h-3.5 w-3.5" />
+                        </Button>
+                      </div>
+                    </div>
+
+                    <div className="mb-3 flex flex-wrap items-center gap-3 text-xs">
+                      <label className="flex items-center gap-1.5">
+                        <Switch checked={g.required} onCheckedChange={(v) => patchGroup(g.id, { required: v })} className="scale-90" />
+                        Required
+                      </label>
+                      <label className="flex items-center gap-1.5 text-muted-foreground">
+                        Min
+                        <Input
+                          type="number"
+                          min={0}
+                          value={g.min}
+                          onChange={(e) => patchGroup(g.id, { min: parseInt(e.target.value) || 0 })}
+                          className="h-7 w-14 text-center"
+                        />
+                      </label>
+                      <label className="flex items-center gap-1.5 text-muted-foreground">
+                        Max
+                        <Input
+                          type="number"
+                          min={1}
+                          value={g.max}
+                          onChange={(e) => patchGroup(g.id, { max: parseInt(e.target.value) || 1 })}
+                          className="h-7 w-14 text-center"
+                        />
+                      </label>
+                    </div>
+
+                    <div className="space-y-1.5">
+                      {g.options.map((o) => (
+                        <div key={o.id} className="flex items-center gap-2">
+                          <Input
+                            value={o.name}
+                            onChange={(e) => patchOption(g.id, o.id, { name: e.target.value })}
+                            className="h-7 flex-1 text-sm"
+                          />
+                          <div className="flex items-center gap-1 text-sm text-muted-foreground">
+                            <span>+$</span>
+                            <Input
+                              type="number"
+                              step="0.01"
+                              min={0}
+                              value={o.price}
+                              onChange={(e) => patchOption(g.id, o.id, { price: parseFloat(e.target.value) || 0 })}
+                              className="h-7 w-20 text-right tabular-nums"
+                            />
+                          </div>
+                          <Button variant="ghost" size="icon" className="h-7 w-7 text-destructive hover:text-destructive" onClick={() => removeOption(g.id, o.id)}>
+                            <X className="h-3.5 w-3.5" />
+                          </Button>
+                        </div>
+                      ))}
+                      {g.options.length === 0 && <p className="text-xs text-muted-foreground">No options yet.</p>}
+                    </div>
+                    <Button variant="outline" size="sm" className="mt-3 h-7 text-xs" onClick={() => addOption(g)}>
+                      <Plus className="mr-1 h-3 w-3" /> Add option
+                    </Button>
+                  </CardContent>
+                </Card>
+              );
+            })}
+          </div>
         </TabsContent>
 
         {CHANNELS.map((ch) => (
@@ -518,6 +736,26 @@ function MenuPage() {
                       className="flex-1"
                     />
                   </div>
+                  {gallery.length > 0 && (
+                    <div>
+                      <p className="mb-1.5 text-xs text-muted-foreground">Or reuse a photo already on the menu</p>
+                      <div className="flex flex-wrap gap-1.5">
+                        {gallery.map((url) => (
+                          <button
+                            key={url}
+                            type="button"
+                            onClick={() => patchDraft({ image: url })}
+                            title="Use this photo"
+                            className={`h-11 w-11 shrink-0 overflow-hidden rounded-md border-2 transition-colors ${
+                              editing.image === url ? "border-primary" : "border-transparent hover:border-border"
+                            }`}
+                          >
+                            <img src={url} alt="" className="h-full w-full object-cover" />
+                          </button>
+                        ))}
+                      </div>
+                    </div>
+                  )}
                 </div>
 
                 <div className="space-y-1.5">
@@ -599,7 +837,7 @@ function MenuPage() {
                     </span>
                   </div>
                   <div className="space-y-1.5">
-                    {MODIFIER_GROUPS.map((g) => {
+                    {modGroups.map((g) => {
                       const on = (editing.modifierGroups ?? []).includes(g.slug);
                       return (
                         <button

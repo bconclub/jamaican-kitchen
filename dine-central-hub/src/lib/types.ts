@@ -94,6 +94,22 @@ export interface MenuItem {
   modifierGroups?: string[]; // modifier group slugs offered by this item
 }
 
+export interface ModifierOption {
+  id: string; // uuid once live; slug-index key in preview mode
+  name: string;
+  price: number;
+}
+
+export interface ModifierGroupFull {
+  id: string; // uuid once live; slug in preview mode
+  slug: string;
+  name: string;
+  required: boolean;
+  min: number;
+  max: number;
+  options: ModifierOption[];
+}
+
 export interface StaffMember {
   id: string;
   name: string;

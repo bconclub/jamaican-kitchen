@@ -1,5 +1,21 @@
 # Changelog
 
+## 2026-07-04 · v0.0.2 — DoorDash-style menu: photo thumbnails + full add-ons manager
+
+- Menu rows now show the real product photo (thumbnail, hover-to-edit) instead of a category emoji;
+  falls back to a branded placeholder for items with no photo yet.
+- Edit panel gained a lightweight photo gallery — reuse any image already used elsewhere on the menu
+  with one click, instead of hunting for a URL every time.
+- New "Add-ons" tab on the Menu page: full CRUD for modifier groups and their options — rename a
+  group, toggle Required, set Min/Max, add/rename/reprice/delete options, add or retire whole groups.
+- Usage click-through: each group shows "N items" — click it to jump to the Base tab pre-filtered to
+  exactly the items offering that add-on (with a clear-filter chip).
+- Backend: `useLiveModifiers()` hook + CRUD functions in `live-data.ts` read/write
+  `modifier_groups`/`modifier_options` directly (schema from migration 0003); in local preview mode the
+  same UI runs off the bundled JSON so it's fully clickable before the migration is applied. Added the
+  two tables to the hand-maintained Supabase types mirror so both modes typecheck.
+- Versioning: v0.0.2 (see VERSION / scripts/bump-version.mjs — bump before every push, per new convention).
+
 ## 2026-07-04 · Admin product editor — right-side panel to edit a product + its add-ons
 
 - dine-central-hub Menu page: each row gets a pencil "Edit product" button that opens a right-side
