@@ -88,6 +88,8 @@ export interface MenuItem {
   stock: number;
   lowStockThreshold: number;
   imageEmoji: string;
+  image?: string; // photo URL (menu_items.image)
+  spiceLevel?: "mild" | "medium" | "hot";
   featured: boolean; // "Best Seller" flag — drives the storefront homepage section
   modifierGroups?: string[]; // modifier group slugs offered by this item
 }

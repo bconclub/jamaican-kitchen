@@ -21,13 +21,28 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
+import { Sheet, SheetContent, SheetHeader, SheetTitle } from "@/components/ui/sheet";
 import { CHANNEL_META } from "@/lib/mock-data";
 import { useLiveMenu } from "@/lib/live-data";
 import { supabase } from "@/integrations/supabase/client";
 import type { Channel, MenuItem } from "@/lib/types";
+import modifierGroupsData from "@/lib/modifier-groups.json";
 import { PageHeader, formatMoney } from "@/components/PageHeader";
-import { Plus, Search, Trash2, FolderPlus, Globe, PartyPopper, Info, Star } from "lucide-react";
+import { Plus, Search, Trash2, FolderPlus, Globe, PartyPopper, Info, Star, Pencil, UtensilsCrossed } from "lucide-react";
 import { toast } from "sonner";
+
+interface ModifierGroupRef {
+  slug: string;
+  name: string;
+  required: boolean;
+  min: number;
+  max: number;
+  options: { name: string; price: number }[];
+}
+const MODIFIER_GROUPS = modifierGroupsData as ModifierGroupRef[];
+
+// In static-menu preview, edits update the on-screen list only (no Supabase write).
+const PREVIEW_MENU = import.meta.env.VITE_USE_STATIC_MENU === "true";
 
 export const Route = createFileRoute("/_app/menu")({ component: MenuPage });
 
@@ -53,6 +68,50 @@ function MenuPage() {
   const [q, setQ] = useState("");
   const [tab, setTab] = useState<"base" | Channel>("base");
   const [items, setItems] = useState<MenuItem[]>([]);
+
+  // Right-side product editor
+  const [editing, setEditing] = useState<MenuItem | null>(null);
+  const [savingEdit, setSavingEdit] = useState(false);
+  const openEdit = (m: MenuItem) => setEditing({ ...m, modifierGroups: [...(m.modifierGroups ?? [])] });
+  const patchDraft = (patch: Partial<MenuItem>) => setEditing((d) => (d ? { ...d, ...patch } : d));
+  const toggleGroup = (slug: string) =>
+    setEditing((d) => {
+      if (!d) return d;
+      const set = new Set(d.modifierGroups ?? []);
+      if (set.has(slug)) set.delete(slug);
+      else set.add(slug);
+      return { ...d, modifierGroups: [...set] };
+    });
+  const saveEdit = async () => {
+    if (!editing) return;
+    const d = editing;
+    setSavingEdit(true);
+    setItems((prev) => prev.map((m) => (m.id === d.id ? d : m)));
+    if (!PREVIEW_MENU) {
+      const { error } = await supabase
+        .from("menu_items")
+        .update({
+          name: d.name,
+          description: d.description || null,
+          base_price: d.basePrice,
+          image: d.image || null,
+          spice_level: d.spiceLevel ?? "mild",
+          category_id: d.categoryId,
+          stock: d.stock,
+          available: d.available,
+          featured: d.featured,
+          modifier_groups: d.modifierGroups ?? [],
+        } as never)
+        .eq("id", d.id);
+      setSavingEdit(false);
+      if (error) return toast.error("Couldn't save changes");
+      toast.success(`${d.name} saved`);
+    } else {
+      setSavingEdit(false);
+      toast.success(`${d.name} updated (preview — not written to DB)`);
+    }
+    setEditing(null);
+  };
 
   // New-item dialog
   const [newOpen, setNewOpen] = useState(false);
@@ -279,9 +338,14 @@ function MenuPage() {
                           </button>
                         </td>
                         <td className="px-4 py-3 text-right">
-                          <Button variant="ghost" size="icon" className="h-8 w-8 text-destructive hover:text-destructive" onClick={() => deleteItem(m)}>
-                            <Trash2 className="h-4 w-4" />
-                          </Button>
+                          <div className="flex justify-end gap-1">
+                            <Button variant="ghost" size="icon" className="h-8 w-8" onClick={() => openEdit(m)} title="Edit product">
+                              <Pencil className="h-4 w-4" />
+                            </Button>
+                            <Button variant="ghost" size="icon" className="h-8 w-8 text-destructive hover:text-destructive" onClick={() => deleteItem(m)} title="Delete">
+                              <Trash2 className="h-4 w-4" />
+                            </Button>
+                          </div>
                         </td>
                       </tr>
                     ))}
@@ -425,6 +489,167 @@ function MenuPage() {
           </DialogFooter>
         </DialogContent>
       </Dialog>
+
+      {/* Right-side product editor */}
+      <Sheet open={!!editing} onOpenChange={(o) => !o && setEditing(null)}>
+        <SheetContent className="flex w-full flex-col gap-0 overflow-y-auto p-0 sm:max-w-md">
+          {editing && (
+            <>
+              <SheetHeader className="border-b p-4 text-left">
+                <SheetTitle>Edit product</SheetTitle>
+              </SheetHeader>
+
+              <div className="flex-1 space-y-4 overflow-y-auto p-4">
+                {/* Image */}
+                <div className="space-y-2">
+                  <Label>Image</Label>
+                  <div className="flex items-center gap-3">
+                    {editing.image ? (
+                      <img src={editing.image} alt={editing.name} className="h-20 w-20 rounded-md object-cover" />
+                    ) : (
+                      <div className="flex h-20 w-20 shrink-0 items-center justify-center rounded-md bg-gradient-to-br from-primary/20 to-secondary/20">
+                        <UtensilsCrossed className="h-6 w-6 text-muted-foreground/60" />
+                      </div>
+                    )}
+                    <Input
+                      value={editing.image ?? ""}
+                      onChange={(e) => patchDraft({ image: e.target.value })}
+                      placeholder="https://… image URL"
+                      className="flex-1"
+                    />
+                  </div>
+                </div>
+
+                <div className="space-y-1.5">
+                  <Label>Name</Label>
+                  <Input value={editing.name} onChange={(e) => patchDraft({ name: e.target.value })} />
+                </div>
+
+                <div className="space-y-1.5">
+                  <Label>Description</Label>
+                  <Textarea
+                    value={editing.description}
+                    onChange={(e) => patchDraft({ description: e.target.value })}
+                    rows={3}
+                  />
+                </div>
+
+                <div className="grid grid-cols-2 gap-3">
+                  <div className="space-y-1.5">
+                    <Label>Base price</Label>
+                    <Input
+                      type="number"
+                      step="0.01"
+                      min={0}
+                      value={editing.basePrice}
+                      onChange={(e) => patchDraft({ basePrice: parseFloat(e.target.value) || 0 })}
+                    />
+                  </div>
+                  <div className="space-y-1.5">
+                    <Label>Spice level</Label>
+                    <Select value={editing.spiceLevel ?? "mild"} onValueChange={(v) => patchDraft({ spiceLevel: v as MenuItem["spiceLevel"] })}>
+                      <SelectTrigger><SelectValue /></SelectTrigger>
+                      <SelectContent>
+                        {SPICE.map((s) => <SelectItem key={s} value={s} className="capitalize">{s}</SelectItem>)}
+                      </SelectContent>
+                    </Select>
+                  </div>
+                </div>
+
+                <div className="space-y-1.5">
+                  <Label>Category</Label>
+                  <Select value={editing.categoryId} onValueChange={(v) => patchDraft({ categoryId: v })}>
+                    <SelectTrigger><SelectValue placeholder="Category" /></SelectTrigger>
+                    <SelectContent>
+                      {CATEGORIES.map((c) => <SelectItem key={c.id} value={c.id}>{c.name}</SelectItem>)}
+                    </SelectContent>
+                  </Select>
+                </div>
+
+                <div className="grid grid-cols-2 gap-3">
+                  <div className="space-y-1.5">
+                    <Label>Stock</Label>
+                    <Input
+                      type="number"
+                      min={0}
+                      value={editing.stock}
+                      onChange={(e) => patchDraft({ stock: parseInt(e.target.value) || 0 })}
+                    />
+                  </div>
+                  <div className="flex items-end gap-4 pb-1">
+                    <label className="flex items-center gap-2 text-sm">
+                      <Switch checked={editing.available} onCheckedChange={(v) => patchDraft({ available: v })} />
+                      Available
+                    </label>
+                  </div>
+                </div>
+
+                <label className="flex items-center gap-2 text-sm">
+                  <Switch checked={editing.featured} onCheckedChange={(v) => patchDraft({ featured: v })} />
+                  <Star className={`h-4 w-4 ${editing.featured ? "fill-primary text-primary" : "text-muted-foreground/50"}`} />
+                  Best Seller
+                </label>
+
+                {/* Add-ons / modifier groups */}
+                <div className="space-y-2 border-t pt-4">
+                  <div className="flex items-center justify-between">
+                    <Label>Add-ons &amp; options</Label>
+                    <span className="text-xs text-muted-foreground">
+                      {(editing.modifierGroups?.length ?? 0)} selected
+                    </span>
+                  </div>
+                  <div className="space-y-1.5">
+                    {MODIFIER_GROUPS.map((g) => {
+                      const on = (editing.modifierGroups ?? []).includes(g.slug);
+                      return (
+                        <button
+                          key={g.slug}
+                          type="button"
+                          onClick={() => toggleGroup(g.slug)}
+                          className={`flex w-full items-center justify-between rounded-lg border p-2.5 text-left transition-colors ${
+                            on ? "border-primary bg-primary/5" : "border-border"
+                          }`}
+                        >
+                          <span className="flex items-center gap-2.5">
+                            <span
+                              className={`flex h-4 w-4 shrink-0 items-center justify-center rounded border-2 ${
+                                on ? "border-primary bg-primary" : "border-muted-foreground/40"
+                              }`}
+                            >
+                              {on && <span className="h-1.5 w-1.5 rounded-full bg-primary-foreground" />}
+                            </span>
+                            <span className="text-sm">
+                              {g.name}
+                              {g.required && <span className="ml-1.5 text-xs text-secondary">required</span>}
+                            </span>
+                          </span>
+                          <span className="text-xs text-muted-foreground">{g.options.length} opt</span>
+                        </button>
+                      );
+                    })}
+                  </div>
+                </div>
+              </div>
+
+              <div className="border-t p-4">
+                {PREVIEW_MENU && (
+                  <p className="mb-2 flex items-center gap-1.5 text-xs text-muted-foreground">
+                    <Info className="h-3.5 w-3.5" /> Preview mode — changes show here but aren't written to the database yet.
+                  </p>
+                )}
+                <div className="flex gap-2">
+                  <Button variant="outline" className="flex-1" onClick={() => setEditing(null)}>
+                    Cancel
+                  </Button>
+                  <Button className="flex-1" onClick={saveEdit} disabled={savingEdit}>
+                    {savingEdit ? "Saving…" : "Save changes"}
+                  </Button>
+                </div>
+              </div>
+            </>
+          )}
+        </SheetContent>
+      </Sheet>
     </>
   );
 }

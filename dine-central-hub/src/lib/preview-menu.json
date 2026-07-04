@@ -72,6 +72,7 @@
    "stock": 100,
    "lowStockThreshold": 10,
    "spice": "medium",
+   "image": "https://images.unsplash.com/photo-1585937421612-70a008356fbe?w=400&q=80",
    "modifierGroups": [
     "extra-sauce"
    ]
@@ -86,6 +87,7 @@
    "stock": 100,
    "lowStockThreshold": 10,
    "spice": "hot",
+   "image": "https://images.unsplash.com/photo-1532550907401-a500c9a57435?w=400&q=80",
    "modifierGroups": [
     "jerk-sauce-choice",
     "extra-sauce",
@@ -102,6 +104,7 @@
    "stock": 100,
    "lowStockThreshold": 10,
    "spice": "mild",
+   "image": "https://images.unsplash.com/photo-1598515214211-89d3c73ae83b?w=400&q=80",
    "modifierGroups": [
     "extra-sauce"
    ]
@@ -116,6 +119,7 @@
    "stock": 100,
    "lowStockThreshold": 10,
    "spice": "medium",
+   "image": "https://images.unsplash.com/photo-1585937421612-70a008356fbe?w=400&q=80",
    "modifierGroups": [
     "extra-sauce"
    ]
@@ -130,6 +134,7 @@
    "stock": 100,
    "lowStockThreshold": 10,
    "spice": "hot",
+   "image": "https://images.unsplash.com/photo-1532550907401-a500c9a57435?w=400&q=80",
    "modifierGroups": [
     "jerk-sauce-choice",
     "extra-sauce",
@@ -146,6 +151,7 @@
    "stock": 100,
    "lowStockThreshold": 10,
    "spice": "mild",
+   "image": "https://images.unsplash.com/photo-1598515214211-89d3c73ae83b?w=400&q=80",
    "modifierGroups": [
     "extra-sauce"
    ]
@@ -160,6 +166,7 @@
    "stock": 100,
    "lowStockThreshold": 10,
    "spice": "medium",
+   "image": "https://images.unsplash.com/photo-1585937421612-70a008356fbe?w=400&q=80",
    "modifierGroups": [
     "side-selection",
     "extra-sauce"
@@ -175,6 +182,7 @@
    "stock": 100,
    "lowStockThreshold": 10,
    "spice": "medium",
+   "image": "https://images.unsplash.com/photo-1585937421612-70a008356fbe?w=400&q=80",
    "modifierGroups": [
     "side-selection",
     "extra-sauce"
@@ -190,6 +198,7 @@
    "stock": 100,
    "lowStockThreshold": 10,
    "spice": "medium",
+   "image": "https://images.unsplash.com/photo-1585937421612-70a008356fbe?w=400&q=80",
    "modifierGroups": [
     "side-selection",
     "extra-sauce"
@@ -205,6 +214,7 @@
    "stock": 100,
    "lowStockThreshold": 10,
    "spice": "mild",
+   "image": "https://images.unsplash.com/photo-1626645738196-c2a7c87a8f58?w=400&q=80",
    "modifierGroups": [
     "side-selection",
     "extra-sauce"
@@ -220,6 +230,7 @@
    "stock": 100,
    "lowStockThreshold": 10,
    "spice": "mild",
+   "image": "https://images.unsplash.com/photo-1626645738196-c2a7c87a8f58?w=400&q=80",
    "modifierGroups": [
     "side-selection",
     "extra-sauce"
@@ -235,6 +246,7 @@
    "stock": 100,
    "lowStockThreshold": 10,
    "spice": "mild",
+   "image": "https://images.unsplash.com/photo-1626645738196-c2a7c87a8f58?w=400&q=80",
    "modifierGroups": [
     "side-selection",
     "extra-sauce"
@@ -250,6 +262,7 @@
    "stock": 100,
    "lowStockThreshold": 10,
    "spice": "mild",
+   "image": "https://images.unsplash.com/photo-1598515214211-89d3c73ae83b?w=400&q=80",
    "modifierGroups": [
     "side-selection",
     "extra-sauce"
@@ -265,6 +278,7 @@
    "stock": 100,
    "lowStockThreshold": 10,
    "spice": "mild",
+   "image": "https://images.unsplash.com/photo-1598515214211-89d3c73ae83b?w=400&q=80",
    "modifierGroups": [
     "side-selection",
     "extra-sauce"
@@ -280,6 +294,7 @@
    "stock": 100,
    "lowStockThreshold": 10,
    "spice": "mild",
+   "image": "https://images.unsplash.com/photo-1598515214211-89d3c73ae83b?w=400&q=80",
    "modifierGroups": [
     "side-selection",
     "extra-sauce"
@@ -295,6 +310,7 @@
    "stock": 100,
    "lowStockThreshold": 10,
    "spice": "medium",
+   "image": "https://images.unsplash.com/photo-1585937421612-70a008356fbe?w=400&q=80",
    "modifierGroups": [
     "side-selection",
     "extra-sauce"
@@ -310,6 +326,7 @@
    "stock": 100,
    "lowStockThreshold": 10,
    "spice": "medium",
+   "image": "https://images.unsplash.com/photo-1585937421612-70a008356fbe?w=400&q=80",
    "modifierGroups": [
     "side-selection",
     "extra-sauce"
@@ -325,6 +342,7 @@
    "stock": 100,
    "lowStockThreshold": 10,
    "spice": "medium",
+   "image": "https://images.unsplash.com/photo-1585937421612-70a008356fbe?w=400&q=80",
    "modifierGroups": [
     "side-selection",
     "extra-sauce"
@@ -340,6 +358,7 @@
    "stock": 100,
    "lowStockThreshold": 10,
    "spice": "mild",
+   "image": "https://images.unsplash.com/photo-1626645738196-c2a7c87a8f58?w=400&q=80",
    "modifierGroups": [
     "ketchup-option",
     "gravy-option"
@@ -355,6 +374,7 @@
    "stock": 100,
    "lowStockThreshold": 10,
    "spice": "mild",
+   "image": "https://images.unsplash.com/photo-1626645738196-c2a7c87a8f58?w=400&q=80",
    "modifierGroups": [
     "ketchup-option",
     "gravy-option"
@@ -370,6 +390,7 @@
    "stock": 100,
    "lowStockThreshold": 10,
    "spice": "mild",
+   "image": "https://images.unsplash.com/photo-1626645738196-c2a7c87a8f58?w=400&q=80",
    "modifierGroups": [
     "ketchup-option",
     "gravy-option"
@@ -385,6 +406,7 @@
    "stock": 100,
    "lowStockThreshold": 10,
    "spice": "mild",
+   "image": "https://images.unsplash.com/photo-1626645738196-c2a7c87a8f58?w=400&q=80",
    "modifierGroups": [
     "side-selection",
     "gravy-option"
@@ -400,6 +422,7 @@
    "stock": 100,
    "lowStockThreshold": 10,
    "spice": "mild",
+   "image": "https://images.unsplash.com/photo-1626645738196-c2a7c87a8f58?w=400&q=80",
    "modifierGroups": [
     "side-selection",
     "gravy-option"
@@ -415,6 +438,7 @@
    "stock": 100,
    "lowStockThreshold": 10,
    "spice": "mild",
+   "image": "https://images.unsplash.com/photo-1626645738196-c2a7c87a8f58?w=400&q=80",
    "modifierGroups": [
     "side-selection",
     "gravy-option"
@@ -430,6 +454,7 @@
    "stock": 100,
    "lowStockThreshold": 10,
    "spice": "hot",
+   "image": "https://images.unsplash.com/photo-1527477396000-e27163b481c2?w=400&q=80",
    "modifierGroups": [
     "side-selection",
     "premium-sauce-upgrade",
@@ -447,6 +472,7 @@
    "stock": 100,
    "lowStockThreshold": 10,
    "spice": "hot",
+   "image": "https://images.unsplash.com/photo-1527477396000-e27163b481c2?w=400&q=80",
    "modifierGroups": [
     "side-selection",
     "premium-sauce-upgrade",
@@ -464,6 +490,7 @@
    "stock": 100,
    "lowStockThreshold": 10,
    "spice": "hot",
+   "image": "https://images.unsplash.com/photo-1527477396000-e27163b481c2?w=400&q=80",
    "modifierGroups": [
     "side-selection",
     "premium-sauce-upgrade",
@@ -481,6 +508,7 @@
    "stock": 100,
    "lowStockThreshold": 10,
    "spice": "hot",
+   "image": "https://images.unsplash.com/photo-1532550907401-a500c9a57435?w=400&q=80",
    "modifierGroups": [
     "jerk-sauce-choice",
     "extra-sauce",
@@ -498,6 +526,7 @@
    "stock": 100,
    "lowStockThreshold": 10,
    "spice": "hot",
+   "image": "https://images.unsplash.com/photo-1532550907401-a500c9a57435?w=400&q=80",
    "modifierGroups": [
     "jerk-sauce-choice",
     "extra-sauce",
@@ -515,6 +544,7 @@
    "stock": 100,
    "lowStockThreshold": 10,
    "spice": "hot",
+   "image": "https://images.unsplash.com/photo-1532550907401-a500c9a57435?w=400&q=80",
    "modifierGroups": [
     "jerk-sauce-choice",
     "extra-sauce",
@@ -532,6 +562,7 @@
    "stock": 100,
    "lowStockThreshold": 10,
    "spice": "mild",
+   "image": "https://images.unsplash.com/photo-1598515214211-89d3c73ae83b?w=400&q=80",
    "modifierGroups": [
     "side-selection",
     "extra-sauce"
@@ -547,6 +578,7 @@
    "stock": 100,
    "lowStockThreshold": 10,
    "spice": "mild",
+   "image": "https://images.unsplash.com/photo-1598515214211-89d3c73ae83b?w=400&q=80",
    "modifierGroups": [
     "side-selection",
     "extra-sauce"
@@ -562,6 +594,7 @@
    "stock": 100,
    "lowStockThreshold": 10,
    "spice": "mild",
+   "image": "https://images.unsplash.com/photo-1598515214211-89d3c73ae83b?w=400&q=80",
    "modifierGroups": [
     "side-selection",
     "extra-sauce"
@@ -577,6 +610,7 @@
    "stock": 100,
    "lowStockThreshold": 10,
    "spice": "hot",
+   "image": "https://images.unsplash.com/photo-1527477396000-e27163b481c2?w=400&q=80",
    "modifierGroups": [
     "extra-sauce",
     "wing-flavor"
@@ -592,6 +626,7 @@
    "stock": 100,
    "lowStockThreshold": 10,
    "spice": "hot",
+   "image": "https://images.unsplash.com/photo-1527477396000-e27163b481c2?w=400&q=80",
    "modifierGroups": [
     "extra-sauce",
     "wing-flavor"
@@ -607,6 +642,7 @@
    "stock": 100,
    "lowStockThreshold": 10,
    "spice": "hot",
+   "image": "https://images.unsplash.com/photo-1527477396000-e27163b481c2?w=400&q=80",
    "modifierGroups": [
     "extra-sauce",
     "wing-flavor"
@@ -622,6 +658,7 @@
    "stock": 100,
    "lowStockThreshold": 10,
    "spice": "mild",
+   "image": "https://images.unsplash.com/photo-1544025162-d76694265947?w=400&q=80",
    "modifierGroups": [
     "extra-sauce"
    ]
@@ -636,6 +673,7 @@
    "stock": 100,
    "lowStockThreshold": 10,
    "spice": "mild",
+   "image": "https://images.unsplash.com/photo-1544025162-d76694265947?w=400&q=80",
    "modifierGroups": [
     "extra-sauce"
    ]
@@ -650,6 +688,7 @@
    "stock": 100,
    "lowStockThreshold": 10,
    "spice": "mild",
+   "image": "https://images.unsplash.com/photo-1544025162-d76694265947?w=400&q=80",
    "modifierGroups": [
     "side-selection",
     "extra-sauce"
@@ -665,6 +704,7 @@
    "stock": 100,
    "lowStockThreshold": 10,
    "spice": "mild",
+   "image": "https://images.unsplash.com/photo-1544025162-d76694265947?w=400&q=80",
    "modifierGroups": [
     "side-selection",
     "extra-sauce"
@@ -680,6 +720,7 @@
    "stock": 100,
    "lowStockThreshold": 10,
    "spice": "medium",
+   "image": "https://images.unsplash.com/photo-1585937421612-70a008356fbe?w=400&q=80",
    "modifierGroups": [
     "extra-sauce"
    ]
@@ -694,6 +735,7 @@
    "stock": 100,
    "lowStockThreshold": 10,
    "spice": "medium",
+   "image": "https://images.unsplash.com/photo-1585937421612-70a008356fbe?w=400&q=80",
    "modifierGroups": [
     "extra-sauce"
    ]
@@ -708,6 +750,7 @@
    "stock": 100,
    "lowStockThreshold": 10,
    "spice": "medium",
+   "image": "https://images.unsplash.com/photo-1585937421612-70a008356fbe?w=400&q=80",
    "modifierGroups": [
     "side-selection",
     "extra-sauce"
@@ -723,6 +766,7 @@
    "stock": 100,
    "lowStockThreshold": 10,
    "spice": "medium",
+   "image": "https://images.unsplash.com/photo-1585937421612-70a008356fbe?w=400&q=80",
    "modifierGroups": [
     "side-selection",
     "extra-sauce"
@@ -738,6 +782,7 @@
    "stock": 100,
    "lowStockThreshold": 10,
    "spice": "hot",
+   "image": "https://images.unsplash.com/photo-1529193591184-b1d58069ecdd?w=400&q=80",
    "modifierGroups": [
     "jerk-sauce-choice",
     "extra-sauce",
@@ -754,6 +799,7 @@
    "stock": 100,
    "lowStockThreshold": 10,
    "spice": "hot",
+   "image": "https://images.unsplash.com/photo-1529193591184-b1d58069ecdd?w=400&q=80",
    "modifierGroups": [
     "jerk-sauce-choice",
     "extra-sauce",
@@ -770,6 +816,7 @@
    "stock": 100,
    "lowStockThreshold": 10,
    "spice": "hot",
+   "image": "https://images.unsplash.com/photo-1529193591184-b1d58069ecdd?w=400&q=80",
    "modifierGroups": [
     "jerk-sauce-choice",
     "extra-sauce",
@@ -787,6 +834,7 @@
    "stock": 100,
    "lowStockThreshold": 10,
    "spice": "hot",
+   "image": "https://images.unsplash.com/photo-1529193591184-b1d58069ecdd?w=400&q=80",
    "modifierGroups": [
     "jerk-sauce-choice",
     "extra-sauce",
@@ -804,6 +852,7 @@
    "stock": 100,
    "lowStockThreshold": 10,
    "spice": "hot",
+   "image": "https://images.unsplash.com/photo-1529193591184-b1d58069ecdd?w=400&q=80",
    "modifierGroups": [
     "jerk-sauce-choice",
     "extra-sauce",
@@ -821,6 +870,7 @@
    "stock": 100,
    "lowStockThreshold": 10,
    "spice": "mild",
+   "image": "https://images.unsplash.com/photo-1580476262798-bddd9f4b7369?w=400&q=80",
    "modifierGroups": [
     "side-selection"
    ]
@@ -835,6 +885,7 @@
    "stock": 100,
    "lowStockThreshold": 10,
    "spice": "medium",
+   "image": "https://images.unsplash.com/photo-1580476262798-bddd9f4b7369?w=400&q=80",
    "modifierGroups": [
     "side-selection"
    ]
@@ -849,6 +900,7 @@
    "stock": 100,
    "lowStockThreshold": 10,
    "spice": "mild",
+   "image": "https://images.unsplash.com/photo-1580476262798-bddd9f4b7369?w=400&q=80",
    "modifierGroups": [
     "side-selection"
    ]
@@ -863,6 +915,7 @@
    "stock": 100,
    "lowStockThreshold": 10,
    "spice": "mild",
+   "image": "https://images.unsplash.com/photo-1565680018434-b513d5e5fd47?w=400&q=80",
    "modifierGroups": [
     "side-selection"
    ]
@@ -877,6 +930,7 @@
    "stock": 100,
    "lowStockThreshold": 10,
    "spice": "mild",
+   "image": "https://images.unsplash.com/photo-1565680018434-b513d5e5fd47?w=400&q=80",
    "modifierGroups": [
     "side-selection"
    ]
@@ -891,6 +945,7 @@
    "stock": 100,
    "lowStockThreshold": 10,
    "spice": "mild",
+   "image": "https://images.unsplash.com/photo-1565680018434-b513d5e5fd47?w=400&q=80",
    "modifierGroups": [
     "side-selection"
    ]
@@ -905,6 +960,7 @@
    "stock": 100,
    "lowStockThreshold": 10,
    "spice": "medium",
+   "image": "https://images.unsplash.com/photo-1565680018434-b513d5e5fd47?w=400&q=80",
    "modifierGroups": [
     "side-selection"
    ]
@@ -919,6 +975,7 @@
    "stock": 100,
    "lowStockThreshold": 10,
    "spice": "medium",
+   "image": "https://images.unsplash.com/photo-1565680018434-b513d5e5fd47?w=400&q=80",
    "modifierGroups": [
     "side-selection"
    ]
@@ -933,6 +990,7 @@
    "stock": 100,
    "lowStockThreshold": 10,
    "spice": "medium",
+   "image": "https://images.unsplash.com/photo-1565680018434-b513d5e5fd47?w=400&q=80",
    "modifierGroups": [
     "side-selection"
    ]
@@ -947,6 +1005,7 @@
    "stock": 100,
    "lowStockThreshold": 10,
    "spice": "hot",
+   "image": "https://images.unsplash.com/photo-1565680018434-b513d5e5fd47?w=400&q=80",
    "modifierGroups": [
     "side-selection"
    ]
@@ -961,6 +1020,7 @@
    "stock": 100,
    "lowStockThreshold": 10,
    "spice": "hot",
+   "image": "https://images.unsplash.com/photo-1565680018434-b513d5e5fd47?w=400&q=80",
    "modifierGroups": [
     "side-selection"
    ]
@@ -975,6 +1035,7 @@
    "stock": 100,
    "lowStockThreshold": 10,
    "spice": "hot",
+   "image": "https://images.unsplash.com/photo-1565680018434-b513d5e5fd47?w=400&q=80",
    "modifierGroups": [
     "side-selection"
    ]
@@ -989,6 +1050,7 @@
    "stock": 100,
    "lowStockThreshold": 10,
    "spice": "medium",
+   "image": "https://images.unsplash.com/photo-1565680018434-b513d5e5fd47?w=400&q=80",
    "modifierGroups": [
     "side-selection"
    ]
@@ -1003,6 +1065,7 @@
    "stock": 100,
    "lowStockThreshold": 10,
    "spice": "medium",
+   "image": "https://images.unsplash.com/photo-1565680018434-b513d5e5fd47?w=400&q=80",
    "modifierGroups": [
     "side-selection"
    ]
@@ -1017,6 +1080,7 @@
    "stock": 100,
    "lowStockThreshold": 10,
    "spice": "medium",
+   "image": "https://images.unsplash.com/photo-1565680018434-b513d5e5fd47?w=400&q=80",
    "modifierGroups": [
     "side-selection"
    ]
@@ -1031,6 +1095,7 @@
    "stock": 100,
    "lowStockThreshold": 10,
    "spice": "medium",
+   "image": "https://images.unsplash.com/photo-1504674900247-0877df9cc836?w=400&q=80",
    "modifierGroups": []
   },
   {
@@ -1043,6 +1108,7 @@
    "stock": 100,
    "lowStockThreshold": 10,
    "spice": "medium",
+   "image": "https://images.unsplash.com/photo-1504674900247-0877df9cc836?w=400&q=80",
    "modifierGroups": []
   },
   {
@@ -1055,6 +1121,7 @@
    "stock": 100,
    "lowStockThreshold": 10,
    "spice": "medium",
+   "image": "https://images.unsplash.com/photo-1504674900247-0877df9cc836?w=400&q=80",
    "modifierGroups": [
     "side-selection"
    ]
@@ -1069,6 +1136,7 @@
    "stock": 100,
    "lowStockThreshold": 10,
    "spice": "medium",
+   "image": "https://images.unsplash.com/photo-1504674900247-0877df9cc836?w=400&q=80",
    "modifierGroups": [
     "side-selection"
    ]
@@ -1083,6 +1151,7 @@
    "stock": 100,
    "lowStockThreshold": 10,
    "spice": "medium",
+   "image": "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=400&q=80",
    "modifierGroups": []
   },
   {
@@ -1095,6 +1164,7 @@
    "stock": 100,
    "lowStockThreshold": 10,
    "spice": "medium",
+   "image": "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=400&q=80",
    "modifierGroups": []
   },
   {
@@ -1107,6 +1177,7 @@
    "stock": 100,
    "lowStockThreshold": 10,
    "spice": "medium",
+   "image": "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=400&q=80",
    "modifierGroups": [
     "side-selection",
     "add-veg-patty"
@@ -1122,6 +1193,7 @@
    "stock": 100,
    "lowStockThreshold": 10,
    "spice": "medium",
+   "image": "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=400&q=80",
    "modifierGroups": [
     "side-selection",
     "add-veg-patty"
@@ -1137,6 +1209,7 @@
    "stock": 100,
    "lowStockThreshold": 10,
    "spice": "medium",
+   "image": "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=400&q=80",
    "modifierGroups": [
     "side-selection",
     "add-veg-patty"
@@ -1152,6 +1225,7 @@
    "stock": 100,
    "lowStockThreshold": 10,
    "spice": "mild",
+   "image": "https://images.unsplash.com/photo-1516714435131-44d6b64dc6a2?w=400&q=80",
    "modifierGroups": [
     "add-veg-patty"
    ]
@@ -1166,6 +1240,7 @@
    "stock": 100,
    "lowStockThreshold": 10,
    "spice": "mild",
+   "image": "https://images.unsplash.com/photo-1516714435131-44d6b64dc6a2?w=400&q=80",
    "modifierGroups": [
     "add-veg-patty"
    ]
@@ -1180,6 +1255,7 @@
    "stock": 100,
    "lowStockThreshold": 10,
    "spice": "mild",
+   "image": "https://images.unsplash.com/photo-1516714435131-44d6b64dc6a2?w=400&q=80",
    "modifierGroups": [
     "add-veg-patty"
    ]
@@ -1194,6 +1270,7 @@
    "stock": 100,
    "lowStockThreshold": 10,
    "spice": "mild",
+   "image": "https://images.unsplash.com/photo-1516714435131-44d6b64dc6a2?w=400&q=80",
    "modifierGroups": [
     "add-veg-patty"
    ]
@@ -1208,6 +1285,7 @@
    "stock": 100,
    "lowStockThreshold": 10,
    "spice": "mild",
+   "image": "https://images.unsplash.com/photo-1516714435131-44d6b64dc6a2?w=400&q=80",
    "modifierGroups": [
     "add-veg-patty"
    ]
@@ -1222,6 +1300,7 @@
    "stock": 100,
    "lowStockThreshold": 10,
    "spice": "mild",
+   "image": "https://images.unsplash.com/photo-1516714435131-44d6b64dc6a2?w=400&q=80",
    "modifierGroups": [
     "add-veg-patty"
    ]
@@ -1236,6 +1315,7 @@
    "stock": 100,
    "lowStockThreshold": 10,
    "spice": "mild",
+   "image": "https://images.unsplash.com/photo-1515543904279-3c4e0b3c8dd9?w=400&q=80",
    "modifierGroups": [
     "add-veg-patty"
    ]
@@ -1250,6 +1330,7 @@
    "stock": 100,
    "lowStockThreshold": 10,
    "spice": "mild",
+   "image": "https://images.unsplash.com/photo-1515543904279-3c4e0b3c8dd9?w=400&q=80",
    "modifierGroups": [
     "add-veg-patty"
    ]
@@ -1264,6 +1345,7 @@
    "stock": 100,
    "lowStockThreshold": 10,
    "spice": "mild",
+   "image": "https://images.unsplash.com/photo-1515543904279-3c4e0b3c8dd9?w=400&q=80",
    "modifierGroups": [
     "add-veg-patty"
    ]
@@ -1278,6 +1360,7 @@
    "stock": 100,
    "lowStockThreshold": 10,
    "spice": "mild",
+   "image": "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=400&q=80",
    "modifierGroups": [
     "side-selection",
     "add-veg-patty"
@@ -1293,6 +1376,7 @@
    "stock": 100,
    "lowStockThreshold": 10,
    "spice": "mild",
+   "image": "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=400&q=80",
    "modifierGroups": [
     "side-selection",
     "add-veg-patty"
@@ -1308,6 +1392,7 @@
    "stock": 100,
    "lowStockThreshold": 10,
    "spice": "mild",
+   "image": "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=400&q=80",
    "modifierGroups": [
     "side-selection",
     "add-veg-patty"
@@ -1323,6 +1408,7 @@
    "stock": 100,
    "lowStockThreshold": 10,
    "spice": "mild",
+   "image": "https://images.unsplash.com/photo-1516714435131-44d6b64dc6a2?w=400&q=80",
    "modifierGroups": [
     "add-veg-patty"
    ]
@@ -1337,6 +1423,7 @@
    "stock": 100,
    "lowStockThreshold": 10,
    "spice": "mild",
+   "image": "https://images.unsplash.com/photo-1516714435131-44d6b64dc6a2?w=400&q=80",
    "modifierGroups": [
     "add-veg-patty"
    ]
@@ -1351,6 +1438,7 @@
    "stock": 100,
    "lowStockThreshold": 10,
    "spice": "mild",
+   "image": "https://images.unsplash.com/photo-1516714435131-44d6b64dc6a2?w=400&q=80",
    "modifierGroups": [
     "add-veg-patty"
    ]
@@ -1365,6 +1453,7 @@
    "stock": 100,
    "lowStockThreshold": 10,
    "spice": "mild",
+   "image": "https://images.unsplash.com/photo-1516714435131-44d6b64dc6a2?w=400&q=80",
    "modifierGroups": [
     "add-veg-patty"
    ]
@@ -1379,6 +1468,7 @@
    "stock": 100,
    "lowStockThreshold": 10,
    "spice": "mild",
+   "image": "https://images.unsplash.com/photo-1516714435131-44d6b64dc6a2?w=400&q=80",
    "modifierGroups": [
     "add-veg-patty"
    ]
@@ -1393,6 +1483,7 @@
    "stock": 100,
    "lowStockThreshold": 10,
    "spice": "mild",
+   "image": "https://images.unsplash.com/photo-1516714435131-44d6b64dc6a2?w=400&q=80",
    "modifierGroups": [
     "add-veg-patty"
    ]
@@ -1407,6 +1498,7 @@
    "stock": 100,
    "lowStockThreshold": 10,
    "spice": "mild",
+   "image": "https://images.unsplash.com/photo-1604908176997-125f25cc6f3d?w=400&q=80",
    "modifierGroups": [
     "dipping-sauce"
    ]
@@ -1421,6 +1513,7 @@
    "stock": 100,
    "lowStockThreshold": 10,
    "spice": "hot",
+   "image": "https://images.unsplash.com/photo-1604908176997-125f25cc6f3d?w=400&q=80",
    "modifierGroups": [
     "dipping-sauce"
    ]
@@ -1435,6 +1528,7 @@
    "stock": 100,
    "lowStockThreshold": 10,
    "spice": "mild",
+   "image": "https://images.unsplash.com/photo-1604908176997-125f25cc6f3d?w=400&q=80",
    "modifierGroups": [
     "dipping-sauce"
    ]
@@ -1449,6 +1543,7 @@
    "stock": 100,
    "lowStockThreshold": 10,
    "spice": "hot",
+   "image": "https://images.unsplash.com/photo-1604908176997-125f25cc6f3d?w=400&q=80",
    "modifierGroups": [
     "dipping-sauce"
    ]
@@ -1463,6 +1558,7 @@
    "stock": 100,
    "lowStockThreshold": 10,
    "spice": "medium",
+   "image": "https://images.unsplash.com/photo-1604908176997-125f25cc6f3d?w=400&q=80",
    "modifierGroups": [
     "dipping-sauce",
     "add-cheese"
@@ -1478,6 +1574,7 @@
    "stock": 100,
    "lowStockThreshold": 10,
    "spice": "mild",
+   "image": "https://images.unsplash.com/photo-1509440159596-0249088772ff?w=400&q=80",
    "modifierGroups": []
   },
   {
@@ -1490,6 +1587,7 @@
    "stock": 100,
    "lowStockThreshold": 10,
    "spice": "mild",
+   "image": "https://images.unsplash.com/photo-1509440159596-0249088772ff?w=400&q=80",
    "modifierGroups": []
   },
   {
@@ -1502,6 +1600,7 @@
    "stock": 100,
    "lowStockThreshold": 10,
    "spice": "hot",
+   "image": "https://images.unsplash.com/photo-1604908176997-125f25cc6f3d?w=400&q=80",
    "modifierGroups": [
     "dipping-sauce",
     "add-cheese"
@@ -1517,6 +1616,7 @@
    "stock": 100,
    "lowStockThreshold": 10,
    "spice": "mild",
+   "image": "https://images.unsplash.com/photo-1604908176997-125f25cc6f3d?w=400&q=80",
    "modifierGroups": [
     "dipping-sauce",
     "add-cheese"
@@ -1532,6 +1632,7 @@
    "stock": 100,
    "lowStockThreshold": 10,
    "spice": "mild",
+   "image": "https://images.unsplash.com/photo-1604908176997-125f25cc6f3d?w=400&q=80",
    "modifierGroups": [
     "dipping-sauce",
     "add-cheese"
@@ -1547,6 +1648,7 @@
    "stock": 100,
    "lowStockThreshold": 10,
    "spice": "mild",
+   "image": "https://images.unsplash.com/photo-1625944230945-1b7dd3b949ab?w=400&q=80",
    "modifierGroups": []
   },
   {
@@ -1559,6 +1661,7 @@
    "stock": 100,
    "lowStockThreshold": 10,
    "spice": "hot",
+   "image": "https://images.unsplash.com/photo-1472476443507-c7a5948772fc?w=400&q=80",
    "modifierGroups": []
   },
   {
@@ -1571,6 +1674,7 @@
    "stock": 100,
    "lowStockThreshold": 10,
    "spice": "mild",
+   "image": "https://images.unsplash.com/photo-1573080496219-bb080dd4f877?w=400&q=80",
    "modifierGroups": [
     "fries-sauce-choice"
    ]
@@ -1585,6 +1689,7 @@
    "stock": 100,
    "lowStockThreshold": 10,
    "spice": "hot",
+   "image": "https://images.unsplash.com/photo-1532550907401-a500c9a57435?w=400&q=80",
    "modifierGroups": []
   },
   {
@@ -1597,6 +1702,7 @@
    "stock": 100,
    "lowStockThreshold": 10,
    "spice": "hot",
+   "image": "https://images.unsplash.com/photo-1472476443507-c7a5948772fc?w=400&q=80",
    "modifierGroups": []
   },
   {
@@ -1609,6 +1715,7 @@
    "stock": 100,
    "lowStockThreshold": 10,
    "spice": "mild",
+   "image": "https://images.unsplash.com/photo-1528751014936-863e6e7a319c?w=400&q=80",
    "modifierGroups": []
   },
   {
@@ -1621,6 +1728,7 @@
    "stock": 100,
    "lowStockThreshold": 10,
    "spice": "mild",
+   "image": "https://images.unsplash.com/photo-1528751014936-863e6e7a319c?w=400&q=80",
    "modifierGroups": []
   },
   {
@@ -1633,6 +1741,7 @@
    "stock": 100,
    "lowStockThreshold": 10,
    "spice": "mild",
+   "image": "https://images.unsplash.com/photo-1553909489-cd47e0907980?w=400&q=80",
    "modifierGroups": []
   },
   {
@@ -1645,6 +1754,7 @@
    "stock": 100,
    "lowStockThreshold": 10,
    "spice": "mild",
+   "image": "https://images.unsplash.com/photo-1486297678162-eb2a19b0a32d?w=400&q=80",
    "modifierGroups": []
   },
   {
@@ -1657,6 +1767,7 @@
    "stock": 100,
    "lowStockThreshold": 10,
    "spice": "mild",
+   "image": "https://images.unsplash.com/photo-1579208030886-b937da0925dc?w=400&q=80",
    "modifierGroups": [
     "choose-your-sauce"
    ]
@@ -1671,6 +1782,7 @@
    "stock": 100,
    "lowStockThreshold": 10,
    "spice": "mild",
+   "image": "https://images.unsplash.com/photo-1553909489-cd47e0907980?w=400&q=80",
    "modifierGroups": [
     "sandwich-toppings"
    ]
@@ -1685,6 +1797,7 @@
    "stock": 100,
    "lowStockThreshold": 10,
    "spice": "hot",
+   "image": "https://images.unsplash.com/photo-1532550907401-a500c9a57435?w=400&q=80",
    "modifierGroups": [
     "sandwich-toppings",
     "sandwich-add-ons"
@@ -1700,6 +1813,7 @@
    "stock": 100,
    "lowStockThreshold": 10,
    "spice": "hot",
+   "image": "https://images.unsplash.com/photo-1529193591184-b1d58069ecdd?w=400&q=80",
    "modifierGroups": [
     "sandwich-toppings",
     "sandwich-add-ons"
@@ -1715,6 +1829,7 @@
    "stock": 100,
    "lowStockThreshold": 10,
    "spice": "mild",
+   "image": "https://images.unsplash.com/photo-1512621776951-a57141f2eefd?w=400&q=80",
    "modifierGroups": [
     "breakfast-side-selection"
    ]
@@ -1729,6 +1844,7 @@
    "stock": 100,
    "lowStockThreshold": 10,
    "spice": "mild",
+   "image": "https://images.unsplash.com/photo-1512621776951-a57141f2eefd?w=400&q=80",
    "modifierGroups": [
     "breakfast-side-selection"
    ]
@@ -1743,6 +1859,7 @@
    "stock": 100,
    "lowStockThreshold": 10,
    "spice": "mild",
+   "image": "https://images.unsplash.com/photo-1496116218417-1a781b1c416c?w=400&q=80",
    "modifierGroups": []
   },
   {
@@ -1755,6 +1872,7 @@
    "stock": 100,
    "lowStockThreshold": 10,
    "spice": "hot",
+   "image": "https://images.unsplash.com/photo-1509440159596-0249088772ff?w=400&q=80",
    "modifierGroups": []
   },
   {
@@ -1767,6 +1885,7 @@
    "stock": 100,
    "lowStockThreshold": 10,
    "spice": "mild",
+   "image": "https://images.unsplash.com/photo-1517673400267-0251440c45dc?w=400&q=80",
    "modifierGroups": []
   },
   {
@@ -1779,6 +1898,7 @@
    "stock": 100,
    "lowStockThreshold": 10,
    "spice": "mild",
+   "image": "https://images.unsplash.com/photo-1517673400267-0251440c45dc?w=400&q=80",
    "modifierGroups": []
   },
   {
@@ -1791,6 +1911,7 @@
    "stock": 100,
    "lowStockThreshold": 10,
    "spice": "mild",
+   "image": "https://images.unsplash.com/photo-1512621776951-a57141f2eefd?w=400&q=80",
    "modifierGroups": []
   },
   {
@@ -1803,6 +1924,7 @@
    "stock": 100,
    "lowStockThreshold": 10,
    "spice": "mild",
+   "image": "https://images.unsplash.com/photo-1547592180-85f173990554?w=400&q=80",
    "modifierGroups": []
   },
   {
@@ -1815,6 +1937,7 @@
    "stock": 100,
    "lowStockThreshold": 10,
    "spice": "mild",
+   "image": "https://images.unsplash.com/photo-1547592180-85f173990554?w=400&q=80",
    "modifierGroups": []
   },
   {
@@ -1827,6 +1950,7 @@
    "stock": 100,
    "lowStockThreshold": 10,
    "spice": "mild",
+   "image": "https://images.unsplash.com/photo-1622483767028-3f66f32aef97?w=400&q=80",
    "modifierGroups": [
     "drink-choice"
    ]
@@ -1841,6 +1965,7 @@
    "stock": 100,
    "lowStockThreshold": 10,
    "spice": "medium",
+   "image": "https://images.unsplash.com/photo-1527960471264-932f39eb5846?w=400&q=80",
    "modifierGroups": [
     "d-g-flavor-choice"
    ]
@@ -1855,6 +1980,7 @@
    "stock": 100,
    "lowStockThreshold": 10,
    "spice": "mild",
+   "image": "https://images.unsplash.com/photo-1600271886742-f049cd451bba?w=400&q=80",
    "modifierGroups": [
     "grace-flavor-choice"
    ]
@@ -1869,6 +1995,7 @@
    "stock": 100,
    "lowStockThreshold": 10,
    "spice": "mild",
+   "image": "https://images.unsplash.com/photo-1600271886742-f049cd451bba?w=400&q=80",
    "modifierGroups": []
   },
   {
@@ -1881,6 +2008,7 @@
    "stock": 100,
    "lowStockThreshold": 10,
    "spice": "mild",
+   "image": "https://images.unsplash.com/photo-1621263764928-df1444c5e859?w=400&q=80",
    "modifierGroups": []
   },
   {
@@ -1893,6 +2021,7 @@
    "stock": 100,
    "lowStockThreshold": 10,
    "spice": "mild",
+   "image": "https://images.unsplash.com/photo-1601039641847-7857b994d704?w=400&q=80",
    "modifierGroups": []
   },
   {
@@ -1905,6 +2034,7 @@
    "stock": 100,
    "lowStockThreshold": 10,
    "spice": "medium",
+   "image": "https://images.unsplash.com/photo-1544145945-f90425340c7e?w=400&q=80",
    "modifierGroups": []
   },
   {
@@ -1917,6 +2047,7 @@
    "stock": 100,
    "lowStockThreshold": 10,
    "spice": "medium",
+   "image": "https://images.unsplash.com/photo-1544145945-f90425340c7e?w=400&q=80",
    "modifierGroups": []
   },
   {
@@ -1929,6 +2060,7 @@
    "stock": 100,
    "lowStockThreshold": 10,
    "spice": "mild",
+   "image": "https://images.unsplash.com/photo-1600271886742-f049cd451bba?w=400&q=80",
    "modifierGroups": [
     "supligen-flavor"
    ]
@@ -1943,6 +2075,7 @@
    "stock": 100,
    "lowStockThreshold": 10,
    "spice": "mild",
+   "image": "https://images.unsplash.com/photo-1527960471264-932f39eb5846?w=400&q=80",
    "modifierGroups": []
   },
   {
@@ -1955,6 +2088,7 @@
    "stock": 100,
    "lowStockThreshold": 10,
    "spice": "mild",
+   "image": "https://images.unsplash.com/photo-1553456558-aff63285bdd1?w=400&q=80",
    "modifierGroups": []
   },
   {
@@ -1967,6 +2101,7 @@
    "stock": 100,
    "lowStockThreshold": 10,
    "spice": "mild",
+   "image": "https://images.unsplash.com/photo-1486297678162-eb2a19b0a32d?w=400&q=80",
    "modifierGroups": []
   },
   {
@@ -1979,6 +2114,7 @@
    "stock": 100,
    "lowStockThreshold": 10,
    "spice": "mild",
+   "image": "https://images.unsplash.com/photo-1486297678162-eb2a19b0a32d?w=400&q=80",
    "modifierGroups": []
   },
   {
@@ -1991,6 +2127,7 @@
    "stock": 100,
    "lowStockThreshold": 10,
    "spice": "mild",
+   "image": "https://images.unsplash.com/photo-1486297678162-eb2a19b0a32d?w=400&q=80",
    "modifierGroups": []
   },
   {
@@ -2003,6 +2140,7 @@
    "stock": 100,
    "lowStockThreshold": 10,
    "spice": "mild",
+   "image": "https://images.unsplash.com/photo-1578985545062-69928b1d9587?w=400&q=80",
    "modifierGroups": []
   },
   {
@@ -2015,6 +2153,7 @@
    "stock": 100,
    "lowStockThreshold": 10,
    "spice": "mild",
+   "image": "https://images.unsplash.com/photo-1486297678162-eb2a19b0a32d?w=400&q=80",
    "modifierGroups": []
   },
   {
@@ -2027,6 +2166,7 @@
    "stock": 100,
    "lowStockThreshold": 10,
    "spice": "mild",
+   "image": "https://images.unsplash.com/photo-1578985545062-69928b1d9587?w=400&q=80",
    "modifierGroups": []
   },
   {
@@ -2039,6 +2179,7 @@
    "stock": 100,
    "lowStockThreshold": 10,
    "spice": "mild",
+   "image": "https://images.unsplash.com/photo-1447933601403-0c6688de566e?w=400&q=80",
    "modifierGroups": []
   },
   {
@@ -2051,6 +2192,7 @@
    "stock": 100,
    "lowStockThreshold": 10,
    "spice": "mild",
+   "image": "",
    "modifierGroups": []
   }
  ]

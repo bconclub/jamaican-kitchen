@@ -1,0 +1,449 @@
+[
+ {
+  "slug": "d-g-flavor-choice",
+  "name": "D&G Flavor Choice",
+  "required": true,
+  "min": 1,
+  "max": 1,
+  "options": [
+   {
+    "name": "Kola Champagne",
+    "price": 0.0
+   },
+   {
+    "name": "Pineapple Soda",
+    "price": 0.0
+   },
+   {
+    "name": "Ginger Beer",
+    "price": 0.0
+   },
+   {
+    "name": "Cream Soda",
+    "price": 0.0
+   },
+   {
+    "name": "Pineapple Ginger",
+    "price": 0.0
+   }
+  ]
+ },
+ {
+  "slug": "add-cheese",
+  "name": "Add Cheese",
+  "required": false,
+  "min": 0,
+  "max": 1,
+  "options": [
+   {
+    "name": "Cheese",
+    "price": 1.0
+   }
+  ]
+ },
+ {
+  "slug": "dipping-sauce",
+  "name": "Dipping Sauce",
+  "required": false,
+  "min": 0,
+  "max": 10,
+  "options": [
+   {
+    "name": "Oxtail Dipping Sauce (2 oz)",
+    "price": 0.99
+   },
+   {
+    "name": "Curry Goat Dipping Sauce (2 oz)",
+    "price": 0.99
+   },
+   {
+    "name": "Curry Chicken Dipping Sauce (2 oz)",
+    "price": 0.99
+   },
+   {
+    "name": "Jerk Dipping Sauce (2 oz)",
+    "price": 0.99
+   },
+   {
+    "name": "Brown stew chicken dipping sauce (2 oz)",
+    "price": 0.99
+   }
+  ]
+ },
+ {
+  "slug": "drink-choice",
+  "name": "Drink Choice",
+  "required": true,
+  "min": 1,
+  "max": 1,
+  "options": [
+   {
+    "name": "Coke",
+    "price": 0.0
+   },
+   {
+    "name": "Diet Coke",
+    "price": 0.0
+   },
+   {
+    "name": "Gatorade Lemon-Lime",
+    "price": 0.0
+   },
+   {
+    "name": "Gatorade Orange",
+    "price": 0.0
+   },
+   {
+    "name": "Gatorade Fruit Punch",
+    "price": 0.0
+   },
+   {
+    "name": "Gatorade Cool",
+    "price": 0.0
+   },
+   {
+    "name": "Sprite",
+    "price": 0.0
+   },
+   {
+    "name": "Snapple Apple",
+    "price": 0.0
+   },
+   {
+    "name": "Snapple fruit punch",
+    "price": 0.0
+   },
+   {
+    "name": "Snapple Kiwi Strawberry",
+    "price": 0.0
+   }
+  ]
+ },
+ {
+  "slug": "extra-sauce",
+  "name": "Extra Sauce",
+  "required": false,
+  "min": 0,
+  "max": 10,
+  "options": [
+   {
+    "name": "Side Sauce (2 oz)",
+    "price": 0.99
+   }
+  ]
+ },
+ {
+  "slug": "grace-flavor-choice",
+  "name": "Grace Flavor Choice",
+  "required": true,
+  "min": 1,
+  "max": 1,
+  "options": [
+   {
+    "name": "Pineapple Ginger",
+    "price": 0.0
+   },
+   {
+    "name": "Island Mango",
+    "price": 0.0
+   },
+   {
+    "name": "Mango Carrot",
+    "price": 0.0
+   },
+   {
+    "name": "Reggae Medley",
+    "price": 0.0
+   }
+  ]
+ },
+ {
+  "slug": "gravy-option",
+  "name": "Gravy Option",
+  "required": false,
+  "min": 0,
+  "max": 1,
+  "options": [
+   {
+    "name": "Curry Goat Gravy",
+    "price": 0.0
+   },
+   {
+    "name": "Oxtail Gravy",
+    "price": 0.0
+   },
+   {
+    "name": "Stew Chicken Gravy",
+    "price": 0.0
+   },
+   {
+    "name": "Curry Chicken Gravy",
+    "price": 0.0
+   },
+   {
+    "name": "Jerk Sauce",
+    "price": 0.0
+   },
+   {
+    "name": "Pepper Steak Gravy",
+    "price": 0.0
+   }
+  ]
+ },
+ {
+  "slug": "jerk-sauce-choice",
+  "name": "Jerk Sauce Choice",
+  "required": true,
+  "min": 1,
+  "max": 1,
+  "options": [
+   {
+    "name": "Jerk Sauce On It",
+    "price": 0.0
+   },
+   {
+    "name": "No Jerk Sauce",
+    "price": 0.0
+   },
+   {
+    "name": "Jerk Sauce On The Side",
+    "price": 0.0
+   }
+  ]
+ },
+ {
+  "slug": "choose-your-sauce",
+  "name": "Choose Your Sauce",
+  "required": false,
+  "min": 0,
+  "max": 2,
+  "options": [
+   {
+    "name": "Sweet & Spicy ketchup",
+    "price": 0.0
+   },
+   {
+    "name": "Regular ketchup",
+    "price": 0.0
+   },
+   {
+    "name": "Tartar Sauce",
+    "price": 0.0
+   },
+   {
+    "name": "Chipotle Mayo",
+    "price": 0.0
+   }
+  ]
+ },
+ {
+  "slug": "ketchup-option",
+  "name": "Ketchup Option",
+  "required": false,
+  "min": 0,
+  "max": 1,
+  "options": [
+   {
+    "name": "Spicy Ketchup",
+    "price": 0.0
+   },
+   {
+    "name": "Sweet & Spicy Ketchup",
+    "price": 0.0
+   }
+  ]
+ },
+ {
+  "slug": "supligen-flavor",
+  "name": "Supligen Flavor",
+  "required": true,
+  "min": 1,
+  "max": 1,
+  "options": [
+   {
+    "name": "Supligen Peanut",
+    "price": 0.0
+   },
+   {
+    "name": "Supligen vanilla",
+    "price": 0.0
+   }
+  ]
+ },
+ {
+  "slug": "premium-sauce-upgrade",
+  "name": "Premium Sauce Upgrade",
+  "required": false,
+  "min": 0,
+  "max": 1,
+  "options": [
+   {
+    "name": "Oxtail Sauce (2 oz)",
+    "price": 0.99
+   },
+   {
+    "name": "Curry Goat Sauce (2 oz)",
+    "price": 0.99
+   },
+   {
+    "name": "Curry Chicken Sauce (2 oz)",
+    "price": 0.99
+   }
+  ]
+ },
+ {
+  "slug": "sandwich-toppings",
+  "name": "Sandwich Toppings",
+  "required": false,
+  "min": 0,
+  "max": 1,
+  "options": [
+   {
+    "name": "Chipotle Mayo",
+    "price": 0.0
+   },
+   {
+    "name": "Coleslaw",
+    "price": 0.0
+   },
+   {
+    "name": "Extra Cheese",
+    "price": 1.0
+   }
+  ]
+ },
+ {
+  "slug": "side-selection",
+  "name": "Side Selection",
+  "required": true,
+  "min": 1,
+  "max": 1,
+  "options": [
+   {
+    "name": "Rice and Peas and cabbage",
+    "price": 0.0
+   },
+   {
+    "name": "White Rice and cabbage",
+    "price": 0.0
+   },
+   {
+    "name": "White Rice",
+    "price": 0.0
+   },
+   {
+    "name": "Rice and peas",
+    "price": 0.0
+   },
+   {
+    "name": "Steamed Cabbage only",
+    "price": 0.0
+   }
+  ]
+ },
+ {
+  "slug": "breakfast-side-selection",
+  "name": "Breakfast Side Selection",
+  "required": true,
+  "min": 1,
+  "max": 1,
+  "options": [
+   {
+    "name": "Festival (3 pieces)",
+    "price": 0.0
+   },
+   {
+    "name": "White Rice & Cabbage",
+    "price": 0.0
+   },
+   {
+    "name": "Rice and Peas & Steamed Cabbage",
+    "price": 0.0
+   },
+   {
+    "name": "White Rice",
+    "price": 0.0
+   },
+   {
+    "name": "Rice and peas",
+    "price": 0.0
+   },
+   {
+    "name": "Steamed cabbage only",
+    "price": 0.0
+   }
+  ]
+ },
+ {
+  "slug": "add-veg-patty",
+  "name": "Add Veg Patty",
+  "required": false,
+  "min": 0,
+  "max": 10,
+  "options": [
+   {
+    "name": "Spinach Patty",
+    "price": 3.9
+   },
+   {
+    "name": "Vegetable Patty",
+    "price": 3.9
+   }
+  ]
+ },
+ {
+  "slug": "wing-flavor",
+  "name": "Wing Flavor",
+  "required": false,
+  "min": 0,
+  "max": 1,
+  "options": [
+   {
+    "name": "BBQ",
+    "price": 0.0
+   },
+   {
+    "name": "Jerk(spicy)",
+    "price": 0.0
+   }
+  ]
+ },
+ {
+  "slug": "fries-sauce-choice",
+  "name": "Fries Sauce Choice",
+  "required": false,
+  "min": 0,
+  "max": 1,
+  "options": [
+   {
+    "name": "Sweet & Spicy Ketchup",
+    "price": 0.0
+   },
+   {
+    "name": "Ketchup",
+    "price": 0.0
+   },
+   {
+    "name": "Chipotle Mayo",
+    "price": 0.0
+   }
+  ]
+ },
+ {
+  "slug": "sandwich-add-ons",
+  "name": "Sandwich Add-Ons",
+  "required": false,
+  "min": 0,
+  "max": 1,
+  "options": [
+   {
+    "name": "Plantain (2 pcs)",
+    "price": 2.0
+   },
+   {
+    "name": "Side of Jerk Sauce",
+    "price": 0.99
+   }
+  ]
+ }
+]

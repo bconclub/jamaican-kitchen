@@ -1,5 +1,17 @@
 # Changelog
 
+## 2026-07-04 · Admin product editor — right-side panel to edit a product + its add-ons
+
+- dine-central-hub Menu page: each row gets a pencil "Edit product" button that opens a right-side
+  panel (Sheet) to edit the whole product — image (URL + live preview), name, description, base price,
+  spice level, category, stock, Available and Best Seller toggles.
+- Add-ons wiring: the panel lists all 19 modifier groups (from the spreadsheet import) as toggles;
+  checking/unchecking assigns which add-on groups the item offers, and the row's Options badge updates
+  on save. Saves write `modifier_groups` (+ all fields) to `menu_items` in live mode.
+- Preview mode (`VITE_USE_STATIC_MENU`): edits update the on-screen list only, with a note that nothing
+  is written to the DB yet — so the editor can be reviewed before the migration is applied.
+- Admin MenuItem now carries `image` and `spiceLevel` (mapped from `menu_items` and the preview data).
+
 ## 2026-07-04 · Full menu import from the online-menu spreadsheet (variations + modifiers) — both apps
 
 - Imported the complete online menu from `Jamaican_Kitchen_Online_Menu.xlsx`: 15 categories, 142 items

@@ -333,6 +333,8 @@ export function useLiveMenu() {
           stock: m.stock as number,
           lowStockThreshold: m.lowStockThreshold as number,
           imageEmoji: EMOJI_PREVIEW[m.categoryId as string] ?? "🍽️",
+          image: (m.image as string) ?? "",
+          spiceLevel: (m.spice as "mild" | "medium" | "hot") ?? "mild",
           featured: false,
           modifierGroups: (m.modifierGroups as string[]) ?? [],
         })),
@@ -362,6 +364,8 @@ export function useLiveMenu() {
         stock: m.stock,
         lowStockThreshold: m.low_stock_threshold,
         imageEmoji: EMOJI_BY_CATEGORY[catSlugById.get(m.category_id ?? "") ?? ""] ?? "🍽️",
+        image: m.image ?? "",
+        spiceLevel: (m.spice_level as "mild" | "medium" | "hot") ?? "mild",
         featured: Boolean((m as unknown as { featured?: boolean }).featured),
         modifierGroups: Array.isArray((m as unknown as { modifier_groups?: string[] }).modifier_groups)
           ? (m as unknown as { modifier_groups: string[] }).modifier_groups
