@@ -1,4 +1,5 @@
 import { Link, useRouterState } from "@tanstack/react-router";
+import { APP_VERSION } from "@/version";
 import {
   LayoutDashboard,
   ShoppingBag,
@@ -92,7 +93,9 @@ export function AppSidebar() {
           />
           <div className="flex flex-col leading-tight">
             <span className="text-sm font-semibold">Jamaican Kitchen</span>
-            <span className="text-xs text-muted-foreground">Dine Central</span>
+            <span className="text-xs text-muted-foreground">
+              Dine Central <span className="opacity-70">v{APP_VERSION}</span>
+            </span>
           </div>
         </div>
       </SidebarHeader>

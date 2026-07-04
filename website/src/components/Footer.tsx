@@ -1,6 +1,7 @@
 import { Link } from "react-router-dom";
 import { MapPin, Phone, Clock, Instagram, Facebook } from "lucide-react";
 import logo from "@/assets/logo.png";
+import { APP_VERSION } from "@/version";
 
 export const Footer = () => {
   return (
@@ -68,7 +69,10 @@ export const Footer = () => {
         </div>
 
         <div className="border-t border-background/10 mt-8 pt-8 text-center text-background/50">
-          <p>© {new Date().getFullYear()} Jamaican Kitchen CT. All rights reserved.</p>
+          <p>
+            © {new Date().getFullYear()} Jamaican Kitchen CT. All rights reserved.{" "}
+            <span className="opacity-60">v{APP_VERSION}</span>
+          </p>
         </div>
       </div>
     </footer>
