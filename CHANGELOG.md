@@ -1,5 +1,15 @@
 # Changelog
 
+## 2026-07-04 · v0.0.3 — Add-ons picker: categorized accordion instead of a flat 19-item list
+
+- Product editor's "Add-ons & options" picker now groups the 19 modifier groups into 4 categories
+  (Sauces & Gravy, Flavor Choices, Sides & Toppings, Add-ons & Extras) inside a multi-open accordion —
+  click a category to expand it, several can be open at once.
+- A category auto-opens if the item already has a selection inside it (e.g. editing a chicken dish
+  with Extra Sauce checked opens "Sauces & Gravy" automatically); each header shows "X/Y selected".
+- A group not in the four buckets (e.g. a new one added from the Add-ons tab) falls into "Other" so
+  nothing is ever hidden.
+
 ## 2026-07-04 · v0.0.2 — DoorDash-style menu: photo thumbnails + full add-ons manager
 
 - Menu rows now show the real product photo (thumbnail, hover-to-edit) instead of a category emoji;

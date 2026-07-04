@@ -22,6 +22,7 @@ import {
 } from "@/components/ui/select";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { Sheet, SheetContent, SheetHeader, SheetTitle } from "@/components/ui/sheet";
+import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import { CHANNEL_META } from "@/lib/mock-data";
 import {
   useLiveMenu,
@@ -58,6 +59,44 @@ function ensureOverrides(m: MenuItem) {
 function slugify(name: string) {
   const base = name.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/(^-|-$)/g, "");
   return `${base || "item"}-${Math.random().toString(36).slice(2, 6)}`;
+}
+
+// Groups the 19 imported add-on groups into a handful of buckets so the picker
+// reads as a short accordion instead of one long checklist. A group not listed
+// here (e.g. a brand-new one added from the Add-ons tab) falls into "Other".
+const MODIFIER_CATEGORIES: { name: string; slugs: string[] }[] = [
+  {
+    name: "Sauces & Gravy",
+    slugs: [
+      "dipping-sauce", "extra-sauce", "gravy-option", "jerk-sauce-choice",
+      "choose-your-sauce", "ketchup-option", "premium-sauce-upgrade", "fries-sauce-choice",
+    ],
+  },
+  {
+    name: "Flavor Choices",
+    slugs: ["d-g-flavor-choice", "grace-flavor-choice", "supligen-flavor", "wing-flavor", "drink-choice"],
+  },
+  {
+    name: "Sides & Toppings",
+    slugs: ["side-selection", "breakfast-side-selection", "sandwich-toppings"],
+  },
+  {
+    name: "Add-ons & Extras",
+    slugs: ["add-cheese", "add-veg-patty", "sandwich-add-ons"],
+  },
+];
+
+function groupByCategory(groups: ModifierGroupFull[]) {
+  const bySlug = new Map(groups.map((g) => [g.slug, g]));
+  const used = new Set<string>();
+  const buckets = MODIFIER_CATEGORIES.map((cat) => {
+    const items = cat.slugs.map((s) => bySlug.get(s)).filter((g): g is ModifierGroupFull => !!g);
+    items.forEach((g) => used.add(g.slug));
+    return { name: cat.name, items };
+  }).filter((b) => b.items.length > 0);
+  const rest = groups.filter((g) => !used.has(g.slug));
+  if (rest.length) buckets.push({ name: "Other", items: rest });
+  return buckets;
 }
 
 function slugifyGroup(name: string) {
@@ -142,6 +181,7 @@ function MenuPage() {
       (!modFilter || (m.modifierGroups ?? []).includes(modFilter)),
   );
   const modFilterGroup = modFilter ? modGroups.find((g) => g.slug === modFilter) : null;
+  const modifierBuckets = groupByCategory(modGroups);
 
   const updateItem = (id: string, patch: Partial<MenuItem>) =>
     setItems((prev) => prev.map((m) => (m.id === id ? { ...m, ...patch } : m)));
@@ -828,7 +868,8 @@ function MenuPage() {
                   Best Seller
                 </label>
 
-                {/* Add-ons / modifier groups */}
+                {/* Add-ons / modifier groups — grouped into an accordion so 19
+                    groups don't read as one long checklist */}
                 <div className="space-y-2 border-t pt-4">
                   <div className="flex items-center justify-between">
                     <Label>Add-ons &amp; options</Label>
@@ -836,36 +877,57 @@ function MenuPage() {
                       {(editing.modifierGroups?.length ?? 0)} selected
                     </span>
                   </div>
-                  <div className="space-y-1.5">
-                    {modGroups.map((g) => {
-                      const on = (editing.modifierGroups ?? []).includes(g.slug);
+                  <Accordion
+                    type="multiple"
+                    defaultValue={modifierBuckets.filter((b) => b.items.some((g) => (editing.modifierGroups ?? []).includes(g.slug))).map((b) => b.name)}
+                    className="rounded-lg border"
+                  >
+                    {modifierBuckets.map((bucket) => {
+                      const selectedInBucket = bucket.items.filter((g) => (editing.modifierGroups ?? []).includes(g.slug)).length;
                       return (
-                        <button
-                          key={g.slug}
-                          type="button"
-                          onClick={() => toggleGroup(g.slug)}
-                          className={`flex w-full items-center justify-between rounded-lg border p-2.5 text-left transition-colors ${
-                            on ? "border-primary bg-primary/5" : "border-border"
-                          }`}
-                        >
-                          <span className="flex items-center gap-2.5">
-                            <span
-                              className={`flex h-4 w-4 shrink-0 items-center justify-center rounded border-2 ${
-                                on ? "border-primary bg-primary" : "border-muted-foreground/40"
-                              }`}
-                            >
-                              {on && <span className="h-1.5 w-1.5 rounded-full bg-primary-foreground" />}
+                        <AccordionItem key={bucket.name} value={bucket.name} className="border-b px-3 last:border-b-0">
+                          <AccordionTrigger className="py-2.5 text-sm hover:no-underline">
+                            <span className="flex items-center gap-2">
+                              {bucket.name}
+                              <span className="text-xs font-normal text-muted-foreground">
+                                {selectedInBucket > 0 ? `${selectedInBucket}/${bucket.items.length} selected` : `${bucket.items.length} groups`}
+                              </span>
                             </span>
-                            <span className="text-sm">
-                              {g.name}
-                              {g.required && <span className="ml-1.5 text-xs text-secondary">required</span>}
-                            </span>
-                          </span>
-                          <span className="text-xs text-muted-foreground">{g.options.length} opt</span>
-                        </button>
+                          </AccordionTrigger>
+                          <AccordionContent className="space-y-1.5 pb-3">
+                            {bucket.items.map((g) => {
+                              const on = (editing.modifierGroups ?? []).includes(g.slug);
+                              return (
+                                <button
+                                  key={g.slug}
+                                  type="button"
+                                  onClick={() => toggleGroup(g.slug)}
+                                  className={`flex w-full items-center justify-between rounded-lg border p-2.5 text-left transition-colors ${
+                                    on ? "border-primary bg-primary/5" : "border-border"
+                                  }`}
+                                >
+                                  <span className="flex items-center gap-2.5">
+                                    <span
+                                      className={`flex h-4 w-4 shrink-0 items-center justify-center rounded border-2 ${
+                                        on ? "border-primary bg-primary" : "border-muted-foreground/40"
+                                      }`}
+                                    >
+                                      {on && <span className="h-1.5 w-1.5 rounded-full bg-primary-foreground" />}
+                                    </span>
+                                    <span className="text-sm">
+                                      {g.name}
+                                      {g.required && <span className="ml-1.5 text-xs text-secondary">required</span>}
+                                    </span>
+                                  </span>
+                                  <span className="text-xs text-muted-foreground">{g.options.length} opt</span>
+                                </button>
+                              );
+                            })}
+                          </AccordionContent>
+                        </AccordionItem>
                       );
                     })}
-                  </div>
+                  </Accordion>
                 </div>
               </div>
 
