@@ -37,7 +37,7 @@ import {
 import { supabase } from "@/integrations/supabase/client";
 import type { Channel, MenuItem, ModifierGroupFull } from "@/lib/types";
 import { PageHeader, formatMoney } from "@/components/PageHeader";
-import { Plus, Search, Trash2, FolderPlus, Globe, PartyPopper, Info, Star, Pencil, UtensilsCrossed, X, Layers } from "lucide-react";
+import { Plus, Search, Trash2, FolderPlus, Globe, PartyPopper, Info, Star, Pencil, UtensilsCrossed, X, Layers, Upload, Loader2 } from "lucide-react";
 import { toast } from "sonner";
 
 // In static-menu preview, edits update the on-screen list only (no Supabase write).
@@ -116,6 +116,34 @@ function MenuPage() {
   // Right-side product editor
   const [editing, setEditing] = useState<MenuItem | null>(null);
   const [savingEdit, setSavingEdit] = useState(false);
+  const [uploading, setUploading] = useState(false);
+
+  // Photo upload — no pasted URLs. Preview mode (no DB yet) reads the file as a
+  // data URL so it's immediately visible; once live, it goes to the public
+  // "menu-photos" Storage bucket (see migration 0004) and we store that URL.
+  const uploadPhoto = async (file: File, apply: (url: string) => void) => {
+    setUploading(true);
+    try {
+      if (PREVIEW_MENU) {
+        const dataUrl = await new Promise<string>((resolve, reject) => {
+          const reader = new FileReader();
+          reader.onload = () => resolve(reader.result as string);
+          reader.onerror = () => reject(reader.error);
+          reader.readAsDataURL(file);
+        });
+        apply(dataUrl);
+      } else {
+        const path = `${Date.now()}-${file.name.replace(/[^a-zA-Z0-9._-]/g, "_")}`;
+        const { error } = await supabase.storage.from("menu-photos").upload(path, file, { upsert: true });
+        if (error) throw error;
+        apply(supabase.storage.from("menu-photos").getPublicUrl(path).data.publicUrl);
+      }
+    } catch {
+      toast.error("Couldn't upload photo");
+    } finally {
+      setUploading(false);
+    }
+  };
   const openEdit = (m: MenuItem) => setEditing({ ...m, modifierGroups: [...(m.modifierGroups ?? [])] });
   const patchDraft = (patch: Partial<MenuItem>) => setEditing((d) => (d ? { ...d, ...patch } : d));
   const toggleGroup = (slug: string) =>
@@ -373,140 +401,99 @@ function MenuPage() {
             <CardContent className="p-0">
               <div className="overflow-x-auto">
                 <table className="w-full text-sm">
-                  <thead className="text-left text-xs uppercase text-muted-foreground">
+                  <thead className="text-left text-xs uppercase tracking-wide text-muted-foreground">
                     <tr className="border-b">
-                      <th className="px-4 py-3">Item</th>
-                      <th className="px-4 py-3">Category</th>
-                      <th className="px-4 py-3 text-right">Base price</th>
-                      <th className="px-4 py-3">Options</th>
-                      <th className="px-4 py-3 text-right">Stock</th>
-                      <th className="px-4 py-3">Available</th>
-                      <th className="px-4 py-3">Best Seller</th>
+                      <th className="px-4 py-3 font-medium">Item</th>
+                      <th className="px-4 py-3 font-medium">Category</th>
+                      <th className="px-4 py-3 text-right font-medium">Price</th>
+                      <th className="px-4 py-3 font-medium">Add-ons</th>
+                      <th className="px-4 py-3 text-right font-medium">Stock</th>
+                      <th className="px-4 py-3 font-medium">Available</th>
+                      <th className="px-4 py-3 font-medium">Best seller</th>
                       <th className="px-4 py-3"></th>
                     </tr>
                   </thead>
                   <tbody>
-                    {filtered.map((m) => (
-                      <tr key={m.id} className="border-b hover:bg-muted/40">
-                        <td className="px-4 py-3">
-                          <div className="flex items-center gap-3">
-                            <button
-                              type="button"
-                              onClick={() => openEdit(m)}
-                              title="Click to edit photo"
-                              className="group relative h-11 w-11 shrink-0 overflow-hidden rounded-md border border-border"
-                            >
-                              {m.image ? (
-                                <img src={m.image} alt={m.name} className="h-full w-full object-cover" />
-                              ) : (
-                                <div className="flex h-full w-full items-center justify-center bg-gradient-to-br from-primary/15 to-secondary/15 text-base">
-                                  {m.imageEmoji}
-                                </div>
-                              )}
-                              <span className="absolute inset-0 flex items-center justify-center bg-black/50 opacity-0 transition-opacity group-hover:opacity-100">
-                                <Pencil className="h-3.5 w-3.5 text-white" />
+                    {filtered.map((m) => {
+                      const lowStock = m.stock <= m.lowStockThreshold;
+                      return (
+                        <tr key={m.id} className="border-b last:border-0 hover:bg-muted/40">
+                          <td className="px-4 py-2.5">
+                            <button type="button" onClick={() => openEdit(m)} className="group flex items-center gap-3 text-left">
+                              <span className="relative h-11 w-11 shrink-0 overflow-hidden rounded-md border border-border">
+                                {m.image ? (
+                                  <img src={m.image} alt={m.name} className="h-full w-full object-cover" />
+                                ) : (
+                                  <span className="flex h-full w-full items-center justify-center bg-gradient-to-br from-primary/15 to-secondary/15 text-base">
+                                    {m.imageEmoji}
+                                  </span>
+                                )}
+                                <span className="absolute inset-0 flex items-center justify-center bg-black/50 opacity-0 transition-opacity group-hover:opacity-100">
+                                  <Pencil className="h-3.5 w-3.5 text-white" />
+                                </span>
+                              </span>
+                              <span className="min-w-0">
+                                <span className="block truncate font-medium group-hover:underline">{m.name}</span>
+                                <span className="block truncate text-xs text-muted-foreground">{m.description}</span>
                               </span>
                             </button>
-                            <div>
-                              <Input
-                                value={m.name}
-                                onChange={(e) => updateItem(m.id, { name: e.target.value })}
-                                onBlur={(e) => persist(m.id, { name: e.target.value })}
-                                className="h-8 font-medium"
-                              />
-                              <div className="text-xs text-muted-foreground line-clamp-1 mt-1">{m.description}</div>
-                            </div>
-                          </div>
-                        </td>
-                        <td className="px-4 py-3">
-                          <Select
-                            value={m.categoryId}
-                            onValueChange={(v) => {
-                              updateItem(m.id, { categoryId: v });
-                              persist(m.id, { category_id: v });
-                            }}
-                          >
-                            <SelectTrigger className="h-8 w-36 text-xs">
-                              <SelectValue placeholder="Category" />
-                            </SelectTrigger>
-                            <SelectContent>
-                              {CATEGORIES.map((c) => (
-                                <SelectItem key={c.id} value={c.id}>{c.name}</SelectItem>
-                              ))}
-                            </SelectContent>
-                          </Select>
-                        </td>
-                        <td className="px-4 py-3 text-right">
-                          <Input
-                            type="number"
-                            step="0.01"
-                            min={0}
-                            value={m.basePrice}
-                            onChange={(e) => updateItem(m.id, { basePrice: parseFloat(e.target.value) || 0 })}
-                            onBlur={(e) => persist(m.id, { base_price: parseFloat(e.target.value) || 0 })}
-                            className="h-8 w-24 ml-auto text-right tabular-nums"
-                          />
-                        </td>
-                        <td className="px-4 py-3">
-                          {m.modifierGroups && m.modifierGroups.length > 0 ? (
-                            <span
-                              className="inline-flex items-center rounded-full bg-primary/10 px-2 py-0.5 text-xs font-medium text-primary"
-                              title={m.modifierGroups
-                                .map((s) => s.replace(/-/g, " ").replace(/\b\w/g, (c) => c.toUpperCase()))
-                                .join(", ")}
+                          </td>
+                          <td className="px-4 py-2.5 text-muted-foreground">
+                            {CATEGORIES.find((c) => c.id === m.categoryId)?.name ?? "—"}
+                          </td>
+                          <td className="px-4 py-2.5 text-right tabular-nums">{formatMoney(m.basePrice)}</td>
+                          <td className="px-4 py-2.5">
+                            {m.modifierGroups && m.modifierGroups.length > 0 ? (
+                              <span
+                                className="inline-block whitespace-nowrap rounded-full bg-muted px-2.5 py-1 text-xs font-medium text-foreground/70"
+                                title={m.modifierGroups
+                                  .map((s) => s.replace(/-/g, " ").replace(/\b\w/g, (c) => c.toUpperCase()))
+                                  .join(", ")}
+                              >
+                                {m.modifierGroups.length}
+                              </span>
+                            ) : (
+                              <span className="text-xs text-muted-foreground">—</span>
+                            )}
+                          </td>
+                          <td className={`px-4 py-2.5 text-right tabular-nums ${lowStock ? "font-medium text-destructive" : ""}`}>{m.stock}</td>
+                          <td className="px-4 py-2.5">
+                            <Switch
+                              checked={m.available}
+                              onCheckedChange={(v) => {
+                                updateItem(m.id, { available: v });
+                                persist(m.id, { available: v });
+                                toast(v ? `${m.name} available` : `${m.name} 86'd`);
+                              }}
+                            />
+                          </td>
+                          <td className="px-4 py-2.5">
+                            <button
+                              type="button"
+                              title={m.featured ? "Remove from Best Sellers" : "Mark as Best Seller"}
+                              onClick={() => {
+                                const next = !m.featured;
+                                updateItem(m.id, { featured: next });
+                                persist(m.id, { featured: next });
+                                toast(next ? `${m.name} added to Best Sellers` : `${m.name} removed from Best Sellers`);
+                              }}
                             >
-                              {m.modifierGroups.length} option{m.modifierGroups.length > 1 ? "s" : ""}
-                            </span>
-                          ) : (
-                            <span className="text-xs text-muted-foreground">—</span>
-                          )}
-                        </td>
-                        <td className="px-4 py-3 text-right">
-                          <Input
-                            type="number"
-                            min={0}
-                            value={m.stock}
-                            onChange={(e) => updateItem(m.id, { stock: parseInt(e.target.value) || 0 })}
-                            onBlur={(e) => persist(m.id, { stock: parseInt(e.target.value) || 0 })}
-                            className="h-8 w-20 ml-auto text-right tabular-nums"
-                          />
-                        </td>
-                        <td className="px-4 py-3">
-                          <Switch
-                            checked={m.available}
-                            onCheckedChange={(v) => {
-                              updateItem(m.id, { available: v });
-                              persist(m.id, { available: v });
-                              toast(v ? `${m.name} available` : `${m.name} 86'd`);
-                            }}
-                          />
-                        </td>
-                        <td className="px-4 py-3">
-                          <button
-                            type="button"
-                            title={m.featured ? "Remove from Best Sellers" : "Mark as Best Seller"}
-                            onClick={() => {
-                              const next = !m.featured;
-                              updateItem(m.id, { featured: next });
-                              persist(m.id, { featured: next });
-                              toast(next ? `${m.name} added to Best Sellers` : `${m.name} removed from Best Sellers`);
-                            }}
-                          >
-                            <Star className={`h-5 w-5 transition-colors ${m.featured ? "fill-primary text-primary" : "text-muted-foreground/40"}`} />
-                          </button>
-                        </td>
-                        <td className="px-4 py-3 text-right">
-                          <div className="flex justify-end gap-1">
-                            <Button variant="ghost" size="icon" className="h-8 w-8" onClick={() => openEdit(m)} title="Edit product">
-                              <Pencil className="h-4 w-4" />
-                            </Button>
-                            <Button variant="ghost" size="icon" className="h-8 w-8 text-destructive hover:text-destructive" onClick={() => deleteItem(m)} title="Delete">
-                              <Trash2 className="h-4 w-4" />
-                            </Button>
-                          </div>
-                        </td>
-                      </tr>
-                    ))}
+                              <Star className={`h-5 w-5 transition-colors ${m.featured ? "fill-primary text-primary" : "text-muted-foreground/40"}`} />
+                            </button>
+                          </td>
+                          <td className="px-4 py-2.5 text-right">
+                            <div className="flex justify-end gap-1">
+                              <Button variant="ghost" size="icon" className="h-8 w-8" onClick={() => openEdit(m)} title="Edit product">
+                                <Pencil className="h-4 w-4" />
+                              </Button>
+                              <Button variant="ghost" size="icon" className="h-8 w-8 text-destructive hover:text-destructive" onClick={() => deleteItem(m)} title="Delete">
+                                <Trash2 className="h-4 w-4" />
+                              </Button>
+                            </div>
+                          </td>
+                        </tr>
+                      );
+                    })}
                   </tbody>
                 </table>
               </div>
@@ -637,7 +624,15 @@ function MenuPage() {
                           <tr key={m.id} className="border-b hover:bg-muted/40">
                             <td className="px-4 py-3">
                               <div className="flex items-center gap-3">
-                                <span className="text-xl">{m.imageEmoji}</span>
+                                <span className="h-9 w-9 shrink-0 overflow-hidden rounded-md border border-border">
+                                  {m.image ? (
+                                    <img src={m.image} alt={m.name} className="h-full w-full object-cover" />
+                                  ) : (
+                                    <span className="flex h-full w-full items-center justify-center bg-gradient-to-br from-primary/15 to-secondary/15 text-sm">
+                                      {m.imageEmoji}
+                                    </span>
+                                  )}
+                                </span>
                                 <div className="font-medium">{m.name}</div>
                               </div>
                             </td>
@@ -734,8 +729,32 @@ function MenuPage() {
                   </Select>
                 </div>
                 <div className="space-y-1.5">
-                  <Label>Image URL (optional)</Label>
-                  <Input value={form.image} onChange={(e) => setForm((f) => ({ ...f, image: e.target.value }))} placeholder="https://…" />
+                  <Label>Photo (optional)</Label>
+                  <div className="flex items-center gap-3">
+                    {form.image ? (
+                      <img src={form.image} alt="" className="h-14 w-14 rounded-md object-cover" />
+                    ) : (
+                      <div className="flex h-14 w-14 shrink-0 items-center justify-center rounded-md bg-gradient-to-br from-primary/20 to-secondary/20">
+                        <UtensilsCrossed className="h-5 w-5 text-muted-foreground/60" />
+                      </div>
+                    )}
+                    <Button type="button" variant="outline" size="sm" disabled={uploading} asChild>
+                      <label className="cursor-pointer">
+                        {uploading ? <Loader2 className="mr-1.5 h-3.5 w-3.5 animate-spin" /> : <Upload className="mr-1.5 h-3.5 w-3.5" />}
+                        {uploading ? "Uploading…" : "Upload photo"}
+                        <input
+                          type="file"
+                          accept="image/*"
+                          className="hidden"
+                          onChange={(e) => {
+                            const file = e.target.files?.[0];
+                            if (file) void uploadPhoto(file, (url) => setForm((f) => ({ ...f, image: url })));
+                            e.target.value = "";
+                          }}
+                        />
+                      </label>
+                    </Button>
+                  </div>
                 </div>
               </>
             )}
@@ -760,7 +779,7 @@ function MenuPage() {
               <div className="flex-1 space-y-4 overflow-y-auto p-4">
                 {/* Image */}
                 <div className="space-y-2">
-                  <Label>Image</Label>
+                  <Label>Photo</Label>
                   <div className="flex items-center gap-3">
                     {editing.image ? (
                       <img src={editing.image} alt={editing.name} className="h-20 w-20 rounded-md object-cover" />
@@ -769,16 +788,37 @@ function MenuPage() {
                         <UtensilsCrossed className="h-6 w-6 text-muted-foreground/60" />
                       </div>
                     )}
-                    <Input
-                      value={editing.image ?? ""}
-                      onChange={(e) => patchDraft({ image: e.target.value })}
-                      placeholder="https://… image URL"
-                      className="flex-1"
-                    />
+                    <div className="flex flex-col gap-1.5">
+                      <Button type="button" variant="outline" size="sm" disabled={uploading} asChild>
+                        <label className="cursor-pointer">
+                          {uploading ? <Loader2 className="mr-1.5 h-3.5 w-3.5 animate-spin" /> : <Upload className="mr-1.5 h-3.5 w-3.5" />}
+                          {uploading ? "Uploading…" : editing.image ? "Replace photo" : "Upload photo"}
+                          <input
+                            type="file"
+                            accept="image/*"
+                            className="hidden"
+                            onChange={(e) => {
+                              const file = e.target.files?.[0];
+                              if (file) void uploadPhoto(file, (url) => patchDraft({ image: url }));
+                              e.target.value = "";
+                            }}
+                          />
+                        </label>
+                      </Button>
+                      {editing.image && (
+                        <button
+                          type="button"
+                          onClick={() => patchDraft({ image: "" })}
+                          className="text-left text-xs text-muted-foreground hover:text-destructive"
+                        >
+                          Remove photo
+                        </button>
+                      )}
+                    </div>
                   </div>
                   {gallery.length > 0 && (
                     <div>
-                      <p className="mb-1.5 text-xs text-muted-foreground">Or reuse a photo already on the menu</p>
+                      <p className="mb-1.5 text-xs text-muted-foreground">Or reuse a photo already uploaded elsewhere on the menu</p>
                       <div className="flex flex-wrap gap-1.5">
                         {gallery.map((url) => (
                           <button

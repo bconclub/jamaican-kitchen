@@ -1,5 +1,24 @@
 # Changelog
 
+## 2026-07-04 · v0.0.4 — Real photo uploads, no guessed stock images; menu table decluttered
+
+- Removed all guessed/reused stock-photo matches from the 142-item menu (website + admin) — every
+  item without a real product photo now shows a clean branded placeholder instead of a mismatched
+  stock shot. Reviewed `Modifier_Functionality_Reference.docx` (DoorDash reference screenshots) to
+  confirm the modifier rules already match (required/min/max/multi-select) — no changes needed there.
+- Admin: "Image URL" paste field replaced everywhere with a real **Upload photo** button (file
+  picker, no links). Works today in local preview (reads the file directly); once migration 0004
+  is applied it uploads straight to a new public `menu-photos` Supabase Storage bucket and stores
+  that URL — same button, no code changes needed when the DB goes live.
+- New migration `0004_menu_photo_storage.sql`: public-read `menu-photos` bucket, staff-only
+  upload/update/delete policies (mirrors the menu_items write policy).
+- Migration `0003` now leaves `image` blank on every item and never overwrites it on re-run, so a
+  real uploaded photo is never clobbered by re-applying the seed.
+- Menu table decluttered: rows are scannable, not editable-everywhere. Name/category/price are now
+  plain text (click the photo, name, or pencil to open the full editor); the Add-ons badge is a
+  single-line count instead of a wrapping "N options" chip; low stock is highlighted in the Stock
+  column. Available and Best Seller stay as quick inline toggles.
+
 ## 2026-07-04 · v0.0.3 — Add-ons picker: categorized accordion instead of a flat 19-item list
 
 - Product editor's "Add-ons & options" picker now groups the 19 modifier groups into 4 categories
