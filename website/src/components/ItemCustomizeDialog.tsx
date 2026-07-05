@@ -126,9 +126,9 @@ export const ItemCustomizeDialog = ({ item, trigger }: Props) => {
       <DialogTrigger asChild>{trigger}</DialogTrigger>
       <DialogContent className="flex max-h-[88vh] flex-col p-0 sm:max-w-md">
         <DialogHeader className="border-b border-border p-4">
-          <DialogTitle className="pr-6 text-left leading-tight">{item.name}</DialogTitle>
+          <DialogTitle className="pr-6 text-left text-xl leading-tight">{item.name}</DialogTitle>
           {item.description && (
-            <p className="text-left text-sm text-muted-foreground line-clamp-3">{item.description}</p>
+            <p className="text-left text-base text-muted-foreground line-clamp-3">{item.description}</p>
           )}
         </DialogHeader>
 
@@ -139,8 +139,8 @@ export const ItemCustomizeDialog = ({ item, trigger }: Props) => {
               return (
                 <div key={g.slug}>
                   <div className="mb-2 flex items-baseline justify-between">
-                    <h4 className="text-sm font-semibold">{g.name}</h4>
-                    <span className="text-xs text-muted-foreground">
+                    <h4 className="text-base font-semibold">{g.name}</h4>
+                    <span className="text-sm text-muted-foreground">
                       {g.required ? "Required" : "Optional"}
                       {g.max > 1 ? ` · up to ${g.max}` : ""}
                     </span>
@@ -170,11 +170,11 @@ export const ItemCustomizeDialog = ({ item, trigger }: Props) => {
                             >
                               {selected && <span className="h-1.5 w-1.5 rounded-full bg-primary-foreground" />}
                             </span>
-                            <span className="text-sm">{o.name}</span>
+                            <span className="text-base">{o.name}</span>
                           </button>
                           <div className="flex items-center gap-2">
                             {o.price > 0 && (
-                              <span className="text-xs font-medium text-secondary">+${o.price.toFixed(2)}</span>
+                              <span className="text-sm font-medium text-secondary">+${o.price.toFixed(2)}</span>
                             )}
                             {g.multiSame && selected && (
                               <div className="flex items-center gap-1">
