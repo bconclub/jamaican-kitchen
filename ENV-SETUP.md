@@ -62,9 +62,40 @@ VITE_USE_STATIC_MENU="true"
 
 ---
 
-## 4. Notes
+## 4. Direct database / admin access — the `service_role` (secret) key
 
-- **Anon key is public by design** — it ships in the browser bundle and is protected by row-level security in the database. Safe to commit / paste into Vercel.
-- **The OpenRouter key is the only real secret.** Never commit it and never give it a `VITE_` prefix (that would expose it to the browser). On Vercel add it as a plain (unprefixed) env var so only the serverless function sees it.
+Supabase → Settings → API also gives a **`service_role` `secret`** key (new system: a **Secret key**, `sb_secret_…`). Use this for direct table work — applying migrations, bulk edits, seeding, back-office scripts.
+
+> ⚠️ **This key bypasses ALL row-level security.** It can read and rewrite every row in every table — customers, wallets, orders. Treat it like the master password to the database.
+
+**Hard rules — do not break these:**
+- ❌ **Never** put it in either app's env, and **never** give it a `VITE_` prefix. Both apps are browser apps — a `VITE_` value ships to every visitor, who could then dump or wipe the whole database.
+- ❌ **Never** commit it or paste it into a public place.
+- ✅ Only use it **server-side** or in **trusted admin tools** on your own machine.
+
+**The right ways to "do what's needed on the tables directly":**
+
+| Task | Tool | Key used |
+|------|------|----------|
+| Run SQL / edit rows by hand | Supabase Dashboard → **SQL Editor** or **Table Editor** | none — you're logged in |
+| Apply migrations (`0003`, `0004`, …) | **Supabase CLI** → `supabase db push` | your login + DB password |
+| A back-office script that must bypass RLS | Node/server script (never the browser) reading a plain env var | `SUPABASE_SERVICE_ROLE_KEY` |
+| Direct connection | `psql` with the DB connection string | DB password |
+
+If (and only if) a **server-side** script or serverless function needs it, store it as a plain, unprefixed env var and keep it out of git:
+
+```env
+# 🔒🔒 SERVER-SIDE / ADMIN ONLY — never VITE_, never commit, never in the browser
+SUPABASE_SERVICE_ROLE_KEY="<service_role / secret key — Supabase → Settings → API>"
+```
+
+> Note: the two apps in this repo do **not** currently use the service_role key — the storefront and admin both run safely on the anon key + row-level security. You only need the secret key for hands-on database administration outside the apps.
+
+---
+
+## 5. Notes
+
+- **Anon / publishable key is public by design** — it ships in the browser bundle and is protected by row-level security in the database. Safe to commit / paste into Vercel.
+- **Secrets** — the `OPENROUTER_API_KEY` and the `service_role` key are the real secrets. Never commit them, never give them a `VITE_` prefix. On Vercel add them as plain (unprefixed) env vars so only server-side code sees them.
 - **On Vercel**, add every variable for the **Production** (and Preview, if used) environment, then redeploy for changes to take effect.
 - `.env` files are git-ignored, so they never reach the repo — only these instructions and `.env.example` templates are committed.
