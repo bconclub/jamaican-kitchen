@@ -33,7 +33,7 @@ export const cateringCategories: CateringCategory[] = [
         id: "jerk-chicken-catering",
         name: "Jerk Chicken",
         description: "Authentic jerk chicken marinated in our signature blend of Jamaican spices",
-        image: "https://images.unsplash.com/photo-1532550907401-a500c9a57435?w=400&q=80",
+        image: "/catering/mains__jerk-chicken.webp",
         spiceLevel: "hot",
         portions: [
           { id: "sm", name: "Small Tray", serves: "8-10 people", price: 79.99 },
@@ -45,7 +45,7 @@ export const cateringCategories: CateringCategory[] = [
         id: "curry-chicken-catering",
         name: "Curry Chicken",
         description: "Tender chicken slow-cooked in rich Jamaican curry sauce",
-        image: "https://images.unsplash.com/photo-1585937421612-70a008356fbe?w=400&q=80",
+        image: "/catering/mains__curry-chicken.webp",
         spiceLevel: "medium",
         portions: [
           { id: "sm", name: "Small Tray", serves: "8-10 people", price: 74.99 },
@@ -57,7 +57,7 @@ export const cateringCategories: CateringCategory[] = [
         id: "brown-stew-chicken-catering",
         name: "Brown Stew Chicken",
         description: "Classic Jamaican brown stew chicken in savory gravy",
-        image: "https://images.unsplash.com/photo-1598515214211-89d3c73ae83b?w=400&q=80",
+        image: "/catering/mains__brown-stew-chicken.webp",
         spiceLevel: "mild",
         portions: [
           { id: "sm", name: "Small Tray", serves: "8-10 people", price: 74.99 },
@@ -69,7 +69,7 @@ export const cateringCategories: CateringCategory[] = [
         id: "oxtail-catering",
         name: "Oxtail",
         description: "Tender, slow-cooked oxtail in rich brown gravy with butter beans",
-        image: "https://images.unsplash.com/photo-1544025162-d76694265947?w=400&q=80",
+        image: "/catering/mains__oxtail.webp",
         spiceLevel: "mild",
         portions: [
           { id: "sm", name: "Small Tray", serves: "8-10 people", price: 149.99 },
@@ -81,7 +81,7 @@ export const cateringCategories: CateringCategory[] = [
         id: "curry-goat-catering",
         name: "Curry Goat",
         description: "Traditional Jamaican curry goat, seasoned and slow-cooked to perfection",
-        image: "https://images.unsplash.com/photo-1585937421612-70a008356fbe?w=400&q=80",
+        image: "/catering/mains__curry-goat.webp",
         spiceLevel: "medium",
         portions: [
           { id: "sm", name: "Small Tray", serves: "8-10 people", price: 139.99 },
@@ -93,7 +93,7 @@ export const cateringCategories: CateringCategory[] = [
         id: "jerk-pork-catering",
         name: "Jerk Pork",
         description: "Slow-roasted pork marinated in authentic jerk spices",
-        image: "https://images.unsplash.com/photo-1529193591184-b1d58069ecdd?w=400&q=80",
+        image: "/catering/mains__jerk-pork.webp",
         spiceLevel: "hot",
         portions: [
           { id: "sm", name: "Small Tray", serves: "8-10 people", price: 89.99 },
@@ -112,7 +112,7 @@ export const cateringCategories: CateringCategory[] = [
         id: "escovitch-fish-catering",
         name: "Escovitch Fish",
         description: "Crispy fried fish topped with pickled vegetables and scotch bonnet peppers",
-        image: "https://images.unsplash.com/photo-1580476262798-bddd9f4b7369?w=400&q=80",
+        image: "/catering/mains__escovitch-whiting-fish.webp",
         spiceLevel: "hot",
         portions: [
           { id: "sm", name: "Small Tray", serves: "8-10 people", price: 99.99 },
@@ -124,7 +124,7 @@ export const cateringCategories: CateringCategory[] = [
         id: "jerk-shrimp-catering",
         name: "Jerk Shrimp",
         description: "Succulent shrimp marinated in jerk seasoning",
-        image: "https://images.unsplash.com/photo-1565680018434-b513d5e5fd47?w=400&q=80",
+        image: "/catering/mains__jerk-shrimp.webp",
         spiceLevel: "hot",
         portions: [
           { id: "sm", name: "Small Tray", serves: "8-10 people", price: 119.99 },
@@ -143,7 +143,7 @@ export const cateringCategories: CateringCategory[] = [
         id: "rice-peas-catering",
         name: "Rice & Peas",
         description: "Traditional Jamaican rice cooked with coconut milk and kidney beans",
-        image: "https://images.unsplash.com/photo-1516714435131-44d6b64dc6a2?w=400&q=80",
+        image: "/catering/sides__rice-and-beans.webp",
         spiceLevel: "mild",
         portions: [
           { id: "sm", name: "Small Tray", serves: "10-12 people", price: 34.99 },
@@ -155,7 +155,7 @@ export const cateringCategories: CateringCategory[] = [
         id: "fried-plantains-catering",
         name: "Fried Plantains",
         description: "Sweet, caramelized fried plantains",
-        image: "https://images.unsplash.com/photo-1528751014936-863e6e7a319c?w=400&q=80",
+        image: "/catering/sides__fried-plantains.webp",
         spiceLevel: "mild",
         portions: [
           { id: "sm", name: "Small Tray", serves: "10-12 people", price: 29.99 },
@@ -167,7 +167,7 @@ export const cateringCategories: CateringCategory[] = [
         id: "steamed-cabbage-catering",
         name: "Steamed Cabbage",
         description: "Seasoned steamed cabbage with carrots",
-        image: "https://images.unsplash.com/photo-1515543904279-3c4e0b3c8dd9?w=400&q=80",
+        image: "/catering/sides__steamed-vegetables.webp",
         spiceLevel: "mild",
         portions: [
           { id: "sm", name: "Small Tray", serves: "10-12 people", price: 24.99 },
@@ -198,7 +198,7 @@ export const cateringCategories: CateringCategory[] = [
         id: "beef-patty-catering",
         name: "Beef Patties",
         description: "Classic Jamaican beef patties with seasoned ground beef",
-        image: "https://images.unsplash.com/photo-1604908176997-125f25cc6f3d?w=400&q=80",
+        image: "/catering/patties__regular-patties.webp",
         spiceLevel: "medium",
         portions: [
           { id: "sm", name: "1 Dozen", serves: "6-8 people", price: 39.99 },
@@ -241,7 +241,7 @@ export const cateringCategories: CateringCategory[] = [
         id: "sorrel-catering",
         name: "Sorrel",
         description: "Traditional Jamaican hibiscus drink",
-        image: "https://images.unsplash.com/photo-1544145945-f90425340c7e?w=400&q=80",
+        image: "/catering/drinks__sorrel.webp",
         spiceLevel: "mild",
         portions: [
           { id: "sm", name: "1 Gallon", serves: "10-12 people", price: 24.99 },

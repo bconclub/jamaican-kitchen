@@ -126,7 +126,7 @@ export const ItemCustomizeDialog = ({ item, trigger }: Props) => {
       <DialogTrigger asChild>{trigger}</DialogTrigger>
       <DialogContent className="flex max-h-[88vh] flex-col p-0 sm:max-w-md">
         <DialogHeader className="border-b border-border p-4">
-          <DialogTitle className="pr-6 text-left text-xl leading-tight">{item.name}</DialogTitle>
+          <DialogTitle className="pr-6 text-left text-2xl leading-tight">{item.name}</DialogTitle>
           {item.description && (
             <p className="text-left text-base text-muted-foreground line-clamp-3">{item.description}</p>
           )}
